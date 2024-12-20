@@ -1,0 +1,15 @@
+line-length = 120
+target-version = "py313"
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+
+[lint]
+select = ["I", "E", "F", "B", "UP"]
+
+[lint.isort]
+force-single-line = true
