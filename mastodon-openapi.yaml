@@ -1,0 +1,12 @@
+openapi: 3.1.0
+info:
+  title: Mastodon OpenAPI API
+  version: 0.1.0
+  summary: The self-hosted Mastodon OpenAPI specifcation
+  description: "\n            The official Mastodon API documentation is available\
+    \ at https://docs.joinmastodon.org/api/ but\n            it does not provide an\
+    \ OpenAPI specification. This script generates an OpenAPI specification\n    \
+    \        from the website.\n        "
+  license:
+    name: MIT
+paths: {}

@@ -1,8 +1,8 @@
 PYTHON := python3.13
 VENV   := .venv
-SUBDIR :=
+SPEC   := mastodon-openapi.yaml
 
-.PHONY: all clean build upgrade help $(SUBDIR)
+.PHONY: all clean build run upgrade help $(SUBDIR)
 
 all: $(SUBDIR) 		# default action
 	@[ -f .git/hooks/pre-commit ] || pre-commit install --install-hooks
@@ -13,7 +13,14 @@ clean: $(SUBDIR)	# clean-up environment
 	@find . -name __pycache__ -delete
 
 build: $(VENV)		# build the binary/library
-	poetry run python src/tools.py
+	poetry run python src/tools.py -o $(SPEC)
+
+run: 				# run the Swagger UI
+	docker run \
+		-p 8080:8080 \
+		-e SWAGGER_JSON=/app/swagger.json \
+		-v $(PWD)/$(SPEC):/app/swagger.json \
+		swaggerapi/swagger-ui
 
 upgrade:			# upgrade all the necessary packages
 	pre-commit autoupdate
