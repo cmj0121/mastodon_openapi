@@ -13,3 +13,20 @@ class TestHandlePaths:
 
         resp = handle_path_item(app, link)
         assert len(resp) == 0 if app == "admin" else len(resp) > 0
+
+    def test_handle_deprecated_path_item(self, load_api_html_fn):
+        link = "https://docs.joinmastodon.org/methods/instance"
+        load_api_html_fn("instance")
+
+        resp = handle_path_item("instance", link)
+        assert "/api/v1/instance" in resp
+        assert "get" in resp["/api/v1/instance"].root
+
+        operation = resp["/api/v1/instance"].root["get"]
+        assert operation.deprecated is True
+
+        assert "/api/v2/instance" in resp
+        assert "get" in resp["/api/v2/instance"].root
+
+        operation = resp["/api/v2/instance"].root["get"]
+        assert operation.deprecated is None

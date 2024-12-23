@@ -12,6 +12,7 @@ class Operation(BaseModel):
     tags: list[str] | None = None
     summary: str | None = None
     description: str | None = None
+    deprecated: bool | None = None
 
 
 class PathItem(RootModel[dict[str, Operation]]):

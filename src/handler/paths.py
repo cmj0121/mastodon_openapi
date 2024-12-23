@@ -61,10 +61,12 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
             if matched:
                 method, endpoint = matched.groups()
 
+                deprecated = method_dom.find("span", class_="api-method-parameter-deprecated", string="deprecated")
                 operation = handle_operation(code)
                 # add the method link to the operation description
                 operation.description += f'\n\n[{method_dom.text.strip()}]({link}#{method_dom["id"]})'
                 operation.tags = [tag]
+                operation.deprecated = True if deprecated else None
 
                 spec[endpoint] = PathItem({method.lower(): operation})
 
