@@ -4522,6 +4522,627 @@ paths:
           description: Status not found for given URL
 components:
   responses:
+    Streaming:
+      description: Represents an error message.
+      content:
+        text/event-stream:
+          schema:
+            type: string
+    Account:
+      description: Represents a user of Mastodon and their associated profile.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The account id.
+              username:
+                type: StringVersion
+                description: The username of the account, not including domain.
+              acct:
+                type: StringVersion
+                description: The Webfinger account URI. Equal to username for local
+                  users, or username@domain for remote users.
+              url:
+                type: String
+                description: "The location of the user\u2019s profile page."
+              display_name:
+                type: StringVersion
+                description: "The profile\u2019s display name."
+              note:
+                type: String
+                description: "The profile\u2019s bio or description."
+              avatar:
+                type: String
+                description: An image icon that is shown next to statuses and in the
+                  profile.
+              avatar_static:
+                type: String
+                description: A static version of the avatar. Equal to avatar if its
+                  value is a static image; different if avatar is an animated GIF.
+              header:
+                type: String
+                description: An image banner that is shown above the profile and in
+                  profile cards.
+              header_static:
+                type: String
+                description: A static version of the header. Equal to header if its
+                  value is a static image; different if header is an animated GIF.
+              locked:
+                type: BooleanVersion
+                description: Whether the account manually approves follow requests.
+              fields:
+                type: Array
+                description: Additional metadata attached to a profile as name-value
+                  pairs.
+              emojis:
+                type: Array
+                description: Custom emoji entities to be used when rendering the profile.
+              bot:
+                type: BooleanVersion
+                description: Indicates that the account may perform automated actions,
+                  may not be monitored, or identifies as a robot.
+              group:
+                type: BooleanVersion
+                description: Indicates that the account represents a Group actor.
+              discoverable:
+                type: BooleanVersion
+                description: Whether the account has opted into discovery features
+                  such as the profile directory.
+                nullable: true
+              noindex:
+                type: BooleanVersion
+                description: Whether the local user has opted out of being indexed
+                  by search engines.
+                nullable: true
+              moved:
+                type: Account,
+                description: Indicates that the profile is currently inactive and
+                  that its user has moved to a new account.
+                nullable: true
+              suspended:
+                type: BooleanVersion
+                description: An extra attribute returned only when an account is suspended.
+              limited:
+                type: BooleanVersion
+                description: An extra attribute returned only when an account is silenced.
+                  If true, indicates that the account should be hidden behind a warning
+                  screen.
+              created_at:
+                type: String
+                description: When the account was created.
+              last_status_at:
+                type: String
+                description: When the most recent status was posted.
+                nullable: true
+              statuses_count:
+                type: IntegerVersion
+                description: How many statuses are attached to this account.
+              followers_count:
+                type: IntegerVersion
+                description: The reported followers of this profile.
+              following_count:
+                type: IntegerVersion
+                description: The reported follows of this profile.
+    AccountWarning:
+      description: Moderation warning against a particular account.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the account warning in the database.
+              action:
+                type: String
+                description: Action taken against the account.
+              text:
+                type: StringVersion
+                description: Message from the moderator to the target account.
+              status_ids:
+                type: Array
+                description: List of status IDs that are relevant to the warning.
+                  When action is mark_statuses_as_sensitive or delete_statuses, those
+                  are the affected statuses.
+              target_account:
+                type: AccountVersion
+                description: Account against which a moderation decision has been
+                  taken.
+              appeal:
+                type: Appeal,
+                description: Appeal submitted by the target account, if any.
+                nullable: true
+              created_at:
+                type: String
+                description: When the event took place.
+    AdminAccount:
+      description: Admin-level information about a given account.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the account in the database.
+              username:
+                type: StringVersion
+                description: The username of the account.
+              domain:
+                type: String,
+                description: The domain of the account, if it is remote.
+                nullable: true
+              created_at:
+                type: String
+                description: When the account was first discovered.
+              email:
+                type: StringVersion
+                description: The email address associated with the account.
+              ip:
+                type: StringVersion
+                description: The IP address last used to login to this account.
+                nullable: true
+              ips:
+                type: StringVersion
+                description: The IP address last used to login to this account.
+                nullable: true
+              locale:
+                type: String
+                description: The locale of the account.
+              invite_request:
+                type: StringVersion
+                description: The reason given when requesting an invite (for instances
+                  that require manual approval of registrations)
+                nullable: true
+              role:
+                type: RoleVersion
+                description: The current role of the account.
+              confirmed:
+                type: BooleanVersion
+                description: Whether the account has confirmed their email address.
+              approved:
+                type: BooleanVersion
+                description: Whether the account is currently approved.
+              disabled:
+                type: BooleanVersion
+                description: Whether the account is currently disabled.
+              silenced:
+                type: BooleanVersion
+                description: Whether the account is currently silenced.
+              suspended:
+                type: BooleanVersion
+                description: Whether the account is currently suspended.
+              account:
+                type: AccountVersion
+                description: User-level information about the account.
+              created_by_application_id:
+                type: String
+                description: The ID of the Application that created this account,
+                  if applicable.
+              invited_by_account_id:
+                type: String
+                description: The ID of the Account that invited this user, if applicable.
+    AdminCanonicalEmailBlock:
+      description: Represents a canonical email block (hashed).
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the email block in the database.
+              canonical_email_hash:
+                type: String
+                description: The SHA256 hash of the canonical email address.
+    AdminCohort:
+      description: Represents a retention metric.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              period:
+                type: String
+                description: The timestamp for the start of the period, at midnight.
+              frequency:
+                type: String
+                description: The size of the bucket for the returned data.
+              data:
+                type: Array
+                description: Retention data for users who registered during the given
+                  period.
+    AdminDimension:
+      description: Represents qualitative data about the server.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              key:
+                type: StringVersion
+                description: The unique keystring for the requested dimension.
+              data:
+                type: Array
+                description: The data available for the requested dimension.
+    AdminDomainAllow:
+      description: Represents a domain allowed to federate.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the DomainAllow in the database.
+              domain:
+                type: StringVersion
+                description: The domain that is allowed to federate.
+              created_at:
+                type: String
+                description: When the domain was allowed to federate.
+    AdminDomainBlock:
+      description: Represents a domain limited from federating.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the DomainBlock in the database.
+              domain:
+                type: StringVersion
+                description: The domain that is not allowed to federate.
+              digest:
+                type: StringVersion
+                description: The sha256 hex digest of the domain that is not allowed
+                  to federated.
+              created_at:
+                type: String
+                description: When the domain was blocked from federating.
+              severity:
+                type: String
+                description: The policy to be applied by this domain block.
+              reject_media:
+                type: BooleanVersion
+                description: Whether to reject media attachments from this domain
+              reject_reports:
+                type: BooleanVersion
+                description: Whether to reject reports from this domain
+              private_comment:
+                type: StringVersion
+                description: ''
+                nullable: true
+              public_comment:
+                type: StringVersion
+                description: ''
+                nullable: true
+              obfuscate:
+                type: BooleanVersion
+                description: Whether to obfuscate public displays of this domain block
+    AdminEmailDomainBlock:
+      description: Represents an email domain that cannot be used to sign up.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the EmailDomainBlock in the database.
+              domain:
+                type: StringVersion
+                description: The email domain that is not allowed to be used for signups.
+              created_at:
+                type: String
+                description: When the email domain was disallowed from signups.
+              history:
+                type: Array
+                description: Usage statistics for given days (typically the past week).
+    AdminIp:
+      description: Represents an IP address associated with a user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ip:
+                type: String
+                description: The IP address.
+              used_at:
+                type: String
+                description: The timestamp of when the IP address was last used for
+                  this account.
+    AdminIpBlock:
+      description: Represents an IP address range that cannot be used to sign up.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the DomainBlock in the database.
+              ip:
+                type: String
+                description: The IP address range that is not allowed to federate.
+              severity:
+                type: String
+                description: The associated policy with this IP block.
+              comment:
+                type: StringVersion
+                description: The recorded reason for this IP block.
+              created_at:
+                type: String
+                description: When the IP block was created.
+              expires_at:
+                type: String
+                description: When the IP block will expire.
+                nullable: true
+    AdminMeasure:
+      description: Represents quantitative data about the server.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              key:
+                type: StringVersion
+                description: The unique keystring for the requested measure.
+              unit:
+                type: String
+                description: "The units associated with this data item\u2019s value,\
+                  \ if applicable."
+                nullable: true
+              total:
+                type: String
+                description: The numeric total associated with the requested measure.
+              human_value:
+                type: StringVersion
+                description: A human-readable formatted value for this data item.
+              previous_total:
+                type: String
+                description: The numeric total associated with the requested measure,
+                  in the previous period. Previous period is calculated by subtracting
+                  the start_at and end_at dates, then offsetting both start and end
+                  dates backwards by the length of the time period.
+              data:
+                type: Array
+                description: The data available for the requested measure, split into
+                  daily buckets.
+    AdminReport:
+      description: Admin-level information about a filed report.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the report in the database.
+              action_taken:
+                type: BooleanVersion
+                description: Whether an action was taken to resolve this report.
+              action_taken_at:
+                type: String
+                description: When an action was taken, if this report is currently
+                  resolved.
+                nullable: true
+              category:
+                type: String
+                description: The category under which the report is classified.
+              comment:
+                type: StringVersion
+                description: An optional reason for reporting.
+              forwarded:
+                type: BooleanVersion
+                description: Whether a report was forwarded to a remote instance.
+              created_at:
+                type: String
+                description: The time the report was filed.
+              updated_at:
+                type: String
+                description: The time of last action on this report.
+              account:
+                type: Admin::AccountVersion
+                description: The account which filed the report.
+              target_account:
+                type: Admin::AccountVersion
+                description: The account being reported.
+              assigned_account:
+                type: Admin::Account
+                description: The account of the moderator assigned to this report.
+                nullable: true
+              action_taken_by_account:
+                type: Admin::Account
+                description: The account of the moderator who handled the report.
+                nullable: true
+              statuses:
+                type: Array
+                description: Statuses attached to the report, for context.
+              rules:
+                type: Array
+                description: Rules attached to the report, for context.
+    Announcement:
+      description: Represents an announcement set by an administrator.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the announcement in the database.
+              content:
+                type: String
+                description: The text of the announcement.
+              starts_at:
+                type: String
+                description: When the announcement will start.
+                nullable: true
+              ends_at:
+                type: String
+                description: When the announcement will end.
+                nullable: true
+              published:
+                type: BooleanVersion
+                description: Whether the announcement is currently active.
+              all_day:
+                type: BooleanVersion
+                description: Whether the announcement should start and end on dates
+                  only instead of datetimes. Will be false if there is no starts_at
+                  or ends_at time.
+              published_at:
+                type: String
+                description: When the announcement was published.
+              updated_at:
+                type: String
+                description: When the announcement was last updated.
+              read:
+                type: BooleanVersion
+                description: Whether the announcement has been read by the current
+                  user.
+              mentions:
+                type: Array
+                description: Accounts mentioned in the announcement text.
+              statuses:
+                type: Array
+                description: Statuses linked in the announcement text.
+              tags:
+                type: Array
+                description: Tags linked in the announcement text.
+              emojis:
+                type: Array
+                description: Custom emoji used in the announcement text.
+              reactions:
+                type: Array
+                description: Emoji reactions attached to the announcement.
+    Appeal:
+      description: Appeal against a moderation action.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              text:
+                type: StringVersion
+                description: Text of the appeal from the moderated account to the
+                  moderators.
+              state:
+                type: String
+                description: State of the appeal.
+    Application:
+      description: Represents an application that interfaces with the REST API to
+        access accounts or post statuses.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: StringVersion
+                description: The name of your application.
+              website:
+                type: String
+                description: The website associated with your application.
+                nullable: true
+              scopes:
+                type: Array
+                description: The scopes for your application. This is the registered
+                  scopes string split on whitespace.
+              redirect_uris:
+                type: Array
+                description: The registered redirection URI(s) for your application.
+              redirect_uri:
+                type: StringVersion
+                description: The registered redirection URI(s) for your application.May
+                  contain \n characters when multiple redirect URIs are registered.
+              vapid_key:
+                type: StringVersion
+                description: Used for Push Streaming API. Returned with POST /api/v1/apps.
+                  Equivalent to WebPushSubscription#server_key and Instance#vapid_public_key
+    Context:
+      description: Represents the tree around a given status. Used for reconstructing
+        threads of statuses.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ancestors:
+                type: Array
+                description: Parents in the thread.
+              descendants:
+                type: Array
+                description: Children in the thread.
+    Conversation:
+      description: Represents a conversation with "direct message" visibility.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the conversation in the database.
+              unread:
+                type: BooleanVersion
+                description: Is the conversation currently marked as unread?
+              accounts:
+                type: Array
+                description: Participants in the conversation.
+              last_status:
+                type: StatusVersion
+                description: The last status in the conversation.
+                nullable: true
+    CustomEmoji:
+      description: Represents a custom emoji.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              shortcode:
+                type: StringVersion
+                description: The name of the custom emoji.
+              url:
+                type: String
+                description: A link to the custom emoji.
+              static_url:
+                type: String
+                description: A link to a static copy of the custom emoji.
+              visible_in_picker:
+                type: BooleanVersion
+                description: Whether this Emoji should be visible in the picker or
+                  unlisted.
+              category:
+                type: StringVersion
+                description: Used for sorting custom emoji in the picker.
+                nullable: true
+    DomainBlock:
+      description: Represents a domain that is blocked by the instance.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              domain:
+                type: StringVersion
+                description: The domain which is blocked. This may be obfuscated or
+                  partially censored.
+              digest:
+                type: String
+                description: The SHA256 hash digest of the domain string.
+              severity:
+                type: String
+                description: The level to which the domain is blocked.
+              comment:
+                type: StringVersion
+                description: An optional reason for the domain block.
     Error:
       description: Represents an error message.
       content:
@@ -4530,10 +5151,1203 @@ components:
             type: object
             properties:
               error:
-                type: string
-    Streaming:
-      description: Represents an error message.
+                type: StringVersion
+                description: The error message.
+              error_description:
+                type: StringVersion
+                description: A longer description of the error, mainly provided with
+                  the OAuth API.
+    ExtendedDescription:
+      description: Represents an extended description for the instance, to be shown
+        on its about page.
       content:
-        text/event-stream:
+        application/json:
           schema:
-            type: string
+            type: object
+            properties:
+              updated_at:
+                type: String
+                description: A timestamp of when the extended description was last
+                  updated.
+              content:
+                type: String
+                description: The rendered HTML content of the extended description.
+    FamiliarFollowers:
+      description: Represents a subset of your follows who also follow some other
+        user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the Account in the database.
+              accounts:
+                type: Array
+                description: Accounts you follow that also follow this account.
+    FeaturedTag:
+      description: Represents a hashtag that is featured on a profile.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The internal ID of the featured tag in the database.
+              name:
+                type: StringVersion
+                description: The name of the hashtag being featured.
+              url:
+                type: String
+                description: A link to all statuses by a user that contain this hashtag.
+              statuses_count:
+                type: StringVersion
+                description: The number of authored statuses containing this hashtag.
+              last_status_at:
+                type: String
+                description: The date of the last authored status containing this
+                  hashtag.
+    Filter:
+      description: Represents a user-defined filter for determining which statuses
+        should not be shown to the user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the Filter in the database.
+              title:
+                type: StringVersion
+                description: A title given by the user to name the filter.
+              context:
+                type: Array
+                description: The contexts in which the filter should be applied.
+              expires_at:
+                type: String
+                description: When the filter should no longer be applied.
+                nullable: true
+              filter_action:
+                type: String
+                description: The action to be taken when a status matches this filter.
+              keywords:
+                type: Array
+                description: The keywords grouped under this filter.
+              statuses:
+                type: Array
+                description: The statuses grouped under this filter.
+    FilterKeyword:
+      description: Represents a keyword that, if matched, should cause the filter
+        action to be taken.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the FilterKeyword in the database.
+              keyword:
+                type: StringVersion
+                description: The phrase to be matched against.
+              whole_word:
+                type: BooleanVersion
+                description: Should the filter consider word boundaries? See implementation
+                  guidelines for filters.
+    FilterResult:
+      description: Represents a filter whose keywords matched a given status.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              filter:
+                type: FilterVersion
+                description: The filter that was matched.
+              keyword_matches:
+                type: Array
+                description: The keyword within the filter that was matched.
+                nullable: true
+              status_matches:
+                type: Array
+                description: The status ID within the filter that was matched.
+                nullable: true
+    FilterStatus:
+      description: Represents a status ID that, if matched, should cause the filter
+        action to be taken.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the FilterStatus in the database.
+              status_id:
+                type: String
+                description: The ID of the Status that will be filtered.
+    IdentityProof:
+      description: Represents a proof from an external identity provider.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              provider:
+                type: StringVersion
+                description: The name of the identity provider.
+              provider_username:
+                type: StringVersion
+                description: "The account owner\u2019s username on the identity provider\u2019\
+                  s service."
+              updated_at:
+                type: String
+                description: When the identity proof was last updated.
+              proof_url:
+                type: String
+                description: A link to a statement of identity proof, hosted by the
+                  identity provider.
+              profile_url:
+                type: String
+                description: "The account owner\u2019s profile URL on the identity\
+                  \ provider."
+    Instance:
+      description: Represents the software instance of Mastodon running on this domain.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              domain:
+                type: StringVersion
+                description: The domain name of the instance.
+              title:
+                type: StringVersion
+                description: The title of the website.
+              version:
+                type: StringVersion
+                description: The version of Mastodon installed on the instance.
+              source_url:
+                type: String
+                description: The URL for the source code of the software running on
+                  this instance, in keeping with AGPL license requirements.
+              description:
+                type: StringVersion
+                description: A short, plain-text description defined by the admin.
+              usage:
+                type: HashVersion
+                description: Usage data for this instance.
+              thumbnail:
+                type: HashVersion
+                description: An image used to represent this instance.
+              icon:
+                type: Array
+                description: The list of available size variants for this instance
+                  configured icon.
+              languages:
+                type: Array
+                description: Primary languages of the website and its staff.
+              configuration:
+                type: HashVersion
+                description: Configured values and limits for this website.
+              configuration[vapid][public_key]:
+                type: StringVersion
+                description: The instances VAPID public key, used for push notifications,
+                  the same as WebPushSubscription#server_key.
+              registrations:
+                type: HashVersion
+                description: Information about registering for this website.
+              api_versions:
+                type: HashVersion
+                description: Information about which version of the API is implemented
+                  by this server. It contains at least a mastodon attribute, and other
+                  implementations may have their own additional attributes.
+              api_versions[mastodon]:
+                type: IntegerVersion
+                description: API version number that this server implements. Starting
+                  from Mastodon v4.3.0, API changes will come with a version number,
+                  which clients can check against this value.
+              contact:
+                type: HashVersion
+                description: Hints related to contacting a representative of the website.
+              rules:
+                type: Array
+                description: An itemized list of rules for this website.
+    List:
+      description: Represents a list of some users that the authenticated user follows.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The internal database ID of the list.
+              title:
+                type: StringVersion
+                description: The user-defined title of the list.
+              replies_policy:
+                type: String
+                description: Which replies should be shown in the list.
+    Marker:
+      description: Represents the last read position within a user's timelines.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              last_read_id:
+                type: String
+                description: The ID of the most recently viewed entity.
+              version:
+                type: IntegerVersion
+                description: An incrementing counter, used for locking to prevent
+                  write conflicts.
+              updated_at:
+                type: String
+                description: The timestamp of when the marker was set.
+    MediaAttachment:
+      description: Represents a file or media attachment that can be added to a status.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the attachment in the database.
+              type:
+                type: String
+                description: The type of the attachment.
+              url:
+                type: String
+                description: The location of the original full-size attachment.
+              preview_url:
+                type: String
+                description: The location of a scaled-down preview of the attachment.
+                nullable: true
+              remote_url:
+                type: String
+                description: The location of the full-size original attachment on
+                  the remote website.
+                nullable: true
+              meta:
+                type: HashVersion
+                description: Metadata returned by Paperclip.
+              description:
+                type: String,
+                description: Alternate text that describes what is in the media attachment,
+                  to be used for the visually impaired or when media attachments do
+                  not load.
+                nullable: true
+              blurhash:
+                type: String
+                description: A hash computed by the BlurHash algorithm, for generating
+                  colorful preview thumbnails when media has not been downloaded yet.
+                nullable: true
+              text_url:
+                type: String
+                description: A shorter URL for the attachment.
+    Notification:
+      description: Represents a notification of an event relevant to the user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The id of the notification in the database.
+              type:
+                type: String
+                description: The type of event that resulted in the notification.
+              group_key:
+                type: StringVersion
+                description: Group key shared by similar notifications, to be used
+                  in the grouped notifications feature. Should be considered opaque,
+                  but ungrouped notifications can be assumed to have a group_key of
+                  the form ungrouped-{notification_id}.
+              created_at:
+                type: String
+                description: The timestamp of the notification.
+              account:
+                type: AccountVersion
+                description: The account that performed the action that generated
+                  the notification.
+              status:
+                type: StatusVersion
+                description: Status that was the object of the notification. Attached
+                  when type of the notification is favourite, reblog, status, mention,
+                  poll, or update.
+              report:
+                type: ReportVersion
+                description: Report that was the object of the notification. Attached
+                  when type of the notification is admin.report.
+              relationship_severance_event:
+                type: RelationshipSeveranceEventVersion
+                description: Summary of the event that caused follow relationships
+                  to be severed. Attached when type of the notification is severed_relationships.
+              moderation_warning:
+                type: AccountWarningVersion
+                description: Moderation warning that caused the notification. Attached
+                  when type of the notification is moderation_warning.
+    NotificationPolicy:
+      description: Represents the notification filtering policy of the user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              for_not_following:
+                type: String
+                description: Whether to accept, filter or drop notifications from
+                  accounts the user is not following. drop will prevent creation of
+                  the notification object altogether (without preventing the underlying
+                  activity), filter will cause it to be marked as filtered, and accept
+                  will not affect its processing.
+              for_not_followers:
+                type: String
+                description: Whether to accept, filter or drop notifications from
+                  accounts that are not following the user. drop will prevent creation
+                  of the notification object altogether (without preventing the underlying
+                  activity), filter will cause it to be marked as filtered, and accept
+                  will not affect its processing.
+              for_new_accounts:
+                type: String
+                description: Whether to accept, filter or drop notifications from
+                  accounts created in the past 30 days. drop will prevent creation
+                  of the notification object altogether (without preventing the underlying
+                  activity), filter will cause it to be marked as filtered, and accept
+                  will not affect its processing.
+              for_private_mentions:
+                type: String
+                description: Whether to accept, filter or drop notifications from
+                  private mentions. drop will prevent creation of the notification
+                  object altogether (without preventing the underlying activity),
+                  filter will cause it to be marked as filtered, and accept will not
+                  affect its processing. Replies to private mentions initiated by
+                  the user, as well as accounts the user follows, are always allowed,
+                  regardless of this value.
+              for_limited_accounts:
+                type: String
+                description: Whether to accept, filter or drop notifications from
+                  accounts that were limited by a moderator. drop will prevent creation
+                  of the notification object altogether (without preventing the underlying
+                  activity), filter will cause it to be marked as filtered, and accept
+                  will not affect its processing.
+              summary:
+                type: HashVersion
+                description: Summary of the filtered notifications
+              summary[pending_requests_count]:
+                type: IntegerVersion
+                description: Number of different accounts from which the user has
+                  non-dismissed filtered notifications. Capped at 100.
+              summary[pending_notifications_count]:
+                type: IntegerVersion
+                description: Number of total non-dismissed filtered notifications.
+                  May be inaccurate.
+    NotificationRequest:
+      description: Represents a group of filtered notifications from a specific user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The id of the notification request in the database.
+              created_at:
+                type: String
+                description: The timestamp of the notification request, i.e. when
+                  the first filtered notification from that user was created.
+              updated_at:
+                type: String
+                description: The timestamp of when the notification request was last
+                  updated.
+              account:
+                type: AccountVersion
+                description: The account that performed the action that generated
+                  the filtered notifications.
+              notifications_count:
+                type: StringVersion
+                description: "How many of this account\u2019s notifications were filtered."
+              last_status:
+                type: StatusVersion
+                description: Most recent status associated with a filtered notification
+                  from that account.
+    Poll:
+      description: Represents a poll attached to a status.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the poll in the database.
+              expires_at:
+                type: String
+                description: When the poll ends.
+                nullable: true
+              expired:
+                type: BooleanVersion
+                description: Is the poll currently expired?
+              multiple:
+                type: BooleanVersion
+                description: Does the poll allow multiple-choice answers?
+              votes_count:
+                type: IntegerVersion
+                description: How many votes have been received.
+              voters_count:
+                type: Integer,
+                description: How many unique accounts have voted on a multiple-choice
+                  poll.
+                nullable: true
+              options:
+                type: Array
+                description: Possible answers for the poll.
+              emojis:
+                type: Array
+                description: Custom emoji to be used for rendering poll options.
+              voted:
+                type: BooleanVersion
+                description: When called with a user token, has the authorized user
+                  voted?
+              own_votes:
+                type: Array
+                description: When called with a user token, which options has the
+                  authorized user chosen? Contains an array of index values for options.
+    Preferences:
+      description: Represents a user's preferences.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              posting:default:visibility:
+                type: String
+                description: Default visibility for new posts. Equivalent to CredentialAccount#source[privacy].
+              posting:default:sensitive:
+                type: BooleanVersion
+                description: Default sensitivity flag for new posts. Equivalent to
+                  CredentialAccount#source[sensitive].
+              posting:default:language:
+                type: String
+                description: Default language for new posts. Equivalent to CredentialAccount#source[language]
+                nullable: true
+              reading:expand:media:
+                type: String
+                description: Whether media attachments should be automatically displayed
+                  or blurred/hidden.
+              reading:expand:spoilers:
+                type: BooleanVersion
+                description: Whether CWs should be expanded by default.
+    PreviewCard:
+      description: Represents a rich preview card that is generated using OpenGraph
+        tags from a URL.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              url:
+                type: String
+                description: Location of linked resource.
+              title:
+                type: StringVersion
+                description: Title of linked resource.
+              description:
+                type: StringVersion
+                description: Description of preview.
+              type:
+                type: String
+                description: The type of the preview card.
+              authors:
+                type: Array
+                description: Fediverse account of the authors of the original resource.
+              author_name:
+                type: StringVersion
+                description: The author of the original resource. Deprecated since
+                  4.3.0, clients should use authors instead.
+              author_url:
+                type: String
+                description: A link to the author of the original resource. Deprecated
+                  since 4.3.0, clients should use authors instead.
+              provider_name:
+                type: StringVersion
+                description: The provider of the original resource.
+              provider_url:
+                type: String
+                description: A link to the provider of the original resource.
+              html:
+                type: String
+                description: HTML to be used for generating the preview card.
+              width:
+                type: IntegerVersion
+                description: Width of preview, in pixels.
+              height:
+                type: IntegerVersion
+                description: Width of preview, in pixels.
+              image:
+                type: String
+                description: Preview thumbnail.
+                nullable: true
+              embed_url:
+                type: String
+                description: Used for photo embeds, instead of custom html.
+              blurhash:
+                type: StringVersion
+                description: A hash computed by the BlurHash algorithm, for generating
+                  colorful preview thumbnails when media has not been downloaded yet.
+                nullable: true
+    PreviewCardAuthor:
+      description: Represents an author in a rich preview card.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: StringVersion
+                description: "The original resource author\u2019s name. Replaces the\
+                  \ deprecated author_name attribute of the preview card."
+              url:
+                type: String
+                description: A link to the author of the original resource. Replaces
+                  the deprecated author_url attribute of the preview card.
+              account:
+                type: AccountVersion
+                description: The fediverse account of the author.
+    Reaction:
+      description: Represents an emoji reaction to an Announcement.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: StringVersion
+                description: "The emoji used for the reaction. Either a unicode emoji,\
+                  \ or a custom emoji\u2019s shortcode."
+              count:
+                type: IntegerVersion
+                description: The total number of users who have added this reaction.
+              me:
+                type: BooleanVersion
+                description: 'If there is a currently authorized user: Have you added
+                  this reaction?'
+              url:
+                type: String
+                description: 'If the reaction is a custom emoji: A link to the custom
+                  emoji.'
+              static_url:
+                type: String
+                description: 'If the reaction is a custom emoji: A link to a non-animated
+                  version of the custom emoji.'
+    Relationship:
+      description: Represents the relationship between accounts, such as following
+        / blocking / muting / etc.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The account ID.
+              following:
+                type: BooleanVersion
+                description: Are you following this user?
+              showing_reblogs:
+                type: BooleanVersion
+                description: "Are you receiving this user\u2019s boosts in your home\
+                  \ timeline?"
+              notifying:
+                type: BooleanVersion
+                description: Have you enabled notifications for this user?
+              languages:
+                type: Array
+                description: Which languages are you following from this user?
+              followed_by:
+                type: BooleanVersion
+                description: Are you followed by this user?
+              blocking:
+                type: BooleanVersion
+                description: Are you blocking this user?
+              blocked_by:
+                type: BooleanVersion
+                description: Is this user blocking you?
+              muting:
+                type: BooleanVersion
+                description: Are you muting this user?
+              muting_notifications:
+                type: BooleanVersion
+                description: Are you muting notifications from this user?
+              requested:
+                type: BooleanVersion
+                description: Do you have a pending follow request for this user?
+              requested_by:
+                type: BooleanVersion
+                description: Has this user requested to follow you?
+              domain_blocking:
+                type: BooleanVersion
+                description: "Are you blocking this user\u2019s domain?"
+              endorsed:
+                type: BooleanVersion
+                description: Are you featuring this user on your profile?
+              note:
+                type: StringVersion
+                description: "This user\u2019s profile bio"
+    RelationshipSeveranceEvent:
+      description: Summary of a moderation or block event that caused follow relationships
+        to be severed.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the relationship severance event in the database.
+              type:
+                type: String
+                description: Type of event.
+              purged:
+                type: BooleanVersion
+                description: Whether the list of severed relationships is unavailable
+                  because the underlying issue has been purged.
+              target_name:
+                type: StringVersion
+                description: Name of the target of the moderation/block event. This
+                  is either a domain name or a user handle, depending on the event
+                  type.
+              followers_count:
+                type: IntegerVersion
+                description: Number of followers that were removed as result of the
+                  event.
+              following_count:
+                type: IntegerVersion
+                description: Number of accounts the user stopped following as result
+                  of the event.
+              created_at:
+                type: String
+                description: When the event took place.
+    Report:
+      description: Reports filed against users and/or statuses, to be taken action
+        on by moderators.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the report in the database.
+              action_taken:
+                type: BooleanVersion
+                description: Whether an action was taken yet.
+              action_taken_at:
+                type: String
+                description: When an action was taken against the report.
+                nullable: true
+              category:
+                type: String
+                description: The generic reason for the report.
+              comment:
+                type: StringVersion
+                description: The reason for the report.
+              forwarded:
+                type: BooleanVersion
+                description: Whether the report was forwarded to a remote domain.
+              created_at:
+                type: String
+                description: When the report was created.
+              status_ids:
+                type: Array
+                description: IDs of statuses that have been attached to this report
+                  for additional context.
+                nullable: true
+              rule_ids:
+                type: Array
+                description: IDs of the rules that have been cited as a violation
+                  by this report.
+                nullable: true
+              target_account:
+                type: AccountVersion
+                description: The account that was reported.
+    Role:
+      description: Represents a custom user role that grants permissions.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: StringVersion
+                description: The ID of the Role in the database.
+              name:
+                type: StringVersion
+                description: The name of the role.
+              color:
+                type: StringVersion
+                description: The hex code assigned to this role. If no hex code is
+                  assigned, the string will be empty.
+              permissions:
+                type: StringVersion
+                description: A bitmask that represents the sum of all permissions
+                  granted to the role.
+              highlighted:
+                type: BooleanVersion
+                description: Whether the role is publicly visible as a badge on user
+                  profiles.
+    Rule:
+      description: Represents a rule that server users should follow.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: An identifier for the rule.
+              text:
+                type: StringVersion
+                description: The rule to be followed.
+              hint:
+                type: StringVersion
+                description: Longer-form description of the rule.
+    ScheduledStatus:
+      description: Represents a status that will be published at a future scheduled
+        date.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: ID of the scheduled status in the database.
+              scheduled_at:
+                type: String
+                description: The timestamp for when the status will be posted.
+              params:
+                type: HashVersion
+                description: The parameters that were used when scheduling the status,
+                  to be used when the status is posted.
+              media_attachments:
+                type: Array
+                description: Media that will be attached when the status is posted.
+    Search:
+      description: Represents the results of a search.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              accounts:
+                type: Array
+                description: Accounts which match the given query
+              statuses:
+                type: Array
+                description: Statuses which match the given query
+              hashtags:
+                type: Array
+                description: Hashtags which match the given query
+    Status:
+      description: Represents a status posted by an account.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: ID of the status in the database.
+              uri:
+                type: StringVersion
+                description: URI of the status used for federation.
+              created_at:
+                type: String
+                description: The date when this status was created.
+              account:
+                type: AccountVersion
+                description: The account that authored this status.
+              content:
+                type: String
+                description: HTML-encoded status content.
+              visibility:
+                type: String
+                description: Visibility of this status.
+              sensitive:
+                type: BooleanVersion
+                description: Is this status marked as sensitive content?
+              spoiler_text:
+                type: StringVersion
+                description: Subject or summary line, below which status content is
+                  collapsed until expanded.
+              media_attachments:
+                type: Array
+                description: Media that is attached to this status.
+              application:
+                type: HashVersion
+                description: The application used to post this status.
+              mentions:
+                type: Array
+                description: Mentions of users within the status content.
+              tags:
+                type: Array
+                description: Hashtags used within the status content.
+              emojis:
+                type: Array
+                description: Custom emoji to be used when rendering status content.
+              reblogs_count:
+                type: IntegerVersion
+                description: How many boosts this status has received.
+              favourites_count:
+                type: IntegerVersion
+                description: How many favourites this status has received.
+              replies_count:
+                type: IntegerVersion
+                description: How many replies this status has received.
+              url:
+                type: String
+                description: "A link to the status\u2019s HTML representation."
+                nullable: true
+              in_reply_to_id:
+                type: String
+                description: ID of the status being replied to.
+                nullable: true
+              in_reply_to_account_id:
+                type: String
+                description: ID of the account that authored the status being replied
+                  to.
+                nullable: true
+              reblog:
+                type: Status
+                description: The status being reblogged.
+                nullable: true
+              poll:
+                type: Poll
+                description: The poll attached to the status.
+                nullable: true
+              card:
+                type: PreviewCard
+                description: Preview card for links included within status content.
+                nullable: true
+              language:
+                type: String
+                description: Primary language of this status.
+                nullable: true
+              text:
+                type: String
+                description: Plain-text source of a status. Returned instead of content
+                  when status is deleted, so the user may redraft from the source
+                  text without the client having to reverse-engineer the original
+                  text from the HTML content.
+                nullable: true
+              edited_at:
+                type: String
+                description: Timestamp of when the status was last edited.
+                nullable: true
+              favourited:
+                type: BooleanVersion
+                description: 'If the current token has an authorized user: Have you
+                  favourited this status?'
+              reblogged:
+                type: BooleanVersion
+                description: 'If the current token has an authorized user: Have you
+                  boosted this status?'
+              muted:
+                type: BooleanVersion
+                description: "If the current token has an authorized user: Have you\
+                  \ muted notifications for this status\u2019s conversation?"
+              bookmarked:
+                type: BooleanVersion
+                description: 'If the current token has an authorized user: Have you
+                  bookmarked this status?'
+              pinned:
+                type: BooleanVersion
+                description: 'If the current token has an authorized user: Have you
+                  pinned this status? Only appears if the status is pinnable.'
+              filtered:
+                type: Array
+                description: 'If the current token has an authorized user: The filter
+                  and keywords that matched this status.'
+    StatusEdit:
+      description: Represents a revision of a status that has been edited.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              content:
+                type: String
+                description: The content of the status at this revision.
+              spoiler_text:
+                type: String
+                description: The content of the subject or content warning at this
+                  revision.
+              sensitive:
+                type: BooleanVersion
+                description: Whether the status was marked sensitive at this revision.
+              created_at:
+                type: String
+                description: The timestamp of when the revision was published.
+              account:
+                type: AccountVersion
+                description: The account that published this revision.
+              poll:
+                type: HashVersion
+                description: The current state of the poll options at this revision.
+                  Note that edits changing the poll options will be collapsed together
+                  into one edit, since this action resets the poll.
+              media_attachments:
+                type: Array
+                description: The current state of the media attachments at this revision.
+              emojis:
+                type: Array
+                description: Any custom emoji that are used in the current revision.
+    StatusSource:
+      description: Represents a status's source as plain text.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: ID of the status in the database.
+              text:
+                type: StringVersion
+                description: The plain text used to compose the status.
+              spoiler_text:
+                type: StringVersion
+                description: "The plain text used to compose the status\u2019s subject\
+                  \ or content warning."
+    Suggestion:
+      description: Represents a suggested account to follow and an associated reason
+        for the suggestion.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              source:
+                type: String
+                description: The reason this account is being suggested.
+              sources:
+                type: Array
+                description: A list of reasons this account is being suggested. This
+                  replaces source
+              account:
+                type: AccountVersion
+                description: The account being recommended to follow.
+    Tag:
+      description: Represents a hashtag used within the content of a status.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: StringVersion
+                description: 'The value of the hashtag after the # sign.'
+              url:
+                type: String
+                description: A link to the hashtag on the instance.
+              history:
+                type: Array
+                description: Usage statistics for given days (typically the past week).
+              following:
+                type: BooleanVersion
+                description: "Whether the current token\u2019s authorized user is\
+                  \ following this tag."
+    Token:
+      description: Represents an OAuth token used for authenticating with the API
+        and performing actions.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              access_token:
+                type: StringVersion
+                description: An OAuth token to be used for authorization.
+              token_type:
+                type: StringVersion
+                description: The OAuth token type. Mastodon uses Bearer tokens.
+              scope:
+                type: StringVersion
+                description: The OAuth scopes granted by this token, space-separated.
+              created_at:
+                type: Number
+                description: When the token was generated.
+    Translation:
+      description: Represents the result of machine translating some status content
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              content:
+                type: String
+                description: HTML-encoded translated content of the status.
+              spoiler_text:
+                type: StringVersion
+                description: The translated spoiler warning of the status.
+              poll:
+                type: Translation::PollVersion
+                description: The translated poll of the status.
+              media_attachments:
+                type: Array
+                description: The translated media descriptions of the status.
+              detected_source_language:
+                type: String
+                description: The language of the source text, as auto-detected by
+                  the machine translation provider.
+              provider:
+                type: StringVersion
+                description: The service that provided the machine translation.
+    V1Filter:
+      description: Represents a user-defined filter for determining which statuses
+        should not be shown to the user. Contains a single keyword or phrase.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the filter in the database.
+              phrase:
+                type: StringVersion
+                description: The text to be filtered.
+              context:
+                type: Array
+                description: The contexts in which the filter should be applied.
+              expires_at:
+                type: String
+                description: When the filter should no longer be applied.
+                nullable: true
+              irreversible:
+                type: BooleanVersion
+                description: Should matching entities in home and notifications be
+                  dropped by the server? See implementation guidelines for filters.
+              whole_word:
+                type: BooleanVersion
+                description: Should the filter consider word boundaries? See implementation
+                  guidelines for filters.
+    V1Instance:
+      description: Represents the software instance of Mastodon running on this domain.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              uri:
+                type: StringVersion
+                description: The domain name of the instance.
+              title:
+                type: StringVersion
+                description: The title of the website.
+              short_description:
+                type: StringVersion
+                description: A short, plain-text description defined by the admin.
+              description:
+                type: StringVersion
+                description: An HTML-permitted description of the Mastodon site.
+              email:
+                type: StringVersion
+                description: An email that may be contacted for any inquiries.
+              version:
+                type: StringVersion
+                description: The version of Mastodon installed on the instance.
+              urls:
+                type: HashVersion
+                description: URLs of interest for clients apps.
+              stats:
+                type: HashVersion
+                description: Statistics about how much information the instance contains.
+              thumbnail:
+                type: String
+                description: Banner image for the website.
+                nullable: true
+              languages:
+                type: Array
+                description: Primary languages of the website and its staff.
+              registrations:
+                type: BooleanVersion
+                description: Whether registrations are enabled.
+              approval_required:
+                type: BooleanVersion
+                description: Whether registrations require moderator approval.
+              invites_enabled:
+                type: BooleanVersion
+                description: Whether invites are enabled.
+              configuration:
+                type: HashVersion
+                description: Configured values and limits for this website.
+              contact_account:
+                type: Account
+                description: A user that can be contacted, as an alternative to email.
+                nullable: true
+              rules:
+                type: Array
+                description: An itemized list of rules for this website.
+    V1NotificationPolicy:
+      description: Represents the notification filtering policy of the user.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              filter_not_following:
+                type: BooleanVersion
+                description: Whether to filter notifications from accounts the user
+                  is not following.
+              filter_not_followers:
+                type: BooleanVersion
+                description: Whether to filter notifications from accounts that are
+                  not following the user.
+              filter_new_accounts:
+                type: BooleanVersion
+                description: Whether to filter notifications from accounts created
+                  in the past 30 days.
+              filter_private_mentions:
+                type: BooleanVersion
+                description: Whether to filter notifications from private mentions.
+                  Replies to private mentions initiated by the user, as well as accounts
+                  the user follows, are never filtered.
+              summary:
+                type: HashVersion
+                description: Summary of the filtered notifications
+              summary[pending_requests_count]:
+                type: IntegerVersion
+                description: Number of different accounts from which the user has
+                  non-dismissed filtered notifications. Capped at 100.
+              summary[pending_notifications_count]:
+                type: IntegerVersion
+                description: Number of total non-dismissed filtered notifications.
+                  May be inaccurate.
+    WebPushSubscription:
+      description: Represents a subscription to the push streaming server.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the Web Push subscription in the database.
+              endpoint:
+                type: String
+                description: Where push alerts will be sent to.
+              server_key:
+                type: StringVersion
+                description: "The streaming server\u2019s VAPID key."
+              alerts:
+                type: HashVersion
+                description: Which alerts should be delivered to the endpoint.

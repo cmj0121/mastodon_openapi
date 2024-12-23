@@ -17,3 +17,18 @@ def load_api_html_fn():
             return html
 
     return loader
+
+
+@pytest.fixture
+def load_component_html_fn():
+    @wraps(load_api_html_fn)
+    def loader(component: str) -> str:
+        with open(f"src/tests/html/component_{component}.html") as f:
+            link = f"https://docs.joinmastodon.org/entities/{component}/"
+
+            html = f.read()
+            responses.add(responses.GET, link, body=html, status=200)
+
+            return html
+
+    return loader

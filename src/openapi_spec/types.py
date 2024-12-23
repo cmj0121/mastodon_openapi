@@ -1,7 +1,17 @@
 from __future__ import annotations
 
+from enum import StrEnum
+from enum import auto
+
 from pydantic import BaseModel
 from pydantic import Field
+
+
+class BuildInType(StrEnum):
+    boolean = auto()
+    integer = auto()
+    number = auto()
+    string = auto()
 
 
 class SchemaObject(BaseModel):
@@ -12,6 +22,8 @@ class SchemaObject(BaseModel):
     """
 
     type: str
+    description: str | None = None
+    nullable: bool | None = None
     items: list[SchemaObject] | None = None
     properties: dict[str, SchemaObject] | None = None
 
