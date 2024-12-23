@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from .basic import Contact
 from .basic import Info
 from .basic import License
+from .path import Operation
+from .path import PathItem
 from .path import Paths
 
 
@@ -26,5 +28,8 @@ __all__ = list(
         "Contact",
         "Info",
         "License",
+        "Paths",
+        "PathItem",
+        "Operation",
     }
 )

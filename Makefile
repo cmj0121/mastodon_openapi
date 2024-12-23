@@ -2,7 +2,7 @@ PYTHON := python3.13
 VENV   := .venv
 SPEC   := mastodon-openapi.yaml
 
-.PHONY: all clean build run upgrade help $(SUBDIR)
+.PHONY: all clean build test run upgrade help $(SUBDIR)
 
 all: $(SUBDIR) 		# default action
 	@[ -f .git/hooks/pre-commit ] || pre-commit install --install-hooks
@@ -14,6 +14,9 @@ clean: $(SUBDIR)	# clean-up environment
 
 build: $(VENV)		# build the binary/library
 	poetry run python src/tools.py -o $(SPEC)
+
+test: $(VENV)		# run the tests
+	poetry run pytest
 
 run: 				# run the Swagger UI
 	docker run \

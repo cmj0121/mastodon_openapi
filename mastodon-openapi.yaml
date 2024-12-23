@@ -3,10 +3,2861 @@ info:
   title: Mastodon OpenAPI API
   version: 0.1.0
   summary: The self-hosted Mastodon OpenAPI specifcation
-  description: "\n            The official Mastodon API documentation is available\
-    \ at https://docs.joinmastodon.org/api/ but\n            it does not provide an\
-    \ OpenAPI specification. This script generates an OpenAPI specification\n    \
-    \        from the website.\n        "
+  description: '
+
+    The official Mastodon API documentation is available at https://docs.joinmastodon.org/api/
+    but
+
+    it does not provide an OpenAPI specification. This script generates an OpenAPI
+    specification
+
+    from the website.
+
+    '
   license:
     name: MIT
-paths: {}
+paths:
+  /api/v1/apps/verify_credentials:
+    get:
+      tags:
+      - apps
+      summary: "Confirm that the app\u2019s OAuth2 credentials work."
+      description: "Confirm that the app\u2019s OAuth2 credentials work.\n## Version\
+        \ history\n\n- 2.0.0 - added\n- 2.7.2 - now returns vapid_key\n- 4.3.0 - deprecated\
+        \ vapid_key, please see api/v2/instance\n- 4.3.0 - removed needing read scope\
+        \ to access this API, now any valid App token can be used\n- 4.3.0 - added\
+        \ scopes and redirect_uris properties\n\n[Verify your app works](https://docs.joinmastodon.org/methods/apps/#verify_credentials)"
+  /api/v1/apps:
+    post:
+      tags:
+      - apps
+      summary: Create a new application to obtain OAuth2 credentials.
+      description: 'Create a new application to obtain OAuth2 credentials.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.7.2 - now returns vapid_key
+
+        - 4.3.0 - deprecated vapid_key, please see api/v2/instance
+
+        - 4.3.0 - added support for multiple redirect_uris in Form data parameters
+
+        - 4.3.0 - added redirect_uris response property
+
+        - 4.3.0 - deprecated redirect_uri response property, since this can be a non-URI
+        if multiple redirect_uris are registered, use redirect_uris instead
+
+        - 4.3.0 - changed entity type from Application to CredentialApplication
+
+
+        [Create an application](https://docs.joinmastodon.org/methods/apps/#create)'
+  /.well-known/oauth-authorization-server:
+    get:
+      tags:
+      - oauth
+      summary: Returns the OAuth 2 Authorization Server Metadata for the Mastodon
+        server, as defined by RFC 8414.
+      description: "Returns the OAuth 2 Authorization Server Metadata for the Mastodon\
+        \ server, as defined by RFC 8414.\nWe include the additional non-standard\
+        \ property of app_registration_endpoint which refers to the POST /api/v1/apps\
+        \ endpoint, since we don\u2019t currently support the standard registration_endpoint\
+        \ endpoint for Dynamic Client Registration.\nThe properties exposed by this\
+        \ endpoint can help you better integrate with the Mastodon API, such as allowing\
+        \ for negotiation of scopes across different versions of Mastodon.\n## Version\
+        \ history\n\n- 4.3.0 - added\n\n[Discover OAuth Server Configuration](https://docs.joinmastodon.org/methods/oauth/#authorization-server-metadata)"
+  /oauth/revoke:
+    post:
+      tags:
+      - oauth
+      summary: Revoke an access token to make it no longer valid for use.
+      description: 'Revoke an access token to make it no longer valid for use.
+
+        ## Version history
+
+
+        - 0.1.0 - added
+
+
+        [Revoke a token](https://docs.joinmastodon.org/methods/oauth/#revoke)'
+  /oauth/token:
+    post:
+      tags:
+      - oauth
+      summary: Obtain an access token, to be used during API calls that are not public.
+      description: 'Obtain an access token, to be used during API calls that are not
+        public.
+
+        ## Version history
+
+
+        - 0.1.0 - added
+
+        - 4.3.0 - added support for PKCE parameter
+
+
+        [Obtain a token](https://docs.joinmastodon.org/methods/oauth/#token)'
+  /oauth/authorize:
+    get:
+      tags:
+      - oauth
+      summary: Displays an authorization form to the user. If approved, it will create
+        and return an authorization code, then redirect to the desired redirect_uri,
+        or show the authorization code if urn:ietf:wg:oauth:2.0:oob was requested.
+        The authorization code can be used while requesting a token to obtain access
+        to user-level methods.
+      description: 'Displays an authorization form to the user. If approved, it will
+        create and return an authorization code, then redirect to the desired redirect_uri,
+        or show the authorization code if urn:ietf:wg:oauth:2.0:oob was requested.
+        The authorization code can be used while requesting a token to obtain access
+        to user-level methods.
+
+        ## Version history
+
+
+        - 0.1.0 - added
+
+        - 2.6.0 - added force_login
+
+        - 3.5.0 - added lang
+
+        - 4.3.0 - added support for PKCE parameters
+
+
+        [Authorize a user](https://docs.joinmastodon.org/methods/oauth/#authorize)'
+  /api/v1/emails/confirmations:
+    post:
+      tags:
+      - emails
+      summary: "Resend a new confirmation email. If an email is provided, updates\
+        \ the unconfirmed user\u2019s email before resending the confirmation email."
+      description: "Resend a new confirmation email. If an email is provided, updates\
+        \ the unconfirmed user\u2019s email before resending the confirmation email.\n\
+        ## Version history\n\n- 3.4.0 - added\n\n[Resend confirmation email](https://docs.joinmastodon.org/methods/emails/#confirmation)"
+  /api/v1/accounts/:id/identity_proofs:
+    get:
+      tags:
+      - accounts
+      description: '
+
+        ## Version history
+
+
+        - 2.8.0 - added
+
+        - 3.5.0 - deprecated. now returns an empty array.
+
+
+        [Identity proofs deprecated](https://docs.joinmastodon.org/methods/accounts/#identity_proofs)'
+  /api/v1/accounts/lookup:
+    get:
+      tags:
+      - accounts
+      summary: Quickly lookup a username to see if it is available, skipping WebFinger
+        resolution.
+      description: 'Quickly lookup a username to see if it is available, skipping
+        WebFinger resolution.
+
+        ## Version history
+
+
+        - 3.4.0 - added
+
+
+        [Lookup account ID from Webfinger address](https://docs.joinmastodon.org/methods/accounts/#lookup)'
+  /api/v1/accounts/search:
+    get:
+      tags:
+      - accounts
+      summary: Search for matching accounts by username or display name.
+      description: 'Search for matching accounts by username or display name.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.8.0 - add limit, offset and following
+
+
+        [Search for matching accounts](https://docs.joinmastodon.org/methods/accounts/#search)'
+  /api/v1/accounts/familiar_followers:
+    get:
+      tags:
+      - accounts
+      summary: Obtain a list of all accounts that follow a given account, filtered
+        for accounts you follow.
+      description: 'Obtain a list of all accounts that follow a given account, filtered
+        for accounts you follow.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [Find familiar followers](https://docs.joinmastodon.org/methods/accounts/#familiar_followers)'
+  /api/v1/accounts/relationships:
+    get:
+      tags:
+      - accounts
+      summary: Find out whether a given account is followed, blocked, muted, etc.
+      description: 'Find out whether a given account is followed, blocked, muted,
+        etc.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 4.3.0 - added with_suspended parameter
+
+
+        [Check relationships to other accounts](https://docs.joinmastodon.org/methods/accounts/#relationships)'
+  /api/v1/accounts/:id/note:
+    post:
+      tags:
+      - accounts
+      summary: Sets a private note on a user.
+      description: 'Sets a private note on a user.
+
+        ## Version history
+
+
+        - 3.2.0 - added
+
+
+        [Set private note on profile](https://docs.joinmastodon.org/methods/accounts/#note)'
+  /api/v1/accounts/:id/unpin:
+    post:
+      tags:
+      - accounts
+      summary: "Remove the given account from the user\u2019s featured profiles."
+      description: "Remove the given account from the user\u2019s featured profiles.\n\
+        ## Version history\n\n- 2.5.0 - added\n\n[Unfeature account from profile](https://docs.joinmastodon.org/methods/accounts/#unpin)"
+  /api/v1/accounts/:id/pin:
+    post:
+      tags:
+      - accounts
+      summary: "Add the given account to the user\u2019s featured profiles. (Featured\
+        \ profiles are currently shown on the user\u2019s own public profile.)"
+      description: "Add the given account to the user\u2019s featured profiles. (Featured\
+        \ profiles are currently shown on the user\u2019s own public profile.)\n##\
+        \ Version history\n\n- 2.5.0 - added\n- 4.0.0 - calling this method is now\
+        \ idempotent\n\n[Feature account on your profile](https://docs.joinmastodon.org/methods/accounts/#pin)"
+  /api/v1/accounts/:id/unmute:
+    post:
+      tags:
+      - accounts
+      summary: Unmute the given account.
+      description: 'Unmute the given account.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.5.0 - deprecated follow scope. now additionally accepts write
+
+
+        [Unmute account](https://docs.joinmastodon.org/methods/accounts/#unmute)'
+  /api/v1/accounts/:id/mute:
+    post:
+      tags:
+      - accounts
+      summary: Mute the given account. Clients should filter statuses and notifications
+        from this account, if received (e.g. due to a boost in the Home timeline).
+      description: 'Mute the given account. Clients should filter statuses and notifications
+        from this account, if received (e.g. due to a boost in the Home timeline).
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.3.0 - added duration
+
+        - 3.5.0 - deprecated follow scope. now additionally accepts write
+
+
+        [Mute account](https://docs.joinmastodon.org/methods/accounts/#mute)'
+  /api/v1/accounts/:id/unblock:
+    post:
+      tags:
+      - accounts
+      summary: Unblock the given account.
+      description: 'Unblock the given account.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.5.0 - deprecated follow scope. now additionally accepts write
+
+
+        [Unblock account](https://docs.joinmastodon.org/methods/accounts/#unblock)'
+  /api/v1/accounts/:id/block:
+    post:
+      tags:
+      - accounts
+      summary: Block the given account. Clients should filter statuses from this account
+        if received (e.g. due to a boost in the Home timeline)
+      description: 'Block the given account. Clients should filter statuses from this
+        account if received (e.g. due to a boost in the Home timeline)
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.5.0 - deprecated follow scope. now additionally accepts write
+
+
+        [Block account](https://docs.joinmastodon.org/methods/accounts/#block)'
+  /api/v1/accounts/:id/remove_from_followers:
+    post:
+      tags:
+      - accounts
+      summary: Remove the given account from your followers.
+      description: 'Remove the given account from your followers.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [Remove account from followers](https://docs.joinmastodon.org/methods/accounts/#remove_from_followers)'
+  /api/v1/accounts/:id/unfollow:
+    post:
+      tags:
+      - accounts
+      summary: Unfollow the given account.
+      description: 'Unfollow the given account.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.5.0 - deprecated follow scope. now additionally accepts write
+
+
+        [Unfollow account](https://docs.joinmastodon.org/methods/accounts/#unfollow)'
+  /api/v1/accounts/:id/follow:
+    post:
+      tags:
+      - accounts
+      summary: Follow the given account. Can also be used to update whether to show
+        reblogs or enable notifications.
+      description: 'Follow the given account. Can also be used to update whether to
+        show reblogs or enable notifications.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.3.0 - added notify
+
+        - 3.5.0 - deprecated follow scope. now additionally accepts write
+
+        - 4.0.0 - added languages
+
+
+        [Follow account](https://docs.joinmastodon.org/methods/accounts/#follow)'
+  /api/v1/accounts/:id/lists:
+    get:
+      tags:
+      - accounts
+      summary: User lists that you have added this account to.
+      description: 'User lists that you have added this account to.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+
+        [Get lists containing this account](https://docs.joinmastodon.org/methods/accounts/#lists)'
+  /api/v1/accounts/:id/featured_tags:
+    get:
+      tags:
+      - accounts
+      summary: Tags featured by this account.
+      description: "Tags featured by this account.\n## Version history\n\n- 3.3.0\
+        \ - added\n\n[Get account\u2019s featured tags](https://docs.joinmastodon.org/methods/accounts/#featured_tags)"
+  /api/v1/accounts/:id/following:
+    get:
+      tags:
+      - accounts
+      summary: Accounts which the given account is following, if network is not hidden
+        by the account owner.
+      description: "Accounts which the given account is following, if network is not\
+        \ hidden by the account owner.\n## Version history\n\n- 0.0.0 - added\n- 3.3.0\
+        \ - both min_id and max_id can be used at the same time now\n- 4.0.0 - no\
+        \ longer requires an app token + read:accounts\n\n[Get account\u2019s following](https://docs.joinmastodon.org/methods/accounts/#following)"
+  /api/v1/accounts/:id/followers:
+    get:
+      tags:
+      - accounts
+      summary: Accounts which follow the given account, if network is not hidden by
+        the account owner.
+      description: "Accounts which follow the given account, if network is not hidden\
+        \ by the account owner.\n## Version history\n\n- 0.0.0 - added\n- 3.3.0 -\
+        \ both min_id and max_id can be used at the same time now\n- 4.0.0 - no longer\
+        \ requires an app token + read:accounts\n\n[Get account\u2019s followers](https://docs.joinmastodon.org/methods/accounts/#followers)"
+  /api/v1/accounts/:id/statuses:
+    get:
+      tags:
+      - accounts
+      summary: Statuses posted to the given account.
+      description: "Statuses posted to the given account.\n## Version history\n\n\
+        - 0.0.0 - added\n- 1.4.2 - add only_media and exclude_replies\n- 1.6.0 - add\
+        \ pinned\n- 2.6.0 - add min_id\n- 2.7.0 - add exclude_reblogs and allow unauthed\
+        \ use\n- 2.8.0 - add tagged parameter\n- 3.3.0 - both min_id and max_id can\
+        \ be used at the same time now\n\n[Get account\u2019s statuses](https://docs.joinmastodon.org/methods/accounts/#statuses)"
+  /api/v1/accounts:
+    post:
+      tags:
+      - accounts
+      summary: Creates a user and account records. Returns an account access token
+        for the app that initiated the request. The app should save this token for
+        later, and should wait for the user to confirm their account by clicking a
+        link in their email inbox.
+      description: 'Creates a user and account records. Returns an account access
+        token for the app that initiated the request. The app should save this token
+        for later, and should wait for the user to confirm their account by clicking
+        a link in their email inbox.
+
+        A relationship between the OAuth Application and created user account is stored.
+
+        ## Version history
+
+
+        - 2.7.0 - added
+
+        - 3.0.0 - added reason parameter
+
+        - 3.4.0 - added details to failure response
+
+
+        [Register an account](https://docs.joinmastodon.org/methods/accounts/#create)'
+  /api/v1/accounts/:id:
+    get:
+      tags:
+      - accounts
+      summary: View information about a profile.
+      description: 'View information about a profile.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.4.0 - returns 410 if account is suspended
+
+        - 3.3.0 - returns an Account with suspended: true instead of 410
+
+
+        [Get account](https://docs.joinmastodon.org/methods/accounts/#get)'
+  /api/v1/accounts/update_credentials:
+    patch:
+      tags:
+      - accounts
+      summary: "Update the user\u2019s display and preferences."
+      description: "Update the user\u2019s display and preferences.\n## Version history\n\
+        \n- 1.1.1 - added\n- 2.3.0 - added locked parameter\n- 2.4.0 - added source[privacy,sensitive]\
+        \ parameters\n- 2.4.2 - added source[language] parameter\n- 2.7.0 - added\
+        \ discoverable parameter\n- 4.1.0 - added hide_collections parameter\n- 4.2.0\
+        \ - added indexable parameter\n\n[Update account credentials](https://docs.joinmastodon.org/methods/accounts/#update_credentials)"
+  /api/v1/accounts/verify_credentials:
+    get:
+      tags:
+      - accounts
+      summary: Test to make sure that the user token works.
+      description: 'Test to make sure that the user token works.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 4.3.0 - added profile scope
+
+
+        [Verify account credentials](https://docs.joinmastodon.org/methods/accounts/#verify_credentials)'
+  /api/v1/bookmarks:
+    get:
+      tags:
+      - bookmarks
+      summary: Statuses the user has bookmarked.
+      description: 'Statuses the user has bookmarked.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View bookmarked statuses](https://docs.joinmastodon.org/methods/bookmarks/#get)'
+  /api/v1/favourites:
+    get:
+      tags:
+      - favourites
+      summary: Statuses the user has favourited.
+      description: 'Statuses the user has favourited.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.6.0 - min_id added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View favourited statuses](https://docs.joinmastodon.org/methods/favourites/#get)'
+  /api/v1/mutes:
+    get:
+      tags:
+      - mutes
+      summary: Accounts the user has muted.
+      description: 'Accounts the user has muted.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.3.0 - added mute_expires_at
+
+
+        [View muted accounts](https://docs.joinmastodon.org/methods/mutes/#get)'
+  /api/v1/blocks:
+    get:
+      tags:
+      - blocks
+      description: '
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View blocked users](https://docs.joinmastodon.org/methods/blocks/#get)'
+  /api/v1/domain_blocks:
+    get:
+      tags:
+      - domain_blocks
+      summary: View domains the user has blocked.
+      description: 'View domains the user has blocked.
+
+        ## Version history
+
+
+        - 1.4.0 - added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [Get domain blocks](https://docs.joinmastodon.org/methods/domain_blocks/#get)'
+  /api/v1/filters:
+    get:
+      tags:
+      - filters
+      description: '
+
+        ## Version history
+
+
+        - 2.4.3 - added
+
+        - 4.0.0 - deprecated. For compatibility purposes, now returns a List of V1::Filter,
+        with each V1::Filter representing one FilterKeyword (with the keyword being
+        presented in the phrase attribute)
+
+
+        [Client-side (v1) methods](https://docs.joinmastodon.org/methods/filters/#v1)'
+  /api/v2/filters:
+    get:
+      tags:
+      - filters
+      summary: Obtain a list of all filter groups for the current user.
+      description: 'Obtain a list of all filter groups for the current user.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Server-side (v2) methods](https://docs.joinmastodon.org/methods/filters/#v2)'
+  /api/v1/reports:
+    post:
+      tags:
+      - reports
+      description: '
+
+        ## Version history
+
+
+        - 2.3.0 - add forward parameter
+
+        - 3.5.0 - add category and rule_ids parameters
+
+        - 4.0.0 - category is now optional if rule_ids is provided
+
+        - 4.2.0 - add legal category
+
+
+        [File a report](https://docs.joinmastodon.org/methods/reports/#post)'
+  /api/v1/follow_requests/:account_id/reject:
+    post:
+      tags:
+      - follow_requests
+      description: '
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.0.0 - now returns Relationship instead of nothing
+
+
+        [Reject follow request](https://docs.joinmastodon.org/methods/follow_requests/#reject)'
+  /api/v1/follow_requests/:account_id/authorize:
+    post:
+      tags:
+      - follow_requests
+      description: '
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 3.0.0 - now returns Relationship instead of nothing
+
+
+        [Accept follow request](https://docs.joinmastodon.org/methods/follow_requests/#accept)'
+  /api/v1/follow_requests:
+    get:
+      tags:
+      - follow_requests
+      description: '
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [View pending follow requests](https://docs.joinmastodon.org/methods/follow_requests/#get)'
+  /api/v1/endorsements:
+    get:
+      tags:
+      - endorsements
+      summary: Accounts that the user is currently featuring on their profile.
+      description: 'Accounts that the user is currently featuring on their profile.
+
+        ## Version history
+
+
+        - 2.5.0 - added
+
+
+        [View currently featured profiles](https://docs.joinmastodon.org/methods/endorsements/#get)'
+  /api/v1/featured_tags/suggestions:
+    get:
+      tags:
+      - featured_tags
+      summary: Shows up to 10 recently-used tags.
+      description: 'Shows up to 10 recently-used tags.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [View suggested tags to feature](https://docs.joinmastodon.org/methods/featured_tags/#suggestions)'
+  /api/v1/featured_tags/:id:
+    delete:
+      tags:
+      - featured_tags
+      summary: Stop promoting a hashtag on your profile.
+      description: 'Stop promoting a hashtag on your profile.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [Unfeature a tag](https://docs.joinmastodon.org/methods/featured_tags/#unfeature)'
+  /api/v1/featured_tags:
+    get:
+      tags:
+      - featured_tags
+      summary: List all hashtags featured on your profile.
+      description: 'List all hashtags featured on your profile.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [View your featured tags](https://docs.joinmastodon.org/methods/featured_tags/#get)'
+  /api/v1/preferences:
+    get:
+      tags:
+      - preferences
+      summary: Preferences defined by the user in their account settings.
+      description: 'Preferences defined by the user in their account settings.
+
+        ## Version history
+
+
+        - 2.8.0 - added
+
+
+        [View user preferences](https://docs.joinmastodon.org/methods/preferences/#get)'
+  /api/v1/followed_tags:
+    get:
+      tags:
+      - followed_tags
+      summary: List your followed hashtags.
+      description: 'List your followed hashtags.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+        - 4.1.0 - add pagination headers
+
+
+        [View all followed tags](https://docs.joinmastodon.org/methods/followed_tags/#get)'
+  /api/v1/suggestions:
+    get:
+      tags:
+      - suggestions
+      summary: Accounts the user has had past positive interactions with, but is not
+        yet following.
+      description: 'Accounts the user has had past positive interactions with, but
+        is not yet following.
+
+        ## Version history
+
+
+        - 2.4.3 - added
+
+        - 3.4.0 - deprecated
+
+
+        [View follow suggestions (v1) deprecated](https://docs.joinmastodon.org/methods/suggestions/#v1)'
+  /api/v1/suggestions/:account_id:
+    delete:
+      tags:
+      - suggestions
+      summary: Remove an account from follow suggestions.
+      description: 'Remove an account from follow suggestions.
+
+        ## Version history
+
+
+        - 2.4.3 - added
+
+
+        [Remove a suggestion](https://docs.joinmastodon.org/methods/suggestions/#remove)'
+  /api/v2/suggestions:
+    get:
+      tags:
+      - suggestions
+      summary: Accounts that are promoted by staff, or that the user has had past
+        positive interactions with, but is not yet following.
+      description: 'Accounts that are promoted by staff, or that the user has had
+        past positive interactions with, but is not yet following.
+
+        ## Version history
+
+
+        - 3.4.0 - added
+
+
+        [View follow suggestions (v2)](https://docs.joinmastodon.org/methods/suggestions/#v2)'
+  /api/v1/tags/:id/unfollow:
+    post:
+      tags:
+      - tags
+      summary: Unfollow a hashtag. Posts containing this hashtag will no longer be
+        inserted into your home timeline.
+      description: 'Unfollow a hashtag. Posts containing this hashtag will no longer
+        be inserted into your home timeline.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Unfollow a hashtag](https://docs.joinmastodon.org/methods/tags/#unfollow)'
+  /api/v1/tags/:id/follow:
+    post:
+      tags:
+      - tags
+      summary: Follow a hashtag. Posts containing a followed hashtag will be inserted
+        into your home timeline.
+      description: 'Follow a hashtag. Posts containing a followed hashtag will be
+        inserted into your home timeline.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+        - 4.1.0 - this action is now idempotent
+
+
+        [Follow a hashtag](https://docs.joinmastodon.org/methods/tags/#follow)'
+  /api/v1/tags/:id:
+    get:
+      tags:
+      - tags
+      summary: Show a hashtag and its associated information
+      description: 'Show a hashtag and its associated information
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View information about a single tag](https://docs.joinmastodon.org/methods/tags/#get)'
+  /api/v1/profile/header:
+    delete:
+      tags:
+      - profile
+      description: '
+
+        ## Version history
+
+
+        - 4.2.0 - added
+
+
+        [Delete profile header](https://docs.joinmastodon.org/methods/profile/#delete-profile-header)'
+  /api/v1/profile/avatar:
+    delete:
+      tags:
+      - profile
+      description: '
+
+        ## Version history
+
+
+        - 4.2.0 - added
+
+
+        [Delete profile avatar](https://docs.joinmastodon.org/methods/profile/#delete-profile-avatar)'
+  /api/v1/statuses/:id/card:
+    get:
+      tags:
+      - statuses
+      description: '
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.6.0 - deprecated in favor of card property inlined on Status entity
+
+        - 3.0.0 - removed
+
+
+        [Fetch preview card deprecated](https://docs.joinmastodon.org/methods/statuses/#card)'
+  /api/v1/statuses/:id/source:
+    get:
+      tags:
+      - statuses
+      summary: Obtain the source properties for a status so that it can be edited.
+      description: 'Obtain the source properties for a status so that it can be edited.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [View status source](https://docs.joinmastodon.org/methods/statuses/#source)'
+  /api/v1/statuses/:id/history:
+    get:
+      tags:
+      - statuses
+      summary: Get all known versions of a status, including the initial and current
+        states.
+      description: 'Get all known versions of a status, including the initial and
+        current states.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [View edit history of a status](https://docs.joinmastodon.org/methods/statuses/#history)'
+  /api/v1/statuses/:id:
+    get:
+      tags:
+      - statuses
+      summary: Obtain information about a status.
+      description: 'Obtain information about a status.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.7.0 - public statuses no longer require token
+
+
+        [View a single status](https://docs.joinmastodon.org/methods/statuses/#get)'
+  /api/v1/statuses/:id/unpin:
+    post:
+      tags:
+      - statuses
+      summary: Unfeature a status from the top of your profile.
+      description: 'Unfeature a status from the top of your profile.
+
+        ## Version history
+
+
+        - 1.6.0 - added
+
+
+        [Unpin status from profile](https://docs.joinmastodon.org/methods/statuses/#unpin)'
+  /api/v1/statuses/:id/pin:
+    post:
+      tags:
+      - statuses
+      summary: Feature one of your own public statuses at the top of your profile.
+      description: 'Feature one of your own public statuses at the top of your profile.
+
+        ## Version history
+
+
+        - 1.6.0 - added
+
+        - 3.5.0 - you can now pin private posts
+
+
+        [Pin status to profile](https://docs.joinmastodon.org/methods/statuses/#pin)'
+  /api/v1/statuses/:id/unmute:
+    post:
+      tags:
+      - statuses
+      summary: Start receiving notifications again for the thread that this status
+        is part of.
+      description: 'Start receiving notifications again for the thread that this status
+        is part of.
+
+        ## Version history
+
+
+        - 1.4.2 - added
+
+
+        [Unmute a conversation](https://docs.joinmastodon.org/methods/statuses/#unmute)'
+  /api/v1/statuses/:id/mute:
+    post:
+      tags:
+      - statuses
+      summary: Do not receive notifications for the thread that this status is part
+        of. Must be a thread in which you are a participant.
+      description: 'Do not receive notifications for the thread that this status is
+        part of. Must be a thread in which you are a participant.
+
+        ## Version history
+
+
+        - 1.4.2 - added
+
+
+        [Mute a conversation](https://docs.joinmastodon.org/methods/statuses/#mute)'
+  /api/v1/statuses/:id/unbookmark:
+    post:
+      tags:
+      - statuses
+      summary: Remove a status from your private bookmarks.
+      description: 'Remove a status from your private bookmarks.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+
+        [Undo bookmark of a status](https://docs.joinmastodon.org/methods/statuses/#unbookmark)'
+  /api/v1/statuses/:id/bookmark:
+    post:
+      tags:
+      - statuses
+      summary: Privately bookmark a status.
+      description: 'Privately bookmark a status.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+
+        [Bookmark a status](https://docs.joinmastodon.org/methods/statuses/#bookmark)'
+  /api/v1/statuses/:id/unreblog:
+    post:
+      tags:
+      - statuses
+      summary: Undo a reshare of a status.
+      description: 'Undo a reshare of a status.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [Undo boost of a status](https://docs.joinmastodon.org/methods/statuses/#unreblog)'
+  /api/v1/statuses/:id/reblog:
+    post:
+      tags:
+      - statuses
+      summary: Reshare a status on your own profile.
+      description: 'Reshare a status on your own profile.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.8.0 - add visibility parameter
+
+
+        [Boost a status](https://docs.joinmastodon.org/methods/statuses/#boost)'
+  /api/v1/statuses/:id/unfavourite:
+    post:
+      tags:
+      - statuses
+      summary: Remove a status from your favourites list.
+      description: 'Remove a status from your favourites list.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [Undo favourite of a status](https://docs.joinmastodon.org/methods/statuses/#unfavourite)'
+  /api/v1/statuses/:id/favourite:
+    post:
+      tags:
+      - statuses
+      summary: Add a status to your favourites list.
+      description: 'Add a status to your favourites list.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [Favourite a status](https://docs.joinmastodon.org/methods/statuses/#favourite)'
+  /api/v1/statuses/:id/favourited_by:
+    get:
+      tags:
+      - statuses
+      summary: View who favourited a given status.
+      description: 'View who favourited a given status.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [See who favourited a status](https://docs.joinmastodon.org/methods/statuses/#favourited_by)'
+  /api/v1/statuses/:id/reblogged_by:
+    get:
+      tags:
+      - statuses
+      summary: View who boosted a given status.
+      description: 'View who boosted a given status.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [See who boosted a status](https://docs.joinmastodon.org/methods/statuses/#reblogged_by)'
+  /api/v1/statuses/:id/translate:
+    post:
+      tags:
+      - statuses
+      summary: Translate the status content into some language.
+      description: 'Translate the status content into some language.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Translate a status](https://docs.joinmastodon.org/methods/statuses/#translate)'
+  /api/v1/statuses/:id/context:
+    get:
+      tags:
+      - statuses
+      summary: View statuses above and below this status in the thread.
+      description: 'View statuses above and below this status in the thread.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 4.0.0 - limit unauthenticated requests
+
+
+        [Get parent and child statuses in context](https://docs.joinmastodon.org/methods/statuses/#context)'
+  /api/v1/statuses:
+    post:
+      tags:
+      - statuses
+      summary: Publish a status with the given parameters.
+      description: 'Publish a status with the given parameters.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.7.0 - scheduled_at added
+
+        - 2.8.0 - poll added
+
+
+        [Post a new status](https://docs.joinmastodon.org/methods/statuses/#create)'
+  /api/v1/media:
+    post:
+      tags:
+      - media
+      summary: Creates an attachment to be used with a new status. This method will
+        return after the full sized media is done processing.
+      description: 'Creates an attachment to be used with a new status. This method
+        will return after the full sized media is done processing.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.3.0 - add focus parameter
+
+        - 3.1.3 - deprecated in favor of POST /api/v2/media, which is equal to v1
+        in all aspects, except it returns HTTP 202, and the returned JSON object has
+        a url of null. This is because while the thumbnail is prepared synchronously,
+        the full version of the media attachment will be processed in the background.
+
+        - 3.2.0 - add thumbnail parameter
+
+
+        [Upload media as an attachment (v1) deprecated](https://docs.joinmastodon.org/methods/media/#v1)'
+  /api/v1/media/:id:
+    get:
+      tags:
+      - media
+      summary: Get a media attachment, before it is attached to a status and posted,
+        but after it is accepted for processing. Use this method to check that the
+        full-sized media has finished processing.
+      description: 'Get a media attachment, before it is attached to a status and
+        posted, but after it is accepted for processing. Use this method to check
+        that the full-sized media has finished processing.
+
+        ## Version history
+
+
+        - 3.1.3 - added
+
+
+        [Get media attachment](https://docs.joinmastodon.org/methods/media/#get)'
+  /api/v2/media:
+    post:
+      tags:
+      - media
+      summary: Creates a media attachment to be used with a new status. The full sized
+        media will be processed asynchronously in the background for large uploads.
+      description: 'Creates a media attachment to be used with a new status. The full
+        sized media will be processed asynchronously in the background for large uploads.
+
+        ## Version history
+
+
+        - 3.1.3 - added
+
+        - 3.2.0 - add thumbnail parameter
+
+        - 4.0.0 - Smaller media formats (image) will be processed synchronously and
+        return 200 instead of 202. Larger media formats (video, gifv, audio) will
+        continue to be processed asynchronously and return 202.
+
+
+        [Upload media as an attachment (async)](https://docs.joinmastodon.org/methods/media/#v2)'
+  /api/v1/polls/:id/votes:
+    post:
+      tags:
+      - polls
+      summary: Vote on a poll attached to a status.
+      description: 'Vote on a poll attached to a status.
+
+        ## Version history
+
+
+        - 2.8.0 - added
+
+
+        [Vote on a poll](https://docs.joinmastodon.org/methods/polls/#vote)'
+  /api/v1/polls/:id:
+    get:
+      tags:
+      - polls
+      summary: View a poll attached to a status.
+      description: 'View a poll attached to a status.
+
+        ## Version history
+
+
+        - 2.8.0 - added
+
+
+        [View a poll](https://docs.joinmastodon.org/methods/polls/#get)'
+  /api/v1/scheduled_statuses/:id:
+    get:
+      tags:
+      - scheduled_statuses
+      description: '
+
+        ## Version history
+
+
+        - 2.7.0 - added
+
+
+        [View a single scheduled status](https://docs.joinmastodon.org/methods/scheduled_statuses/#get-one)'
+  /api/v1/scheduled_statuses:
+    get:
+      tags:
+      - scheduled_statuses
+      description: '
+
+        ## Version history
+
+
+        - 2.7.0 - added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View scheduled statuses](https://docs.joinmastodon.org/methods/scheduled_statuses/#get)'
+  /api/v1/timelines/direct:
+    get:
+      tags:
+      - timelines
+      summary: "View statuses with a \u201Cdirect\u201D privacy, from your account\
+        \ or in your notifications."
+      description: "View statuses with a \u201Cdirect\u201D privacy, from your account\
+        \ or in your notifications.\n## Version history\n\n- 2.6.0 - add min_id. deprecated\
+        \ in favor of Conversations API\n- 3.0.0 - removed\n\n[View direct timeline\
+        \ deprecated](https://docs.joinmastodon.org/methods/timelines/#direct)"
+  /api/v1/timelines/list/:list_id:
+    get:
+      tags:
+      - timelines
+      summary: View statuses in the given list timeline.
+      description: 'View statuses in the given list timeline.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+        - 2.6.0 - add min_id
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View list timeline](https://docs.joinmastodon.org/methods/timelines/#list)'
+  /api/v1/timelines/link?url=:url:
+    get:
+      tags:
+      - timelines
+      summary: View public statuses containing a link to the specified currently-trending
+        article. This only lists statuses from people who have opted in to discoverability
+        features.
+      description: 'View public statuses containing a link to the specified currently-trending
+        article. This only lists statuses from people who have opted in to discoverability
+        features.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [View link timeline](https://docs.joinmastodon.org/methods/timelines/#link)'
+  /api/v1/timelines/home:
+    get:
+      tags:
+      - timelines
+      summary: View statuses from followed users and hashtags.
+      description: 'View statuses from followed users and hashtags.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.6.0 - add min_id
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+        - 4.0.0 - as users can now follow hashtags, statuses from non-followed users
+        may appear in the timeline
+
+
+        [View home timeline](https://docs.joinmastodon.org/methods/timelines/#home)'
+  /api/v1/timelines/tag/:hashtag:
+    get:
+      tags:
+      - timelines
+      summary: View public statuses containing the given hashtag.
+      description: 'View public statuses containing the given hashtag.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.3.0 - added only_media
+
+        - 2.6.0 - add min_id
+
+        - 2.7.0 - add any[], all[], none[] for additional tags
+
+        - 3.0.0 - auth is required if public preview is disabled
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now. add remote
+
+
+        [View hashtag timeline](https://docs.joinmastodon.org/methods/timelines/#tag)'
+  /api/v1/timelines/public:
+    get:
+      tags:
+      - timelines
+      summary: View public statuses.
+      description: 'View public statuses.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.3.0 - added only_media
+
+        - 2.6.0 - add min_id
+
+        - 3.0.0 - auth is required if public preview is disabled
+
+        - 3.1.4 - added remote
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View public timeline](https://docs.joinmastodon.org/methods/timelines/#public)'
+  /api/v1/conversations/:id/read:
+    post:
+      tags:
+      - conversations
+      description: '
+
+        ## Version history
+
+
+        - 2.6.0 - added
+
+
+        [Mark a conversation as read](https://docs.joinmastodon.org/methods/conversations/#read)'
+  /api/v1/conversations/:id:
+    delete:
+      tags:
+      - conversations
+      summary: Removes a conversation from your list of conversations.
+      description: 'Removes a conversation from your list of conversations.
+
+        ## Version history
+
+
+        - 2.6.0 - added
+
+
+        [Remove a conversation](https://docs.joinmastodon.org/methods/conversations/#delete)'
+  /api/v1/conversations:
+    get:
+      tags:
+      - conversations
+      description: '
+
+        ## Version history
+
+
+        - 2.6.0 - added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View all conversations](https://docs.joinmastodon.org/methods/conversations/#get)'
+  /api/v1/lists/:id/accounts:
+    get:
+      tags:
+      - lists
+      description: '
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+        - 3.3.0 - both min_id and max_id can be used at the same time now
+
+
+        [View accounts in a list](https://docs.joinmastodon.org/methods/lists/#accounts)'
+  /api/v1/lists/:id:
+    get:
+      tags:
+      - lists
+      summary: Fetch the list with the given ID. Used for verifying the title of a
+        list, and which replies to show within that list.
+      description: 'Fetch the list with the given ID. Used for verifying the title
+        of a list, and which replies to show within that list.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+
+        [Show a single list](https://docs.joinmastodon.org/methods/lists/#get-one)'
+  /api/v1/lists:
+    get:
+      tags:
+      - lists
+      summary: Fetch all lists that the user owns.
+      description: 'Fetch all lists that the user owns.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+
+        [View your lists](https://docs.joinmastodon.org/methods/lists/#get)'
+  /api/v1/markers:
+    get:
+      tags:
+      - markers
+      summary: Get current positions in timelines.
+      description: 'Get current positions in timelines.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [Get saved timeline positions](https://docs.joinmastodon.org/methods/markers/#get)'
+  /api/v1/streaming/direct:
+    get:
+      tags:
+      - streaming
+      summary: Returns events for received direct messages.
+      description: 'Returns events for received direct messages.
+
+        ## Version history
+
+
+        - 2.4.0 - added
+
+        - 2.6.0 - now returns conversation instead of update
+
+
+        [Watch for direct messages](https://docs.joinmastodon.org/methods/streaming/#direct)'
+  /api/v1/streaming/list:
+    get:
+      tags:
+      - streaming
+      summary: Returns statuses for a list
+      description: 'Returns statuses for a list
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+        - 3.5.0 - now returns status.update
+
+        - 4.2.0 - changed to require a User token, removing Public and App token access
+        #23989
+
+
+        [Watch for list updates](https://docs.joinmastodon.org/methods/streaming/#list)'
+  /api/v1/streaming/hashtag/local:
+    get:
+      tags:
+      - streaming
+      summary: Returns all local public statuses for a particular hashtag
+      description: 'Returns all local public statuses for a particular hashtag
+
+        ## Version history
+
+
+        - 1.1.0 - added
+
+        - 3.5.0 - now returns status.update
+
+        - 4.2.0 - changed to require a User token, removing Public and App token access
+        #23989
+
+
+        [Watch the local timeline for a hashtag](https://docs.joinmastodon.org/methods/streaming/#hashtag-local)'
+  /api/v1/streaming/hashtag:
+    get:
+      tags:
+      - streaming
+      summary: Returns all public statuses for a particular hashtag
+      description: 'Returns all public statuses for a particular hashtag
+
+        ## Version history
+
+
+        - 1.0.0 - added
+
+        - 3.5.0 - now returns status.update
+
+        - 4.2.0 - changed to require a User token, removing Public and App token access
+        #23989
+
+
+        [Watch the public timeline for a hashtag](https://docs.joinmastodon.org/methods/streaming/#hashtag)'
+  /api/v1/streaming/public/remote:
+    get:
+      tags:
+      - streaming
+      summary: Returns all public statuses from remote servers.
+      description: 'Returns all public statuses from remote servers.
+
+        ## Version history
+
+
+        - 3.1.4 - added
+
+        - 3.5.0 - now returns status.update
+
+        - 4.2.0 - changed to require a User token, removing Public and App token access
+        #23989
+
+
+        [Watch for remote statuses](https://docs.joinmastodon.org/methods/streaming/#public-remote)'
+  /api/v1/streaming/public/local:
+    get:
+      tags:
+      - streaming
+      summary: Returns all local public statuses
+      description: 'Returns all local public statuses
+
+        ## Version history
+
+
+        - 1.1.0 - added
+
+        - 2.4.0 - add only_media parameter
+
+        - 3.5.0 - now returns status.update
+
+        - 4.2.0 - changed to require a User token, removing Public and App token access
+        #23989
+
+
+        [Watch the local timeline](https://docs.joinmastodon.org/methods/streaming/#public-local)'
+  /api/v1/streaming/public:
+    get:
+      tags:
+      - streaming
+      summary: Returns all public statuses
+      description: 'Returns all public statuses
+
+        ## Version history
+
+
+        - 1.0.0 - added
+
+        - 2.4.0 - add only_media parameter
+
+        - 3.5.0 - now returns status.update
+
+        - 4.2.0 - changed to require a User token, removing Public and App token access
+        #23989
+
+
+        [Watch the federated timeline](https://docs.joinmastodon.org/methods/streaming/#public)'
+  /api/v1/streaming/user/notification:
+    get:
+      tags:
+      - streaming
+      summary: Returns events for received notifications
+      description: 'Returns events for received notifications
+
+        ## Version history
+
+
+        - 1.4.2 - added
+
+
+        [Watch your notifications](https://docs.joinmastodon.org/methods/streaming/#notification)'
+  /api/v1/streaming/user:
+    get:
+      tags:
+      - streaming
+      summary: Returns events that are relevant to the authorized user, i.e. home
+        timeline and notifications
+      description: 'Returns events that are relevant to the authorized user, i.e.
+        home timeline and notifications
+
+        ## Version history
+
+
+        - 1.0.0 - added
+
+        - 1.4.2 - now returns notification
+
+        - 2.4.3 - now returns filters_changed
+
+        - 3.1.0 - now returns announcement, announcement.reaction, announcement.delete
+
+        - 3.5.0 - now returns status.update
+
+
+        [Watch your home timeline and notifications](https://docs.joinmastodon.org/methods/streaming/#user)'
+  /api/v1/streaming/health:
+    get:
+      tags:
+      - streaming
+      summary: Verify that the streaming service is alive before connecting to it
+      description: 'Verify that the streaming service is alive before connecting to
+        it
+
+        ## Version history
+
+
+        - 2.5.0 - added
+
+
+        [Check if the server is alive](https://docs.joinmastodon.org/methods/streaming/#health)'
+  /api/v2/notifications/unread_count:
+    get:
+      tags:
+      - grouped notifications
+      summary: 'Get the (capped) number of unread notification groups for the current
+        user.
+
+        A notification is considered unread if it is more recent than the notifications
+        read marker.
+
+        Because the count is dependant on the parameters, it is computed every time
+        and is thus a relatively slow operation (although faster than getting the
+        full corresponding notifications), therefore the number of returned notifications
+        is capped.'
+      description: "Get the (capped) number of unread notification groups for the\
+        \ current user.\nA notification is considered unread if it is more recent\
+        \ than the notifications read marker.\nBecause the count is dependant on the\
+        \ parameters, it is computed every time and is thus a relatively slow operation\
+        \ (although faster than getting the full corresponding notifications), therefore\
+        \ the number of returned notifications is capped.\n## Version history\n\n\
+        - \n\n[Get the number of unread notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#unread-group-count)"
+  /api/v2/notifications/:group_key/accounts:
+    get:
+      tags:
+      - grouped notifications
+      description: "\n## Version history\n\n- \n\n[Get accounts of all notifications\
+        \ in a notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-group-accounts)"
+  /api/v2/notifications/:group_key/dismiss:
+    post:
+      tags:
+      - grouped notifications
+      summary: Dismiss a single notification group from the server.
+      description: "Dismiss a single notification group from the server.\n## Version\
+        \ history\n\n- \n\n[Dismiss a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#dismiss-group)"
+  /api/v2/notifications/:group_key:
+    get:
+      tags:
+      - grouped notifications
+      summary: View information about a specific notification group with a given group
+        key.
+      description: "View information about a specific notification group with a given\
+        \ group key.\n## Version history\n\n- \n\n[Get a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-notification-group)"
+  /api/v2/notifications:
+    get:
+      tags:
+      - grouped notifications
+      summary: Return grouped notifications concerning the user. This API returns
+        Link headers containing links to the next/previous page. However, the links
+        can also be constructed dynamically using query params and id values.
+      description: "Return grouped notifications concerning the user. This API returns\
+        \ Link headers containing links to the next/previous page. However, the links\
+        \ can also be constructed dynamically using query params and id values.\n\
+        Notifications of type favourite, follow or reblog with the same type and the\
+        \ same target made in a similar timeframe are given a same group_key by the\
+        \ server, and querying this endpoint will return aggregated notifications,\
+        \ with only one object per group_key. Other notification types may be grouped\
+        \ in the future. The grouped_types parameter should be used by the client\
+        \ to explictely list the types it supports showing grouped notifications for.\n\
+        Types to filter include:\n## Version history\n\n- \n\n[Get all grouped notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#get-grouped)"
+  /api/v1/notifications/requests/merged:
+    get:
+      tags:
+      - notifications
+      summary: 'Check whether accepted notification requests have been merged.
+
+        Accepting notification requests schedules a background job to merge the filtered
+        notifications back into the normal notification list. When that process has
+        finished, the client should refresh the notifications list at its earliest
+        convenience. This is communicated by the notifications_merged streaming event
+        but can also be polled using this endpoint.'
+      description: "Check whether accepted notification requests have been merged.\n\
+        Accepting notification requests schedules a background job to merge the filtered\
+        \ notifications back into the normal notification list. When that process\
+        \ has finished, the client should refresh the notifications list at its earliest\
+        \ convenience. This is communicated by the notifications_merged streaming\
+        \ event but can also be polled using this endpoint.\n*Returns: Hash with a\
+        \ single boolean attribute mergedOAuth: User token + read:notificationsVersion\
+        \ history:4.3.0 - added\nA successful call returns whether the notifications\
+        \ have been merged and are ready for being loaded.\nInvalid or missing Authorization\
+        \ header.\nJoin Mastodon \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7\
+        \ Imprint\n\n[Check if accepted notification requests have been merged](https://docs.joinmastodon.org/methods/notifications/#requests-merged)"
+  /api/v1/notifications/requests/dismiss:
+    post:
+      tags:
+      - notifications
+      summary: Dismiss multiple notification requests, which hides them and prevent
+        them from contributing to the pending notification requests count.
+      description: 'Dismiss multiple notification requests, which hides them and prevent
+        them from contributing to the pending notification requests count.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Dismiss multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#dismiss-multiple-requests)'
+  /api/v1/notifications/requests/accept:
+    post:
+      tags:
+      - notifications
+      summary: Accepts multiple notification requests, which merges the filtered notifications
+        from those users back into the main notifications and accepts any future notification
+        from them.
+      description: 'Accepts multiple notification requests, which merges the filtered
+        notifications from those users back into the main notifications and accepts
+        any future notification from them.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Accept multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#accept-multiple-requests)'
+  /api/v1/notifications/requests/:id/dismiss:
+    post:
+      tags:
+      - notifications
+      summary: Dismiss a notification request, which hides it and prevent it from
+        contributing to the pending notification requests count.
+      description: 'Dismiss a notification request, which hides it and prevent it
+        from contributing to the pending notification requests count.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Dismiss a single notification request](https://docs.joinmastodon.org/methods/notifications/#dismiss-request)'
+  /api/v1/notifications/requests/:id/accept:
+    post:
+      tags:
+      - notifications
+      summary: Accept a notification request, which merges the filtered notifications
+        from that user back into the main notification and accepts any future notification
+        from them.
+      description: 'Accept a notification request, which merges the filtered notifications
+        from that user back into the main notification and accepts any future notification
+        from them.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Accept a single notification request](https://docs.joinmastodon.org/methods/notifications/#accept-request)'
+  /api/v1/notifications/requests/:id:
+    get:
+      tags:
+      - notifications
+      summary: View information about a notification request with a given ID.
+      description: 'View information about a notification request with a given ID.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Get a single notification request](https://docs.joinmastodon.org/methods/notifications/#get-one-request)'
+  /api/v1/notifications/requests:
+    get:
+      tags:
+      - notifications
+      summary: "Notification requests for notifications filtered by the user\u2019\
+        s policy. This API returns Link headers containing links to the next/previous\
+        \ page."
+      description: "Notification requests for notifications filtered by the user\u2019\
+        s policy. This API returns Link headers containing links to the next/previous\
+        \ page.\n## Version history\n\n- 4.3.0 - added\n\n[Get all notification requests](https://docs.joinmastodon.org/methods/notifications/#get-requests)"
+  /api/v2/notifications/policy:
+    get:
+      tags:
+      - notifications
+      summary: Notifications filtering policy for the user.
+      description: 'Notifications filtering policy for the user.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Get the filtering policy for notifications](https://docs.joinmastodon.org/methods/notifications/#get-policy)'
+  /api/v1/notifications/unread_count:
+    get:
+      tags:
+      - notifications
+      summary: 'Get the (capped) number of unread notifications for the current user.
+
+        A notification is considered unread if it is more recent than the notifications
+        read marker.
+
+        Because the count is dependant on the parameters, it is computed every time
+        and is thus a relatively slow operation (although faster than getting the
+        full corresponding notifications), therefore the number of returned notifications
+        is capped.'
+      description: 'Get the (capped) number of unread notifications for the current
+        user.
+
+        A notification is considered unread if it is more recent than the notifications
+        read marker.
+
+        Because the count is dependant on the parameters, it is computed every time
+        and is thus a relatively slow operation (although faster than getting the
+        full corresponding notifications), therefore the number of returned notifications
+        is capped.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Get the number of unread notifications](https://docs.joinmastodon.org/methods/notifications/#unread-count)'
+  /api/v1/notifications/dismiss:
+    post:
+      tags:
+      - notifications
+      summary: Dismiss a single notification from the server.
+      description: 'Dismiss a single notification from the server.
+
+        ## Version history
+
+
+        - 0.0.0 - available
+
+        - 1.3.0 - deprecated in favor of notifications/:id/dismiss
+
+        - 3.0.0 - removed
+
+
+        [Dismiss a single notification removed](https://docs.joinmastodon.org/methods/notifications/#dismiss-deprecated)'
+  /api/v1/notifications/:id/dismiss:
+    post:
+      tags:
+      - notifications
+      summary: Dismiss a single notification from the server.
+      description: 'Dismiss a single notification from the server.
+
+        ## Version history
+
+
+        - 1.3.0 - added
+
+
+        [Dismiss a single notification](https://docs.joinmastodon.org/methods/notifications/#dismiss)'
+  /api/v1/notifications/clear:
+    post:
+      tags:
+      - notifications
+      summary: Clear all notifications from the server.
+      description: 'Clear all notifications from the server.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [Dismiss all notifications](https://docs.joinmastodon.org/methods/notifications/#clear)'
+  /api/v1/notifications/:id:
+    get:
+      tags:
+      - notifications
+      summary: View information about a notification with a given ID.
+      description: 'View information about a notification with a given ID.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+
+        [Get a single notification](https://docs.joinmastodon.org/methods/notifications/#get-one)'
+  /api/v1/notifications:
+    get:
+      tags:
+      - notifications
+      summary: Notifications concerning the user. This API returns Link headers containing
+        links to the next/previous page. However, the links can also be constructed
+        dynamically using query params and id values.
+      description: 'Notifications concerning the user. This API returns Link headers
+        containing links to the next/previous page. However, the links can also be
+        constructed dynamically using query params and id values.
+
+        Types to filter include:
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.6.0 - added min_id
+
+        - 2.9.0 - added account_id
+
+        - 3.1.0 - added follow_request type
+
+        - 3.3.0 - added status type; both min_id and max_id can be used at the same
+        time now
+
+        - 3.5.0 - added types; add update and admin.sign_up types
+
+        - 4.0.0 - added admin.report type
+
+        - 4.1.0 - notification limit changed from 15 (max 30) to 40 (max 80)
+
+        - 4.3.0 - added include_filtered parameter
+
+
+        [Get all notifications](https://docs.joinmastodon.org/methods/notifications/#get)'
+  /api/v1/push/subscription:
+    post:
+      tags:
+      - push
+      summary: Add a Web Push API subscription to receive notifications. Each access
+        token can have one push subscription. If you create a new subscription, the
+        old subscription is deleted.
+      description: 'Add a Web Push API subscription to receive notifications. Each
+        access token can have one push subscription. If you create a new subscription,
+        the old subscription is deleted.
+
+        ## Version history
+
+
+        - 2.4.0 - added
+
+        - 3.3.0 - added data[alerts][status]
+
+        - 3.4.0 - added data[policy]
+
+        - 3.5.0 - added data[alerts][update] and data[alerts][admin.sign_up]
+
+        - 4.0.0 - added data[alerts][admin.report]
+
+        - 4.3.0 - added stricter request parameter validation, invalid endpoint URLs
+        and subscription keys will now result in an error, previously these would
+        be accepted, but silently fail.
+
+
+        [Subscribe to push notifications](https://docs.joinmastodon.org/methods/push/#create)'
+  /api/v1/search:
+    get:
+      tags:
+      - search
+      description: '
+
+        ## Version history
+
+
+        - 51.5.0 - now requires authentication
+
+        - 2.4.1 - deprecated in favor of v2 search
+
+        - 2.8.0 - added limit, pagination, and account options
+
+        - 3.0.0 - removed; use v2 search instead
+
+
+        [Perform a search (v1) removed](https://docs.joinmastodon.org/methods/search/#v1)'
+  /api/v2/search:
+    get:
+      tags:
+      - search
+      description: '
+
+        ## Version history
+
+
+        - 2.4.1 - added, limit hardcoded to
+
+        - 52.8.0 - add type, limit, offset, min_id, max_id, account_id
+
+        - 3.0.0 - add exclude_unreviewed param
+
+        - 3.3.0 - min_id and max_id can be used together
+
+        - 4.0.0 - no longer requires a user token. Without a valid user token, you
+        cannot use the resolve or offset parameters.
+
+
+        [Perform a search](https://docs.joinmastodon.org/methods/search/#v2)'
+  /api/v1/instance:
+    get:
+      tags:
+      - instance
+      summary: Obtain general information about the server. See api/v2/instance instead.
+      description: 'Obtain general information about the server. See api/v2/instance
+        instead.
+
+        ## Version history
+
+
+        - 1.1.0 - added
+
+        - 3.0.0 - requires user token if instance is in whitelist mode
+
+        - 3.1.4 - added invites_enabled to response
+
+        - 3.4.0 - added rules
+
+        - 3.4.2 - added configuration
+
+        - 4.0.0 - deprecated. added configuration[accounts].
+
+
+        [View server information (v1) deprecated](https://docs.joinmastodon.org/methods/instance/#v1)'
+  /api/v1/instance/translation_languages:
+    get:
+      tags:
+      - instance
+      summary: Translation language pairs supported by the translation engine used
+        by the server.
+      description: 'Translation language pairs supported by the translation engine
+        used by the server.
+
+        ## Version history
+
+
+        - 4.2.0 - added
+
+
+        [View translation languages](https://docs.joinmastodon.org/methods/instance/#translation_languages)'
+  /api/v1/instance/extended_description:
+    get:
+      tags:
+      - instance
+      summary: Obtain an extended description of this server
+      description: 'Obtain an extended description of this server
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View extended description](https://docs.joinmastodon.org/methods/instance/#extended_description)'
+  /api/v1/instance/domain_blocks:
+    get:
+      tags:
+      - instance
+      summary: Obtain a list of domains that have been blocked.
+      description: 'Obtain a list of domains that have been blocked.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View moderated servers](https://docs.joinmastodon.org/methods/instance/#domain_blocks)'
+  /api/v1/instance/rules:
+    get:
+      tags:
+      - instance
+      summary: Rules that the users of this service should follow.
+      description: 'Rules that the users of this service should follow.
+
+        ## Version history
+
+
+        - 3.4.0 - added
+
+
+        [List of rules](https://docs.joinmastodon.org/methods/instance/#rules)'
+  /api/v1/instance/activity:
+    get:
+      tags:
+      - instance
+      summary: Instance activity over the last 3 months, binned weekly.
+      description: 'Instance activity over the last 3 months, binned weekly.
+
+        ## Version history
+
+
+        - 2.1.2 - added
+
+        - 3.0.0 - requires user token if instance is in whitelist mode
+
+
+        [Weekly activity](https://docs.joinmastodon.org/methods/instance/#activity)'
+  /api/v1/instance/peers:
+    get:
+      tags:
+      - instance
+      summary: Domains that this instance is aware of.
+      description: 'Domains that this instance is aware of.
+
+        ## Version history
+
+
+        - 2.1.2 - added
+
+        - 3.0.0 - requires user token if instance is in whitelist mode
+
+
+        [List of connected domains](https://docs.joinmastodon.org/methods/instance/#peers)'
+  /api/v2/instance:
+    get:
+      tags:
+      - instance
+      summary: Obtain general information about the server.
+      description: 'Obtain general information about the server.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+        - 4.3.0 - added configuration.vapid.public_key
+
+
+        [View server information](https://docs.joinmastodon.org/methods/instance/#v2)'
+  /api/v1/trends/links:
+    get:
+      tags:
+      - trends
+      summary: Links that have been shared more than others.
+      description: 'Links that have been shared more than others.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [View trending links](https://docs.joinmastodon.org/methods/trends/#links)'
+  /api/v1/trends/statuses:
+    get:
+      tags:
+      - trends
+      summary: Statuses that have been interacted with more than others.
+      description: 'Statuses that have been interacted with more than others.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [View trending statuses](https://docs.joinmastodon.org/methods/trends/#statuses)'
+  /api/v1/trends/tags:
+    get:
+      tags:
+      - trends
+      summary: Tags that are being used more frequently within the past week.
+      description: 'Tags that are being used more frequently within the past week.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+        - 3.5.0 - method signature changed from GET /api/v1/trends to GET /api/v1/trends/tags.
+        The former is a deprecated alias that may be removed in the future.
+
+
+        [View trending tags](https://docs.joinmastodon.org/methods/trends/#tags)'
+  /api/v1/directory:
+    get:
+      tags:
+      - directory
+      summary: List accounts visible in the directory.
+      description: 'List accounts visible in the directory.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [View profile directory](https://docs.joinmastodon.org/methods/directory/#get)'
+  /api/v1/custom_emojis:
+    get:
+      tags:
+      - custom_emojis
+      summary: Returns custom emojis that are available on the server.
+      description: 'Returns custom emojis that are available on the server.
+
+        ## Version history
+
+
+        - 2.0.0 - added
+
+        - 3.0.0 - optional category added to response
+
+
+        [View all custom emoji](https://docs.joinmastodon.org/methods/custom_emojis/#get)'
+  /api/v1/announcements/:id/reactions/:name:
+    put:
+      tags:
+      - announcements
+      summary: React to an announcement with an emoji.
+      description: 'React to an announcement with an emoji.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+
+        [Add a reaction to an announcement](https://docs.joinmastodon.org/methods/announcements/#put-reactions)'
+  /api/v1/announcements/:id/dismiss:
+    post:
+      tags:
+      - announcements
+      summary: Allows a user to mark the announcement as read.
+      description: 'Allows a user to mark the announcement as read.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+
+        [Dismiss an announcement](https://docs.joinmastodon.org/methods/announcements/#dismiss)'
+  /api/v1/announcements:
+    get:
+      tags:
+      - announcements
+      summary: See all currently active announcements set by admins.
+      description: 'See all currently active announcements set by admins.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+
+        [View all announcements](https://docs.joinmastodon.org/methods/announcements/#get)'
+  /api/v1/admin/accounts/:id/unsensitive:
+    post:
+      tags:
+      - accounts
+      summary: "Stops marking an account\u2019s posts as sensitive, if it was previously\
+        \ flagged as sensitive."
+      description: "Stops marking an account\u2019s posts as sensitive, if it was\
+        \ previously flagged as sensitive.\n## Version history\n\n- 3.3.0 - added\n\
+        - 4.0.0 - support custom roles and permissions\n\n[Unmark an account as sensitive](https://docs.joinmastodon.org/methods/admin/accounts/#unsensitive)"
+  /api/v1/admin/accounts/:id/unsuspend:
+    post:
+      tags:
+      - accounts
+      summary: Unsuspend a currently suspended account.
+      description: 'Unsuspend a currently suspended account.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Unsuspend an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsuspend)'
+  /api/v1/admin/accounts/:id/unsilence:
+    post:
+      tags:
+      - accounts
+      summary: Unsilence an account if it is currently silenced.
+      description: 'Unsilence an account if it is currently silenced.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Unsilence an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsilence)'
+  /api/v1/admin/accounts/:id/enable:
+    post:
+      tags:
+      - accounts
+      summary: Re-enable a local account whose login is currently disabled.
+      description: 'Re-enable a local account whose login is currently disabled.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Enable a currently disabled account](https://docs.joinmastodon.org/methods/admin/accounts/#enable)'
+  /api/v1/admin/accounts/:id/action:
+    post:
+      tags:
+      - accounts
+      summary: Perform an action against an account and log this action in the moderation
+        history. Also resolves any open reports against this account.
+      description: 'Perform an action against an account and log this action in the
+        moderation history. Also resolves any open reports against this account.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 3.3.0 - add sensitive as a possible type
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Perform an action against an account](https://docs.joinmastodon.org/methods/admin/accounts/#action)'
+  /api/v1/admin/accounts/:id:
+    get:
+      tags:
+      - accounts
+      summary: View admin-level information about the given account.
+      description: 'View admin-level information about the given account.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [View a specific account](https://docs.joinmastodon.org/methods/admin/accounts/#get-one)'
+  /api/v1/admin/accounts/:id/reject:
+    post:
+      tags:
+      - accounts
+      summary: Reject the given local account if it is currently pending approval.
+      description: 'Reject the given local account if it is currently pending approval.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Reject a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#reject)'
+  /api/v1/admin/accounts/:id/approve:
+    post:
+      tags:
+      - accounts
+      summary: Approve the given local account if it is currently pending approval.
+      description: 'Approve the given local account if it is currently pending approval.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Approve a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#approve)'
+  /api/v2/admin/accounts:
+    get:
+      tags:
+      - accounts
+      summary: View all accounts, optionally matching certain criteria for filtering,
+        up to 100 at a time. Pagination may be done with the HTTP Link header in the
+        response. See Paginating through API responses for more information.
+      description: 'View all accounts, optionally matching certain criteria for filtering,
+        up to 100 at a time. Pagination may be done with the HTTP Link header in the
+        response. See Paginating through API responses for more information.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - added role_ids. Support custom roles and permissions
+
+
+        [View accounts (v2)](https://docs.joinmastodon.org/methods/admin/accounts/#v2)'
+  /api/v1/admin/accounts:
+    get:
+      tags:
+      - accounts
+      summary: View all accounts, optionally matching certain criteria for filtering,
+        up to 100 at a time. Pagination may be done with the HTTP Link header in the
+        response. See Paginating through API responses for more information.
+      description: 'View all accounts, optionally matching certain criteria for filtering,
+        up to 100 at a time. Pagination may be done with the HTTP Link header in the
+        response. See Paginating through API responses for more information.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 3.3.0 - added sensitized
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [View accounts (v1)](https://docs.joinmastodon.org/methods/admin/accounts/#v1)'
+  /api/v1/admin/canonical_email_blocks/:id:
+    get:
+      tags:
+      - canonical_email_blocks
+      description: '
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Show a single canonical email block](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get-one)'
+  /api/v1/admin/canonical_email_blocks:
+    get:
+      tags:
+      - canonical_email_blocks
+      description: '
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [List all canonical email blocks](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get)'
+  /api/v1/admin/canonical_email_blocks/test:
+    post:
+      tags:
+      - canonical_email_blocks
+      summary: Canoniocalize and hash an email address.
+      description: 'Canoniocalize and hash an email address.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Test](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#test)'
+  /api/v1/admin/dimensions:
+    post:
+      tags:
+      - dimensions
+      summary: Obtain information about popularity of certain accounts, servers, languages,
+        etc.
+      description: 'Obtain information about popularity of certain accounts, servers,
+        languages, etc.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Get dimensional data](https://docs.joinmastodon.org/methods/admin/dimensions/#get)'
+  /api/v1/admin/domain_allows/:id:
+    get:
+      tags:
+      - domain_allows
+      summary: Show information about a single allowed domain.
+      description: 'Show information about a single allowed domain.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Get a single allowed domain](https://docs.joinmastodon.org/methods/admin/domain_allows/#get-one)'
+  /api/v1/admin/domain_allows:
+    get:
+      tags:
+      - domain_allows
+      summary: Show information about all allowed domains.
+      description: 'Show information about all allowed domains.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [List all allowed domains](https://docs.joinmastodon.org/methods/admin/domain_allows/#get)'
+  /api/v1/admin/domain_blocks/:id:
+    get:
+      tags:
+      - domain_blocks
+      summary: Show information about a single blocked domain.
+      description: 'Show information about a single blocked domain.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Get a single blocked domain](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get-one)'
+  /api/v1/admin/domain_blocks:
+    get:
+      tags:
+      - domain_blocks
+      summary: Show information about all blocked domains.
+      description: 'Show information about all blocked domains.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [List all blocked domains](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get)'
+  /api/v1/admin/email_domain_blocks/:id:
+    get:
+      tags:
+      - email_domain_blocks
+      summary: Show information about a single email domain that is blocked from signups.
+      description: 'Show information about a single email domain that is blocked from
+        signups.
+
+        ## Version history
+
+
+        - 4.1.0 - added
+
+
+        [Get a single blocked email domain](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get-one)'
+  /api/v1/admin/email_domain_blocks:
+    get:
+      tags:
+      - email_domain_blocks
+      summary: Show information about all email domains blocked from signing up.
+      description: 'Show information about all email domains blocked from signing
+        up.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [List all blocked email domains](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get)'
+  /api/v1/admin/ip_blocks/:id:
+    get:
+      tags:
+      - ip_blocks
+      summary: Show information about a single IP block.
+      description: 'Show information about a single IP block.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Get a single IP block](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get-one)'
+  /api/v1/admin/ip_blocks:
+    get:
+      tags:
+      - ip_blocks
+      summary: Show information about all blocked IP ranges.
+      description: 'Show information about all blocked IP ranges.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [List all IP blocks](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get)'
+  /api/v1/admin/measures:
+    post:
+      tags:
+      - measures
+      summary: Obtain statistical measures for your server.
+      description: 'Obtain statistical measures for your server.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Get measurable data](https://docs.joinmastodon.org/methods/admin/measures/#get)'
+  /api/v1/admin/reports/:id/reopen:
+    post:
+      tags:
+      - reports
+      summary: Reopen a currently closed report, if it is closed.
+      description: 'Reopen a currently closed report, if it is closed.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Reopen a closed report](https://docs.joinmastodon.org/methods/admin/reports/#reopen)'
+  /api/v1/admin/reports/:id/resolve:
+    post:
+      tags:
+      - reports
+      summary: Mark a report as resolved with no further action taken.
+      description: 'Mark a report as resolved with no further action taken.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Mark report as resolved](https://docs.joinmastodon.org/methods/admin/reports/#resolve)'
+  /api/v1/admin/reports/:id/unassign:
+    post:
+      tags:
+      - reports
+      summary: Unassign a report so that someone else can claim it.
+      description: 'Unassign a report so that someone else can claim it.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Unassign report](https://docs.joinmastodon.org/methods/admin/reports/#unassign)'
+  /api/v1/admin/reports/:id/assign_to_self:
+    post:
+      tags:
+      - reports
+      summary: Claim the handling of this report to yourself.
+      description: 'Claim the handling of this report to yourself.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Assign report to self](https://docs.joinmastodon.org/methods/admin/reports/#assign_to_self)'
+  /api/v1/admin/reports/:id:
+    get:
+      tags:
+      - reports
+      description: '
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [View a single report](https://docs.joinmastodon.org/methods/admin/reports/#get-one)'
+  /api/v1/admin/reports:
+    get:
+      tags:
+      - reports
+      summary: View information about all reports.
+      description: 'View information about all reports.
+
+        ## Version history
+
+
+        - 2.9.1 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [View all reports](https://docs.joinmastodon.org/methods/admin/reports/#get)'
+  /api/v1/admin/retention:
+    post:
+      tags:
+      - retention
+      summary: Generate a retention data report for a given time period and bucket.
+      description: 'Generate a retention data report for a given time period and bucket.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Calculate retention data](https://docs.joinmastodon.org/methods/admin/retention/#create)'
+  /api/v1/admin/trends/tags:
+    get:
+      tags:
+      - trends
+      summary: Tags that are being used more frequently within the past week, including
+        unapproved and unreviewed tags.
+      description: 'Tags that are being used more frequently within the past week,
+        including unapproved and unreviewed tags.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - Returns an array of Tag due to a bug
+
+        - 4.1.0 - Bug fixed
+
+
+        [View trending tags](https://docs.joinmastodon.org/methods/admin/trends/#tags)'
+  /api/v1/admin/trends/statuses:
+    get:
+      tags:
+      - trends
+      summary: Statuses that have been interacted with more than others, including
+        unapproved and unreviewed statuses.
+      description: 'Statuses that have been interacted with more than others, including
+        unapproved and unreviewed statuses.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [View trending statuses](https://docs.joinmastodon.org/methods/admin/trends/#statuses)'
+  /api/v1/admin/trends/links:
+    get:
+      tags:
+      - trends
+      summary: Links that have been shared more than others, including unapproved
+        and unreviewed links.
+      description: 'Links that have been shared more than others, including unapproved
+        and unreviewed links.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+
+        [View trending links](https://docs.joinmastodon.org/methods/admin/trends/#links)'
+  /api/proofs:
+    get:
+      tags:
+      - proofs
+      description: '
+
+        ## Version history
+
+
+        - 2.8.0 - added
+
+
+        [View identity proofs removed](https://docs.joinmastodon.org/methods/proofs/#get)'
+  /api/oembed:
+    get:
+      tags:
+      - oembed
+      description: '
+
+        ## Version history
+
+
+        - 1.0.0 - added
+
+
+        [Get OEmbed info as JSON](https://docs.joinmastodon.org/methods/oembed/#get)'

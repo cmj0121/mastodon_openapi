@@ -1,8 +1,18 @@
+import requests
 import yaml
+from loguru import logger
 
 from src.openapi_spec import Info
 from src.openapi_spec import License
 from src.openapi_spec import OpenAPI
+
+from .paths import handle_paths
+
+description = """
+The official Mastodon API documentation is available at https://docs.joinmastodon.org/api/ but
+it does not provide an OpenAPI specification. This script generates an OpenAPI specification
+from the website.
+"""
 
 
 def run(link: str) -> str:
@@ -10,15 +20,17 @@ def run(link: str) -> str:
         title="Mastodon OpenAPI API",
         version="0.1.0",
         summary="The self-hosted Mastodon OpenAPI specifcation",
-        description="""
-            The official Mastodon API documentation is available at https://docs.joinmastodon.org/api/ but
-            it does not provide an OpenAPI specification. This script generates an OpenAPI specification
-            from the website.
-        """,
+        description=description,
         license=License(name="MIT"),
     )
 
+    logger.info(f"starting to generate OpenAPI spec from {link=}")
+
+    response = requests.get(link)
+    response.raise_for_status()
+
     spec = OpenAPI(info=info)
+    spec.paths = handle_paths(link, response.text)
     return to_openapi_spec_text(spec)
 
 
