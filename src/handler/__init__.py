@@ -6,6 +6,7 @@ from src.openapi_spec import Info
 from src.openapi_spec import License
 from src.openapi_spec import OpenAPI
 
+from .components import handle_components
 from .paths import handle_paths
 
 description = """
@@ -31,9 +32,10 @@ def run(link: str) -> str:
 
     spec = OpenAPI(info=info)
     spec.paths = handle_paths(link, response.text)
+    spec.components = handle_components(link, response.text)
     return to_openapi_spec_text(spec)
 
 
 def to_openapi_spec_text(spec: OpenAPI) -> str:
-    spec_dict = spec.model_dump(exclude_none=True)
+    spec_dict = spec.model_dump(exclude_none=True, by_alias=True)
     return yaml.dump(spec_dict, default_flow_style=False, sort_keys=False)

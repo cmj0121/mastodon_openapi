@@ -28,6 +28,16 @@ paths:
         \ to access this API, now any valid App token can be used\n- 4.3.0 - added\
         \ scopes and redirect_uris properties\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: If the Authorization header was provided with a valid token,
+            you should see your app returned as an Application entity.
+        401:
+          $ref: '#/components/responses/Error'
+          description: If the Authorization header contains an invalid token, is malformed,
+            or is not present, an error will be returned indicating an authorization
+            failure.
   /api/v1/apps:
     post:
       tags:
@@ -55,6 +65,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Store the client_id and client_secret in your cache, as these
+            will be used to obtain OAuth tokens.
+        422:
+          $ref: '#/components/responses/Error'
+          description: If a required parameter is missing or improperly formatted,
+            the request will fail.
   /.well-known/oauth-authorization-server:
     get:
       tags:
@@ -70,6 +89,15 @@ paths:
         \ for negotiation of scopes across different versions of Mastodon.\n## Version\
         \ history\n\n- 4.3.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: On Mastodon versions before 4.3.0, requesting this endpoint
+            will result in a 404 Not Found error.
+        404:
+          $ref: '#/components/responses/Error'
+          description: On Mastodon versions before 4.3.0, requesting this endpoint
+            will result in a 404 Not Found error.
   /oauth/revoke:
     post:
       tags:
@@ -84,6 +112,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: If you own the provided token, the API call will provide an
+            empty response. This operation is idempotent, so calling this API multiple
+            times will still return OK.
+        403:
+          $ref: '#/components/responses/Error'
+          description: If you provide a token you do not own, or no token at all,
+            the API call will return a 403 error.
   /oauth/token:
     post:
       tags:
@@ -101,6 +139,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Store this access_token for later use with methods that require
+            authentication. The token should be passed as an HTTP Authorization header
+            when making API calls, with the value Bearer <access_token>
+        400:
+          $ref: '#/components/responses/Error'
+          description: If you try to request a scope that was not included when registering
+            the app, the request will fail.
+        401:
+          $ref: '#/components/responses/Error'
+          description: If client_id and client_secret do not match or are invalid,
+            the request will fail.
   /oauth/authorize:
     get:
       tags:
@@ -129,6 +181,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The authorization code will be returned as a query parameter
+            named code.
+        400:
+          $ref: '#/components/responses/Error'
+          description: If the authorization code is incorrect or has been used already,
+            the request will fail.
   /api/v1/emails/confirmations:
     post:
       tags:
@@ -139,6 +200,15 @@ paths:
         \ the unconfirmed user\u2019s email before resending the confirmation email.\n\
         ## Version history\n\n- 3.4.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The client associated with the token does not own the unconfirmed
+            user.
+        403:
+          $ref: '#/components/responses/Error'
+          description: The client associated with the token does not own the unconfirmed
+            user.
   /api/v1/accounts/:id/identity_proofs:
     get:
       tags:
@@ -155,6 +225,19 @@ paths:
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
       deprecated: true
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        410:
+          $ref: '#/components/responses/Error'
+          description: Account is suspended (since 2.4.0 and until 3.3.0)
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/lookup:
     get:
       tags:
@@ -171,6 +254,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with ?acct=trwnh
+        404:
+          $ref: '#/components/responses/Error'
+          description: Username or address does not map to an account
   /api/v1/accounts/search:
     get:
       tags:
@@ -187,6 +277,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Accounts matching \u201Ctrwnh\u201D in username or display\
+            \ name"
+        503:
+          $ref: '#/components/responses/Error'
+          description: resolve=true, but the domain part of the user@domain address
+            is not a currently live website
   /api/v1/accounts/familiar_followers:
     get:
       tags:
@@ -203,6 +302,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with id[]=1&id[]=2
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/relationships:
     get:
       tags:
@@ -220,6 +329,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with id[]=1&id[]=2
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/note:
     post:
       tags:
@@ -234,6 +353,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully updated profile note
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/unpin:
     post:
       tags:
@@ -242,6 +371,16 @@ paths:
       description: "Remove the given account from the user\u2019s featured profiles.\n\
         ## Version history\n\n- 2.5.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully unendorsed, or account was already not endorsed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/pin:
     post:
       tags:
@@ -252,6 +391,22 @@ paths:
         \ profiles are currently shown on the user\u2019s own public profile.)\n##\
         \ Version history\n\n- 2.5.0 - added\n- 4.0.0 - calling this method is now\
         \ idempotent\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully endorsed, or was already endorsing.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Token is missing a required scope
+        422:
+          $ref: '#/components/responses/Error'
+          description: You are not following this account
+        500:
+          $ref: '#/components/responses/Error'
+          description: Can sometimes be returned if the account already endorsed.
   /api/v1/accounts/:id/unmute:
     post:
       tags:
@@ -268,6 +423,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully unmuted, or account was already unmuted
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/mute:
     post:
       tags:
@@ -288,6 +453,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully muted, or account was already muted. Note that
+            you can call this API method again with notifications=false to update
+            the relationship so that only statuses are muted.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/unblock:
     post:
       tags:
@@ -304,6 +481,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully unblocked, or account was already not blocked
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/block:
     post:
       tags:
@@ -322,6 +509,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully blocked, or account was already blocked
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/remove_from_followers:
     post:
       tags:
@@ -336,6 +533,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully removed from followers, or account was already
+            not following you
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/unfollow:
     post:
       tags:
@@ -352,6 +560,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully unfollowed, or account was already not followed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/follow:
     post:
       tags:
@@ -374,6 +592,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Successfully followed, or account was already followed
+        403:
+          $ref: '#/components/responses/Error'
+          description: Trying to follow someone that you block or that blocks you
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/lists:
     get:
       tags:
@@ -388,6 +616,25 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: If the account is part of any lists, those entities will be
+            returned. If the account is not part of any of your lists, then an empty
+            array will be returned.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header, or instance is in
+            whitelist mode and your token is not authorized with a user
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        410:
+          $ref: '#/components/responses/Error'
+          description: Account is suspended (since 2.4.0 and until 3.3.0)
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/:id/featured_tags:
     get:
       tags:
@@ -402,6 +649,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/accounts/:id/following:
     get:
       tags:
@@ -422,6 +673,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample output with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header, or instance is in
+            whitelist mode and your token is not authorized with a user
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        410:
+          $ref: '#/components/responses/Error'
+          description: Account is suspended (since 2.4.0 and until 3.3.0)
   /api/v1/accounts/:id/followers:
     get:
       tags:
@@ -442,6 +707,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample output with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header, or instance is in
+            whitelist mode and your token is not authorized with a user
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        410:
+          $ref: '#/components/responses/Error'
+          description: Account is suspended (since 2.4.0 and until 3.3.0)
   /api/v1/accounts/:id/statuses:
     get:
       tags:
@@ -468,6 +747,21 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
+        401:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        410:
+          $ref: '#/components/responses/Error'
+          description: Account is suspended (since 2.4.0 and until 3.3.0)
   /api/v1/accounts:
     post:
       tags:
@@ -494,6 +788,25 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The details parameter contains all detected errors. Its structure
+            is a Hash with the key being the erroneous parameter, and its value being
+            an array of all errors found.
+        401:
+          $ref: '#/components/responses/Error'
+          description: The details parameter contains all detected errors. Its structure
+            is a Hash with the key being the erroneous parameter, and its value being
+            an array of all errors found.
+        422:
+          $ref: '#/components/responses/Error'
+          description: The details parameter contains all detected errors. Its structure
+            is a Hash with the key being the erroneous parameter, and its value being
+            an array of all errors found.
+        429:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/accounts/:id:
     get:
       tags:
@@ -512,6 +825,21 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The Account record will be returned. Note that acct of local
+            users does not include the domain name.
+        401:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
+        410:
+          $ref: '#/components/responses/Error'
+          description: Account is suspended (since 2.4.0 and until 3.3.0)
   /api/v1/accounts/update_credentials:
     patch:
       tags:
@@ -523,6 +851,17 @@ paths:
         \ discoverable parameter\n- 4.1.0 - added hide_collections parameter\n- 4.2.0\
         \ - added indexable parameter\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: 'To update account fields, you will need to construct your
+            hash like so for example:'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/accounts/verify_credentials:
     get:
       tags:
@@ -539,6 +878,23 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Note the extra source property, which is not visible on accounts
+            other than your own. Also note that plain-text is used within source and
+            HTML is used for their corresponding properties such as note and fields.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Your credential verification will fail if the token is invalid
+            or incorrect.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Your user account is currently disabled, missing a confirmed
+            email address, or pending approval.
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/bookmarks:
     get:
       tags:
@@ -555,6 +911,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because Bookmark IDs are generally not exposed via any API
+            responses, you will have to parse the HTTP Link header to load older or
+            newer results. See Paginating through API responses for more information.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/favourites:
     get:
       tags:
@@ -573,6 +938,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: An example call with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/mutes:
     get:
       tags:
@@ -589,6 +961,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample response with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/blocks:
     get:
       tags:
@@ -604,6 +983,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/domain_blocks:
     get:
       tags:
@@ -620,6 +1006,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/filters:
     get:
       tags:
@@ -637,6 +1030,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The filter has been deleted successfully, so an empty object
+            will be returned.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter does not exist or is not owned by you
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'If phrase is not provided properly:'
   /api/v2/filters:
     get:
       tags:
@@ -651,6 +1058,19 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: FilterStatus deleted successfully
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: FilterStatus is not owned by you or does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: No keyword was provided
   /api/v1/reports:
     post:
       tags:
@@ -670,6 +1090,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with one status ID provided and a category of spam
+            with a comment
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Report not filed.
+        422:
+          $ref: '#/components/responses/Error'
+          description: Token does not have an authorized user
   /api/v1/follow_requests/:account_id/reject:
     post:
       tags:
@@ -685,6 +1119,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Your Relationship with this account should be unchanged.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: No pending follow request from that account ID
   /api/v1/follow_requests/:account_id/authorize:
     post:
       tags:
@@ -700,6 +1144,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Your Relationship with this account should be updated so that
+            you are followed_by this account.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: No pending follow request from that account ID
   /api/v1/follow_requests:
     get:
       tags:
@@ -713,6 +1168,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call for Accounts that are requesting a follow, with
+            limit=2
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/endorsements:
     get:
       tags:
@@ -727,6 +1190,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample call with limit=2.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/featured_tags/suggestions:
     get:
       tags:
@@ -741,6 +1211,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Truncated results to first and last tag.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/featured_tags/:id:
     delete:
       tags:
@@ -755,6 +1232,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The tag was unfeatured.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: FeaturedTag is not owned by you or does not exist
   /api/v1/featured_tags:
     get:
       tags:
@@ -769,6 +1256,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/preferences:
     get:
       tags:
@@ -783,6 +1277,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/followed_tags:
     get:
       tags:
@@ -799,6 +1300,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: List of followed hashtags
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/suggestions:
     get:
       tags:
@@ -818,6 +1326,13 @@ paths:
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
       deprecated: true
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/suggestions/:account_id:
     delete:
       tags:
@@ -832,6 +1347,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A successful call will return an empty object. Note the call
+            will be successful even if the account id provided is invalid or is not
+            a suggested account.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/suggestions:
     get:
       tags:
@@ -848,6 +1372,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/tags/:id/unfollow:
     post:
       tags:
@@ -864,6 +1395,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Tag has been successfully unfollowed, or was already unfollowed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/tags/:id/follow:
     post:
       tags:
@@ -882,6 +1420,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Tag has been successfully followed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'Prior to 4.1.0: Tag was already followed'
   /api/v1/tags/:id:
     get:
       tags:
@@ -896,6 +1444,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/profile/header:
     delete:
       tags:
@@ -909,6 +1461,12 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "The header was successfully deleted from the user\u2019s profile.\
+            \ If there were no header associated with the profile, the response will\
+            \ still indicate a successful deletion."
   /api/v1/profile/avatar:
     delete:
       tags:
@@ -922,6 +1480,12 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "The avatar was successfully deleted from the user\u2019s profile.\
+            \ If there were no avatar associated with the profile, the response will\
+            \ still indicate a successful deletion."
   /api/v1/statuses/:id/card:
     get:
       tags:
@@ -940,6 +1504,13 @@ paths:
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
       deprecated: true
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/source:
     get:
       tags:
@@ -954,6 +1525,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/history:
     get:
       tags:
@@ -970,6 +1551,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id:
     get:
       tags:
@@ -986,6 +1574,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Instance is in authorized-fetch mode.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Instance is in authorized-fetch mode.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/unpin:
     post:
       tags:
@@ -1000,6 +1598,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status unpinned, or was already not pinned
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/pin:
     post:
       tags:
@@ -1016,6 +1624,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status pinned. Note the status is not a reblog and its authoring
+            account is your own.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'Status is not owned by you:'
   /api/v1/statuses/:id/unmute:
     post:
       tags:
@@ -1032,6 +1654,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Status\u2019s conversation unmuted, or was already unmuted"
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/mute:
     post:
       tags:
@@ -1048,6 +1680,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Status\u2019s conversation muted, or was already muted"
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/unbookmark:
     post:
       tags:
@@ -1062,6 +1704,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status was unbookmarked or was already not bookmarked
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private.
   /api/v1/statuses/:id/bookmark:
     post:
       tags:
@@ -1076,6 +1728,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status bookmarked or was already bookmarked
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/statuses/:id/unreblog:
     post:
       tags:
@@ -1090,6 +1749,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status unboosted or was already not boosted
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private
   /api/v1/statuses/:id/reblog:
     post:
       tags:
@@ -1106,6 +1775,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status has been reblogged. Note that the top-level id has changed.
+            The id of the boosted status is now inside the reblog property. The top-level
+            id is the id of the reblog itself. Also note that reblogs cannot be pinned.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private
   /api/v1/statuses/:id/unfavourite:
     post:
       tags:
@@ -1120,6 +1801,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status unfavourited or was already not favourited
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private
   /api/v1/statuses/:id/favourite:
     post:
       tags:
@@ -1134,6 +1825,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status favourited or was already favourited
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private
   /api/v1/statuses/:id/favourited_by:
     get:
       tags:
@@ -1148,6 +1849,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A list of accounts who favourited the status
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private
   /api/v1/statuses/:id/reblogged_by:
     get:
       tags:
@@ -1162,6 +1870,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A list of accounts that boosted the status
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist or is private
   /api/v1/statuses/:id/translate:
     post:
       tags:
@@ -1176,6 +1891,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Translating a status in Spanish with content warning and media
+            into English
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status is private or does not exist
+        503:
+          $ref: '#/components/responses/Error'
+          description: The translation request failed
   /api/v1/statuses/:id/context:
     get:
       tags:
@@ -1192,6 +1918,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Status is private or does not exist
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status is private or does not exist
   /api/v1/statuses:
     post:
       tags:
@@ -1210,6 +1943,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: 'Status will be posted with chosen parameters:'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/media:
     post:
       tags:
@@ -1236,6 +1979,18 @@ paths:
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
       deprecated: true
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Attachment created successfully. Note that the MediaAttachment
+            will be created even if the file is not understood correctly due to failed
+            processing.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: File or file type is unsupported or invalid
   /api/v1/media/:id:
     get:
       tags:
@@ -1254,6 +2009,23 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The media file was processed, and a url to the processed media
+            is available.
+        206:
+          $ref: '#/components/responses/Error'
+          description: The media attachment is still being processed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: MediaAttachment is not owned by you or does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: There was an error processing the media attachment
   /api/v2/media:
     post:
       tags:
@@ -1276,6 +2048,27 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: MediaAttachment was created successfully, and the full-size
+            file was processed synchronously.
+        202:
+          $ref: '#/components/responses/Error'
+          description: "MediaAttachment was created successfully, but the full-size\
+            \ file is still processing. Note that the MediaAttachment\u2019s url will\
+            \ still be null, as the media is still being processed in the background.\
+            \ However, the preview_url should be available. Use GET /api/v1/media/:id\
+            \ to check the status of the media attachment."
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: File or file type is unsupported or invalid
+        500:
+          $ref: '#/components/responses/Error'
+          description: Could not generate a thumbnail for the attachment
   /api/v1/polls/:id/votes:
     post:
       tags:
@@ -1290,6 +2083,19 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Poll was voted on
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: "Poll does not exist, or poll\u2019s parent status is private"
+        422:
+          $ref: '#/components/responses/Error'
+          description: The poll has expired
   /api/v1/polls/:id:
     get:
       tags:
@@ -1304,6 +2110,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Poll does not exist, or poll\u2019s parent status is private"
+        404:
+          $ref: '#/components/responses/Error'
+          description: "Poll does not exist, or poll\u2019s parent status is private"
   /api/v1/scheduled_statuses/:id:
     get:
       tags:
@@ -1317,6 +2130,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: ScheduledStatus is not owned by you or does not exist
   /api/v1/scheduled_statuses:
     get:
       tags:
@@ -1332,6 +2155,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/timelines/direct:
     get:
       tags:
@@ -1343,6 +2173,15 @@ paths:
         \ in favor of Conversations API\n- 3.0.0 - removed\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
       deprecated: true
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Statuses with direct visibility, authored by you or mentioning
+            you. Statuses are not grouped by conversation, but are returned in chronological
+            order.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/timelines/list/:list_id:
     get:
       tags:
@@ -1361,6 +2200,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Statuses in this list will be returned.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: List is not owned by you or does not exist
   /api/v1/timelines/link?url=:url:
     get:
       tags:
@@ -1379,6 +2228,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The provided URL is not currently trending.
+        404:
+          $ref: '#/components/responses/Error'
+          description: The provided URL is not currently trending.
   /api/v1/timelines/home:
     get:
       tags:
@@ -1400,6 +2256,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Statuses in your home timeline will be returned
+        206:
+          $ref: '#/components/responses/Error'
+          description: Home feed is regenerating
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/timelines/tag/:hashtag:
     get:
       tags:
@@ -1424,6 +2290,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: 'Sample timeline for the hashtag #cats and limit=2'
+        404:
+          $ref: '#/components/responses/Error'
+          description: Hashtag does not exist
   /api/v1/timelines/public:
     get:
       tags:
@@ -1448,6 +2321,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample API call with limit=2
   /api/v1/conversations/:id/read:
     post:
       tags:
@@ -1461,6 +2338,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The value of unread has been changed to false.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: The conversation does not exist, or is not owned by you.
   /api/v1/conversations/:id:
     delete:
       tags:
@@ -1475,6 +2362,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: The conversation does not exist, or is not owned by you.
   /api/v1/conversations:
     get:
       tags:
@@ -1490,6 +2387,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Truncated sample results of an API call with limit=2
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/lists/:id/accounts:
     get:
       tags:
@@ -1505,6 +2409,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because you do not know beforehand which Accounts are included
+            in a List, you will have to parse the HTTP Link header to load older or
+            newer results. See Paginating through API responses for more information.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: List does not exist or is not owned by you.
   /api/v1/lists/:id:
     get:
       tags:
@@ -1521,6 +2437,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The list 12249 exists and is owned by you
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: List does not exist or is not owned by you
   /api/v1/lists:
     get:
       tags:
@@ -1535,6 +2461,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Use id as a parameter for related API calls.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/markers:
     get:
       tags:
@@ -1549,6 +2482,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A request with ?timeline[]=home&timeline[]=notifications
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/streaming/direct:
     get:
       tags:
@@ -1565,6 +2505,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/list:
     get:
       tags:
@@ -1584,6 +2528,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/hashtag/local:
     get:
       tags:
@@ -1603,6 +2551,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/hashtag:
     get:
       tags:
@@ -1622,6 +2574,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/public/remote:
     get:
       tags:
@@ -1641,6 +2597,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/public/local:
     get:
       tags:
@@ -1662,6 +2622,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/public:
     get:
       tags:
@@ -1683,6 +2647,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/user/notification:
     get:
       tags:
@@ -1697,6 +2665,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/user:
     get:
       tags:
@@ -1721,6 +2693,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v1/streaming/health:
     get:
       tags:
@@ -1736,6 +2712,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Streaming'
+          description: The streaming response.
   /api/v2/notifications/unread_count:
     get:
       tags:
@@ -1757,12 +2737,26 @@ paths:
         \ (although faster than getting the full corresponding notifications), therefore\
         \ the number of returned notifications is capped.\n## Version history\n\n\
         - \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The response body contains the capped count of unread notifications.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/notifications/:group_key/accounts:
     get:
       tags:
       - grouped notifications
       description: "\n## Version history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/notifications/:group_key/dismiss:
     post:
       tags:
@@ -1770,6 +2764,14 @@ paths:
       summary: Dismiss a single notification group from the server.
       description: "Dismiss a single notification group from the server.\n## Version\
         \ history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Upon a successful request, notifications with the given group
+            key are successfully dismissed.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/notifications/:group_key:
     get:
       tags:
@@ -1779,6 +2781,14 @@ paths:
       description: "View information about a specific notification group with a given\
         \ group key.\n## Version history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: On success, returns a GroupedNotificationsResults with a single
+            notification group.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/notifications:
     get:
       tags:
@@ -1797,6 +2807,14 @@ paths:
         \ to explictely list the types it supports showing grouped notifications for.\n\
         Types to filter include:\n## Version history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The response body contains one page of grouped notifications.
+            You can use the HTTP Link header for further pagination.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/merged:
     get:
       tags:
@@ -1819,6 +2837,14 @@ paths:
         \ have been merged and are ready for being loaded.\nInvalid or missing Authorization\
         \ header.\nJoin Mastodon \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7\
         \ Imprint\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A successful call returns whether the notifications have been
+            merged and are ready for being loaded.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/dismiss:
     post:
       tags:
@@ -1835,6 +2861,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A successful call will return an empty object.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/accept:
     post:
       tags:
@@ -1853,6 +2886,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A successful call will return an empty object.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/:id/dismiss:
     post:
       tags:
@@ -1869,6 +2909,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A successful call will return an empty object.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/:id/accept:
     post:
       tags:
@@ -1887,6 +2934,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A successful call will return an empty object.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/:id:
     get:
       tags:
@@ -1901,6 +2955,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A single notification request.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/requests:
     get:
       tags:
@@ -1912,6 +2973,14 @@ paths:
         s policy. This API returns Link headers containing links to the next/previous\
         \ page.\n## Version history\n\n- 4.3.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The response body contains one page of notification requests.
+            You can use the HTTP Link header for further pagination.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/notifications/policy:
     get:
       tags:
@@ -1926,6 +2995,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The response body contains the current notifications filtering
+            policy for the user.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/unread_count:
     get:
       tags:
@@ -1957,6 +3034,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The response body contains the capped count of unread notifications.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/dismiss:
     post:
       tags:
@@ -1975,6 +3059,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Notification with given ID successfully dismissed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/:id/dismiss:
     post:
       tags:
@@ -1989,6 +3080,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Notification with given ID successfully dismissed
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/clear:
     post:
       tags:
@@ -2003,6 +3101,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Notifications successfully cleared.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications/:id:
     get:
       tags:
@@ -2017,6 +3122,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A single Notification
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/notifications:
     get:
       tags:
@@ -2054,6 +3166,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The response body contains one page of notifications. You can
+            use the HTTP Link header for further pagination.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/push/subscription:
     post:
       tags:
@@ -2084,6 +3204,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: A new PushSubscription has been generated, which will send
+            the requested alerts to your endpoint.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/search:
     get:
       tags:
@@ -2103,6 +3231,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: v1 search was deprecated because hashtags were returned as
+            strings instead of as Tag entities.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v2/search:
     get:
       tags:
@@ -2125,6 +3261,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Truncated results of a sample search for \u201Ccats\u201D\
+            \ with limit=2."
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/instance:
     get:
       tags:
@@ -2151,6 +3295,10 @@ paths:
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
       deprecated: true
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/instance/translation_languages:
     get:
       tags:
@@ -2167,6 +3315,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: All source and target language pairs supported by the server.
   /api/v1/instance/extended_description:
     get:
       tags:
@@ -2181,6 +3333,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/instance/domain_blocks:
     get:
       tags:
@@ -2195,6 +3351,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The complete list of domains blocked by this instance
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header, if the admin has chosen
+            to show domain blocks to users.
+        404:
+          $ref: '#/components/responses/Error'
+          description: The admin has chosen to show domain blocks to no one. The response
+            body is empty; only the HTTP 404 error code is relevant.
   /api/v1/instance/rules:
     get:
       tags:
@@ -2209,6 +3377,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/instance/activity:
     get:
       tags:
@@ -2225,6 +3397,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: 'Each hash in the array will contain the following attributes:'
+        401:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
   /api/v1/instance/peers:
     get:
       tags:
@@ -2241,6 +3421,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
+        401:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
   /api/v2/instance:
     get:
       tags:
@@ -2257,6 +3446,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/trends/links:
     get:
       tags:
@@ -2271,6 +3464,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/trends/statuses:
     get:
       tags:
@@ -2285,6 +3482,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/trends/tags:
     get:
       tags:
@@ -2302,6 +3503,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/directory:
     get:
       tags:
@@ -2316,6 +3521,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample results with limit=2
   /api/v1/custom_emojis:
     get:
       tags:
@@ -2332,6 +3541,10 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Sample response from mastodon.social
   /api/v1/announcements/:id/reactions/:name:
     put:
       tags:
@@ -2346,6 +3559,19 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Announcement with given ID does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
   /api/v1/announcements/:id/dismiss:
     post:
       tags:
@@ -2360,6 +3586,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Announcement with given ID does not exist
   /api/v1/announcements:
     get:
       tags:
@@ -2374,6 +3610,13 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Currently active announcements
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
   /api/v1/admin/accounts/:id/unsensitive:
     post:
       tags:
@@ -2384,6 +3627,18 @@ paths:
         \ previously flagged as sensitive.\n## Version history\n\n- 3.3.0 - added\n\
         - 4.0.0 - support custom roles and permissions\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
         id\"]})"
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The account is no longer marked as sensitive, or was already
+            not marked as sensitive.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v1/admin/accounts/:id/unsuspend:
     post:
       tags:
@@ -2400,6 +3655,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Account successfully unsuspended
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header, or Account is not currently suspended
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v1/admin/accounts/:id/unsilence:
     post:
       tags:
@@ -2416,6 +3682,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Account was unsilenced, or was already not silenced
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v1/admin/accounts/:id/enable:
     post:
       tags:
@@ -2432,6 +3709,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Account was enabled, or was already enabled.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v1/admin/accounts/:id/action:
     post:
       tags:
@@ -2452,6 +3740,20 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The action was successfully taken
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account or Report with given ID does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: type is not provided or is not understood
   /api/v1/admin/accounts/:id:
     get:
       tags:
@@ -2468,6 +3770,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v1/admin/accounts/:id/reject:
     post:
       tags:
@@ -2484,6 +3798,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header, or the account is not currently pending.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header, or the account is not currently pending.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v1/admin/accounts/:id/approve:
     post:
       tags:
@@ -2500,6 +3826,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The account is now approved
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header, or account is currently not pending.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Account does not exist
   /api/v2/admin/accounts:
     get:
       tags:
@@ -2520,6 +3857,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/accounts:
     get:
       tags:
@@ -2542,6 +3888,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/canonical_email_blocks/:id:
     get:
       tags:
@@ -2555,6 +3910,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Canonical email block does not exist or was already deleted
   /api/v1/admin/canonical_email_blocks:
     get:
       tags:
@@ -2568,6 +3935,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because CanonicalEmailBlock IDs are generally not exposed via
+            any API responses, you will have to parse the HTTP Link header to load
+            older or newer results. See Paginating through API responses for more
+            information.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/canonical_email_blocks/test:
     post:
       tags:
@@ -2582,6 +3960,17 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: All matching canonical email blocks are returned.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        500:
+          $ref: '#/components/responses/Error'
+          description: No email was provided
   /api/v1/admin/dimensions:
     post:
       tags:
@@ -2600,6 +3989,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Requesting data on mastodon.social and a given trending tag
+            with a limit of 2.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/domain_allows/:id:
     get:
       tags:
@@ -2614,6 +4012,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: DomainAllow with the given ID does not exist
   /api/v1/admin/domain_allows:
     get:
       tags:
@@ -2628,6 +4038,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because DomainAllow IDs are generally not exposed via any API
+            responses, you will have to parse the HTTP Link header to load older or
+            newer results. See Paginating through API responses for more information.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/domain_blocks/:id:
     get:
       tags:
@@ -2642,6 +4062,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: DomainBlock with the given ID does not exist
   /api/v1/admin/domain_blocks:
     get:
       tags:
@@ -2656,6 +4088,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because DomainBlock IDs are generally not exposed via any API
+            responses, you will have to parse the HTTP Link header to load older or
+            newer results. See Paginating through API responses for more information.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/email_domain_blocks/:id:
     get:
       tags:
@@ -2671,6 +4113,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: EmailDomainBlock with the given ID does not exist
   /api/v1/admin/email_domain_blocks:
     get:
       tags:
@@ -2686,6 +4140,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/ip_blocks/:id:
     get:
       tags:
@@ -2700,6 +4163,18 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: IpBlock with the given ID does not exist
   /api/v1/admin/ip_blocks:
     get:
       tags:
@@ -2714,6 +4189,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because IpBlock IDs are generally not exposed via any API responses,
+            you will have to parse the HTTP Link header to load older or newer results.
+            See Paginating through API responses for more information.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/measures:
     post:
       tags:
@@ -2730,6 +4215,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Returns quantitative data for each measure, in aggregate and
+            also by data bucket.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/reports/:id/reopen:
     post:
       tags:
@@ -2746,6 +4240,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The report no longer has an action taken, or it already had
+            no action taken.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/reports/:id/resolve:
     post:
       tags:
@@ -2762,6 +4265,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The report is now resolved, or it was already resolved.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/reports/:id/unassign:
     post:
       tags:
@@ -2778,6 +4289,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The report should no longer be assigned to you, or it was already
+            not assigned to anyone.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/reports/:id/assign_to_self:
     post:
       tags:
@@ -2794,6 +4314,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: The report should now be assigned to you, or it was already
+            assigned to you.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/reports/:id:
     get:
       tags:
@@ -2809,6 +4338,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/reports:
     get:
       tags:
@@ -2825,6 +4363,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Because Report IDs are generally not exposed via any API responses,
+            you will have to parse the HTTP Link header to load older or newer results.
+            See Paginating through API responses for more information.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
   /api/v1/admin/retention:
     post:
       tags:
@@ -2841,6 +4389,16 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Monthly retention data for the month of 2022-09, given that
+            2 users registered during 2022-09 and were active at least once during
+            that month.
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/trends/tags:
     get:
       tags:
@@ -2861,6 +4419,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/trends/statuses:
     get:
       tags:
@@ -2877,6 +4444,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/v1/admin/trends/links:
     get:
       tags:
@@ -2893,6 +4469,15 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
   /api/proofs:
     get:
       tags:
@@ -2906,6 +4491,14 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Looking up the username \u201Cgargron\u201D via the \u201C\
+            keybase\u201D provider"
+        404:
+          $ref: '#/components/responses/Error'
+          description: No identity proof found for username on provider
   /api/oembed:
     get:
       tags:
@@ -2919,3 +4512,28 @@ paths:
 
 
         [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      responses:
+        200:
+          $ref: '#/components/responses/Error'
+          description: "Represents OEmbed \u201Crich\u201D preview, with associated\
+            \ iframe and metadata."
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status not found for given URL
+components:
+  responses:
+    Error:
+      description: Represents an error message.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    Streaming:
+      description: Represents an error message.
+      content:
+        text/event-stream:
+          schema:
+            type: string

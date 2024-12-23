@@ -8,6 +8,8 @@ from loguru import logger
 from src.openapi_spec import Operation
 from src.openapi_spec import PathItem
 from src.openapi_spec import Paths
+from src.openapi_spec import ReferenceObject
+from src.openapi_spec import Responses
 
 
 def handle_paths(link: str, html: str) -> Paths:
@@ -68,6 +70,22 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                 operation.tags = [tag]
                 operation.deprecated = True if deprecated else None
 
+                match tag:
+                    case "streaming":
+                        streaming_response = Responses(
+                            {
+                                200: ReferenceObject.model_validate(
+                                    {
+                                        "$ref": "#/components/responses/Streaming",
+                                        "description": "The streaming response.",
+                                    }
+                                )
+                            }
+                        )
+                        operation.responses = streaming_response
+                    case _:
+                        operation.responses = handle_response(method_dom)
+
                 spec[endpoint] = PathItem({method.lower(): operation})
 
         # extract the content of the method
@@ -113,3 +131,26 @@ def handle_description(text: str) -> str:
     versions = ["".join(versions[n : n + 2]).strip() for n in range(0, len(versions), 2)]
 
     return f"\n## Version history\n\n- {'\n- '.join(versions)}"
+
+
+def handle_response(tag: Tag) -> Responses:
+    response = {}
+
+    for code in tag.find_all_next("h5", class_="heading"):
+        logger.debug(f"handle response {code.text=}")
+
+        matched = re.search(r"(\d+): \w+", code.text)
+        if not matched:
+            continue
+
+        status_code = int(matched.groups()[0])
+        description = code.find_next("p").text if code.find_next("p") else ""
+
+        response[status_code] = ReferenceObject.model_validate(
+            {
+                "$ref": "#/components/responses/Error",
+                "description": description,
+            }
+        )
+
+    return Responses(response)

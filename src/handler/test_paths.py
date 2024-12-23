@@ -30,3 +30,21 @@ class TestHandlePaths:
 
         operation = resp["/api/v2/instance"].root["get"]
         assert operation.deprecated is None
+
+    def test_handle_response(self, load_api_html_fn):
+        link = "https://docs.joinmastodon.org/methods/instance"
+        load_api_html_fn("instance")
+
+        resp = handle_path_item("instance", link)
+        assert "/api/v1/instance" in resp
+        assert "get" in resp["/api/v1/instance"].root
+
+        operation = resp["/api/v1/instance"].root["get"]
+        assert 200 in operation.responses.root
+
+        assert "/api/v1/instance/peers" in resp
+        assert "get" in resp["/api/v1/instance/peers"].root
+
+        operation = resp["/api/v1/instance/peers"].root["get"]
+        assert 200 in operation.responses.root
+        assert 401 in operation.responses.root

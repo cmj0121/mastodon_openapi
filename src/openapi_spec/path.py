@@ -1,6 +1,17 @@
 from pydantic import BaseModel
 from pydantic import RootModel
 
+from .types import ReferenceObject
+from .types import ResponseObject
+
+
+class Responses(RootModel[dict[int, ResponseObject | ReferenceObject]]):
+    """
+    A container for the expected responses of an operation.
+
+    ref: https://swagger.io/specification/#response-object
+    """
+
 
 class Operation(BaseModel):
     """
@@ -13,6 +24,7 @@ class Operation(BaseModel):
     summary: str | None = None
     description: str | None = None
     deprecated: bool | None = None
+    responses: Responses | None = None
 
 
 class PathItem(RootModel[dict[str, Operation]]):
