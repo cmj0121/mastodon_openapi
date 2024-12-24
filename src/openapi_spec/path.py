@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from pydantic import RootModel
 
+from .types import ParameterObject
 from .types import ReferenceObject
 from .types import ResponseObject
 
@@ -24,6 +25,7 @@ class Operation(BaseModel):
     summary: str | None = None
     description: str | None = None
     deprecated: bool | None = None
+    parameters: list[ParameterObject | ReferenceObject] | None = None
     responses: Responses | None = None
 
 

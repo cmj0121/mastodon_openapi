@@ -5,11 +5,16 @@ from bs4 import BeautifulSoup
 from bs4 import Tag
 from loguru import logger
 
+from src.handler.utils import canonicalize
+from src.openapi_spec import BuildInType
 from src.openapi_spec import Operation
+from src.openapi_spec import ParameterIn
+from src.openapi_spec import ParameterObject
 from src.openapi_spec import PathItem
 from src.openapi_spec import Paths
 from src.openapi_spec import ReferenceObject
 from src.openapi_spec import Responses
+from src.openapi_spec import SchemaObject
 
 
 def handle_paths(link: str, html: str) -> Paths:
@@ -42,7 +47,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
     table = soup.find("nav", attrs={"id": "TableOfContents"})
     if not table:
-        logger.info("no table of content found in {link=}")
+        logger.info(f"no table of content found in {link=}")
         return spec
 
     content_id = [link["href"][1:] for link in table.find_all("a", href=True)]
@@ -56,8 +61,8 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
         logger.debug(f"processing #{index=} methods")
 
         code = method_dom.find_next("code", class_="language-http", attrs={"data-lang": "http"})
-        logger.debug(f"processing {code=} on {method_dom.text=}")
         if code:
+            logger.debug(f"processing {code.text=} on {method_dom.text=}")
             matched = re.search(r"(\w+) (/\S+)(?: HTTP/1.1)?", code.text)
 
             if matched:
@@ -112,7 +117,60 @@ def handle_operation(tag: Tag) -> Operation:
     summary = summaries[0] if summaries else None
     description = "\n".join(summaries) + handle_description(tag.text if tag else "")
 
-    return Operation(summary=summary, description=description)
+    return Operation(summary=summary, description=description, parameters=handle_parameters(tag))
+
+
+def handle_parameters(tag: Tag) -> list[ParameterObject | ReferenceObject] | None:
+    """
+    Handle the parameters of the API method, based on the ParameterIn
+    """
+    if not tag:
+        return None
+
+    request_dom = tag.find_next("h4", {"id": lambda x: x and x.startswith("request")})
+    if not request_dom:
+        return None
+
+    parameters = [param for param_type in ParameterIn for param in handle_parameter_by_type(request_dom, param_type)]
+    return parameters if parameters else None
+
+
+def handle_parameter_by_type(tag: Tag, param_type: ParameterIn) -> list[ParameterObject | ReferenceObject]:
+    parameters = []
+    if not (dom := tag.find_next("h5", {"id": lambda x: x and x.startswith(param_type)})):
+        return parameters
+
+    if not (param_based_dom := dom.find_next("dl")):
+        return parameters
+
+    for param_dom in param_based_dom.find_all("dt") if dom else []:
+        name = param_dom.text
+        desc = param_dom.find_next("dd")
+
+        logger.debug(f"handle parameter {name=} {param_type=} {desc.text=}")
+        required = desc.find("span", class_="api-method-parameter-required")
+
+        match param_type:
+            case ParameterIn.header:
+                vtype = "string"
+            case _:
+                vtype = desc.find("strong")
+                vtype = canonicalize(vtype.text if vtype else "string")
+                vtype = vtype if vtype in BuildInType else "string"
+
+        param = ParameterObject.model_validate(
+            {
+                "name": name,
+                "in": param_type.value,
+                "description": desc.text if desc else None,
+                "schema": SchemaObject(type=vtype),
+                "required": True if required else None,
+            }
+        )
+
+        parameters.append(param)
+
+    return parameters
 
 
 def handle_description(text: str) -> str:

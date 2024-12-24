@@ -4,16 +4,12 @@ import requests
 from bs4 import BeautifulSoup
 from loguru import logger
 
+from src.handler.utils import canonicalize
 from src.openapi_spec import Component
 from src.openapi_spec import MediaTypeObject
 from src.openapi_spec import ReferenceObject
 from src.openapi_spec import ResponseObject
 from src.openapi_spec import SchemaObject
-
-
-def canonicalize(text: str) -> str:
-    text = text.strip()
-    return text.replace(":", "").replace(" ", "_")
 
 
 def default_streaming_response() -> ResponseObject:

@@ -14,8 +14,9 @@ class TestHandlePaths:
         resp = handle_path_item(app, link)
         assert len(resp) == 0 if app == "admin" else len(resp) > 0
 
+    @responses.activate
     def test_handle_deprecated_path_item(self, load_api_html_fn):
-        link = "https://docs.joinmastodon.org/methods/instance"
+        link = "https://docs.joinmastodon.org/methods/instance/"
         load_api_html_fn("instance")
 
         resp = handle_path_item("instance", link)
@@ -31,8 +32,9 @@ class TestHandlePaths:
         operation = resp["/api/v2/instance"].root["get"]
         assert operation.deprecated is None
 
+    @responses.activate
     def test_handle_response(self, load_api_html_fn):
-        link = "https://docs.joinmastodon.org/methods/instance"
+        link = "https://docs.joinmastodon.org/methods/instance/"
         load_api_html_fn("instance")
 
         resp = handle_path_item("instance", link)
@@ -48,3 +50,14 @@ class TestHandlePaths:
         operation = resp["/api/v1/instance/peers"].root["get"]
         assert 200 in operation.responses.root
         assert 401 in operation.responses.root
+
+    @responses.activate
+    def test_handle_parameter(self, load_api_html_fn, app="accounts"):
+        link = f"https://docs.joinmastodon.org/methods/{app}/"
+        load_api_html_fn(app)
+
+        resp = handle_path_item(app, link)
+        assert "/api/v1/accounts/:id/unmute" in resp
+
+        operation = resp["/api/v1/accounts/:id/unmute"].root["post"]
+        assert operation.parameters is not None

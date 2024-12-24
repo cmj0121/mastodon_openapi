@@ -27,6 +27,15 @@ paths:
         \ vapid_key, please see api/v2/instance\n- 4.3.0 - removed needing read scope\
         \ to access this API, now any valid App token can be used\n- 4.3.0 - added\
         \ scopes and redirect_uris properties\n\n[Verify your app works](https://docs.joinmastodon.org/methods/apps/#verify_credentials)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <app_token> to gain
+          authorized access to this API method. <app_token> may be either a client_credential
+          or access_token returned from /oauth/token
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -179,6 +188,63 @@ paths:
 
 
         [Authorize a user](https://docs.joinmastodon.org/methods/oauth/#authorize)'
+      parameters:
+      - name: response_type
+        in: query
+        description: required String. Should be set equal to code.
+        required: true
+        schema:
+          type: string
+      - name: client_id
+        in: query
+        description: required String. The client ID, obtained during app registration.
+        required: true
+        schema:
+          type: string
+      - name: redirect_uri
+        in: query
+        description: required String. Set a URI to redirect the user to. If this parameter
+          is set to urn:ietf:wg:oauth:2.0:oob then the authorization code will be
+          shown instead. Must match one of the redirect_uris declared during app registration.
+        required: true
+        schema:
+          type: string
+      - name: scope
+        in: query
+        description: String. List of requested OAuth scopes, separated by spaces (or
+          by pluses, if using query parameters). Must be a subset of scopes declared
+          during app registration. If not provided, defaults to read.
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: String. Arbitrary value to passthrough to your server when the
+          user authorizes or rejects the authorization request.
+        schema:
+          type: string
+      - name: code_challenge
+        in: query
+        description: String. The PKCE code challenge for the authorization request.
+        schema:
+          type: string
+      - name: code_challenge_method
+        in: query
+        description: String. Must be S256, as this is the only code challenge method
+          that is supported by Mastodon for PKCE.
+        schema:
+          type: string
+      - name: force_login
+        in: query
+        description: Boolean. Forces the user to re-login, which is necessary for
+          authorizing with multiple accounts from the same instance.
+        schema:
+          type: string
+      - name: lang
+        in: query
+        description: String. The ISO 639-1 two-letter language code to use while rendering
+          the authorization form.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -197,6 +263,14 @@ paths:
       description: "Resend a new confirmation email. If an email is provided, updates\
         \ the unconfirmed user\u2019s email before resending the confirmation email.\n\
         ## Version history\n\n- 3.4.0 - added\n\n[Resend confirmation email](https://docs.joinmastodon.org/methods/emails/#confirmation)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -222,6 +296,13 @@ paths:
 
         [Identity proofs deprecated](https://docs.joinmastodon.org/methods/accounts/#identity_proofs)'
       deprecated: true
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -251,6 +332,13 @@ paths:
 
 
         [Lookup account ID from Webfinger address](https://docs.joinmastodon.org/methods/accounts/#lookup)'
+      parameters:
+      - name: acct
+        in: query
+        description: required String. The username or Webfinger address to lookup.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -274,6 +362,43 @@ paths:
 
 
         [Search for matching accounts](https://docs.joinmastodon.org/methods/accounts/#search)'
+      parameters:
+      - name: q
+        in: query
+        description: required String. Search query for accounts.
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results. Defaults to 40 accounts.
+          Max 80 accounts.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Integer. Skip the first n results.
+        schema:
+          type: string
+      - name: resolve
+        in: query
+        description: Boolean. Attempt WebFinger lookup. Defaults to false. Use this
+          when q is an exact address.
+        schema:
+          type: string
+      - name: following
+        in: query
+        description: Boolean. Limit the search to users you are following. Defaults
+          to false.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -299,6 +424,20 @@ paths:
 
 
         [Find familiar followers](https://docs.joinmastodon.org/methods/accounts/#familiar_followers)'
+      parameters:
+      - name: id[]
+        in: query
+        description: Array of String. Find familiar followers for the provided account
+          IDs.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -326,6 +465,26 @@ paths:
 
 
         [Check relationships to other accounts](https://docs.joinmastodon.org/methods/accounts/#relationships)'
+      parameters:
+      - name: id[]
+        in: query
+        description: Array of String. Check relationships for the provided account
+          IDs.
+        schema:
+          type: string
+      - name: with_suspended
+        in: query
+        description: Boolean. Whether relationships should be returned for suspended
+          users, defaults to false.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -350,6 +509,20 @@ paths:
 
 
         [Set private note on profile](https://docs.joinmastodon.org/methods/accounts/#note)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -367,6 +540,20 @@ paths:
       summary: "Remove the given account from the user\u2019s featured profiles."
       description: "Remove the given account from the user\u2019s featured profiles.\n\
         ## Version history\n\n- 2.5.0 - added\n\n[Unfeature account from profile](https://docs.joinmastodon.org/methods/accounts/#unpin)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -387,6 +574,20 @@ paths:
         \ profiles are currently shown on the user\u2019s own public profile.)\n##\
         \ Version history\n\n- 2.5.0 - added\n- 4.0.0 - calling this method is now\
         \ idempotent\n\n[Feature account on your profile](https://docs.joinmastodon.org/methods/accounts/#pin)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -419,6 +620,20 @@ paths:
 
 
         [Unmute account](https://docs.joinmastodon.org/methods/accounts/#unmute)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -449,6 +664,20 @@ paths:
 
 
         [Mute account](https://docs.joinmastodon.org/methods/accounts/#mute)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -477,6 +706,20 @@ paths:
 
 
         [Unblock account](https://docs.joinmastodon.org/methods/accounts/#unblock)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -505,6 +748,20 @@ paths:
 
 
         [Block account](https://docs.joinmastodon.org/methods/accounts/#block)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -529,6 +786,20 @@ paths:
 
 
         [Remove account from followers](https://docs.joinmastodon.org/methods/accounts/#remove_from_followers)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -556,6 +827,20 @@ paths:
 
 
         [Unfollow account](https://docs.joinmastodon.org/methods/accounts/#unfollow)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -588,6 +873,20 @@ paths:
 
 
         [Follow account](https://docs.joinmastodon.org/methods/accounts/#follow)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -612,6 +911,20 @@ paths:
 
 
         [Get lists containing this account](https://docs.joinmastodon.org/methods/accounts/#lists)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -638,6 +951,19 @@ paths:
       summary: Tags featured by this account.
       description: "Tags featured by this account.\n## Version history\n\n- 3.3.0\
         \ - added\n\n[Get account\u2019s featured tags](https://docs.joinmastodon.org/methods/accounts/#featured_tags)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -652,6 +978,40 @@ paths:
         \ hidden by the account owner.\n## Version history\n\n- 0.0.0 - added\n- 3.3.0\
         \ - both min_id and max_id can be used at the same time now\n- 4.0.0 - no\
         \ longer requires an app token + read:accounts\n\n[Get account\u2019s following](https://docs.joinmastodon.org/methods/accounts/#following)"
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -676,6 +1036,40 @@ paths:
         \ by the account owner.\n## Version history\n\n- 0.0.0 - added\n- 3.3.0 -\
         \ both min_id and max_id can be used at the same time now\n- 4.0.0 - no longer\
         \ requires an app token + read:accounts\n\n[Get account\u2019s followers](https://docs.joinmastodon.org/methods/accounts/#followers)"
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -700,6 +1094,70 @@ paths:
         \ pinned\n- 2.6.0 - add min_id\n- 2.7.0 - add exclude_reblogs and allow unauthed\
         \ use\n- 2.8.0 - add tagged parameter\n- 3.3.0 - both min_id and max_id can\
         \ be used at the same time now\n\n[Get account\u2019s statuses](https://docs.joinmastodon.org/methods/accounts/#statuses)"
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: only_media
+        in: query
+        description: Boolean. Filter out statuses without attachments.
+        schema:
+          type: string
+      - name: exclude_replies
+        in: query
+        description: Boolean. Filter out statuses in reply to a different account.
+        schema:
+          type: string
+      - name: exclude_reblogs
+        in: query
+        description: Boolean. Filter out boosts from the response.
+        schema:
+          type: string
+      - name: pinned
+        in: query
+        description: Boolean. Filter for pinned statuses only. Defaults to false,
+          which includes all statuses. Pinned statuses do not receive special priority
+          in the order of the returned results.
+        schema:
+          type: string
+      - name: tagged
+        in: query
+        description: String. Filter for statuses using a specific hashtag.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -741,6 +1199,14 @@ paths:
 
 
         [Register an account](https://docs.joinmastodon.org/methods/accounts/#create)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <app_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -778,6 +1244,19 @@ paths:
 
 
         [Get account](https://docs.joinmastodon.org/methods/accounts/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -803,6 +1282,14 @@ paths:
         \ parameters\n- 2.4.2 - added source[language] parameter\n- 2.7.0 - added\
         \ discoverable parameter\n- 4.1.0 - added hide_collections parameter\n- 4.2.0\
         \ - added indexable parameter\n\n[Update account credentials](https://docs.joinmastodon.org/methods/accounts/#update_credentials)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -830,6 +1317,14 @@ paths:
 
 
         [Verify account credentials](https://docs.joinmastodon.org/methods/accounts/#verify_credentials)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -890,6 +1385,35 @@ paths:
 
 
         [View favourited statuses](https://docs.joinmastodon.org/methods/favourites/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -913,6 +1437,30 @@ paths:
 
 
         [View muted accounts](https://docs.joinmastodon.org/methods/mutes/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -935,6 +1483,35 @@ paths:
 
 
         [View blocked users](https://docs.joinmastodon.org/methods/blocks/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -958,6 +1535,35 @@ paths:
 
 
         [Get domain blocks](https://docs.joinmastodon.org/methods/domain_blocks/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          domain blocks. Max 200 domain blocks.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -982,6 +1588,20 @@ paths:
 
 
         [Client-side (v1) methods](https://docs.joinmastodon.org/methods/filters/#v1)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterKeyword in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1010,6 +1630,20 @@ paths:
 
 
         [Server-side (v2) methods](https://docs.joinmastodon.org/methods/filters/#v2)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1042,6 +1676,14 @@ paths:
 
 
         [File a report](https://docs.joinmastodon.org/methods/reports/#post)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1071,6 +1713,20 @@ paths:
 
 
         [Reject follow request](https://docs.joinmastodon.org/methods/follow_requests/#reject)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :account_id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1096,6 +1752,20 @@ paths:
 
 
         [Accept follow request](https://docs.joinmastodon.org/methods/follow_requests/#accept)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :account_id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1120,6 +1790,30 @@ paths:
 
 
         [View pending follow requests](https://docs.joinmastodon.org/methods/follow_requests/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1142,6 +1836,30 @@ paths:
 
 
         [View currently featured profiles](https://docs.joinmastodon.org/methods/endorsements/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1163,6 +1881,14 @@ paths:
 
 
         [View suggested tags to feature](https://docs.joinmastodon.org/methods/featured_tags/#suggestions)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1184,6 +1910,20 @@ paths:
 
 
         [Unfeature a tag](https://docs.joinmastodon.org/methods/featured_tags/#unfeature)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the FeaturedTag in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1208,6 +1948,14 @@ paths:
 
 
         [View your featured tags](https://docs.joinmastodon.org/methods/featured_tags/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1229,6 +1977,14 @@ paths:
 
 
         [View user preferences](https://docs.joinmastodon.org/methods/preferences/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1252,6 +2008,35 @@ paths:
 
 
         [View all followed tags](https://docs.joinmastodon.org/methods/followed_tags/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          tags. Max 200 tags.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1278,6 +2063,20 @@ paths:
 
         [View follow suggestions (v1) deprecated](https://docs.joinmastodon.org/methods/suggestions/#v1)'
       deprecated: true
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1299,6 +2098,20 @@ paths:
 
 
         [Remove a suggestion](https://docs.joinmastodon.org/methods/suggestions/#remove)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :account_id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1324,6 +2137,20 @@ paths:
 
 
         [View follow suggestions (v2)](https://docs.joinmastodon.org/methods/suggestions/#v2)'
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1347,6 +2174,20 @@ paths:
 
 
         [Unfollow a hashtag](https://docs.joinmastodon.org/methods/tags/#unfollow)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The name of the hashtag.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1372,6 +2213,20 @@ paths:
 
 
         [Follow a hashtag](https://docs.joinmastodon.org/methods/tags/#follow)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The name of the hashtag.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1396,6 +2251,19 @@ paths:
 
 
         [View information about a single tag](https://docs.joinmastodon.org/methods/tags/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The name of the hashtag.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1413,6 +2281,14 @@ paths:
 
 
         [Delete profile header](https://docs.joinmastodon.org/methods/profile/#delete-profile-header)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1432,6 +2308,14 @@ paths:
 
 
         [Delete profile avatar](https://docs.joinmastodon.org/methods/profile/#delete-profile-avatar)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1456,6 +2340,19 @@ paths:
 
         [Fetch preview card deprecated](https://docs.joinmastodon.org/methods/statuses/#card)'
       deprecated: true
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The local ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1477,6 +2374,19 @@ paths:
 
 
         [View status source](https://docs.joinmastodon.org/methods/statuses/#source)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The local ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1503,6 +2413,19 @@ paths:
 
 
         [View edit history of a status](https://docs.joinmastodon.org/methods/statuses/#history)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The local ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1526,6 +2449,19 @@ paths:
 
 
         [View a single status](https://docs.joinmastodon.org/methods/statuses/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1550,6 +2486,20 @@ paths:
 
 
         [Unpin status from profile](https://docs.joinmastodon.org/methods/statuses/#unpin)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The local ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1576,6 +2526,21 @@ paths:
 
 
         [Pin status to profile](https://docs.joinmastodon.org/methods/statuses/#pin)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The local ID of the Status in the database.
+          The status should be authored by the authorized account.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1606,6 +2571,20 @@ paths:
 
 
         [Unmute a conversation](https://docs.joinmastodon.org/methods/statuses/#unmute)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1632,6 +2611,20 @@ paths:
 
 
         [Mute a conversation](https://docs.joinmastodon.org/methods/statuses/#mute)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1656,6 +2649,20 @@ paths:
 
 
         [Undo bookmark of a status](https://docs.joinmastodon.org/methods/statuses/#unbookmark)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1680,6 +2687,20 @@ paths:
 
 
         [Bookmark a status](https://docs.joinmastodon.org/methods/statuses/#bookmark)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1701,6 +2722,20 @@ paths:
 
 
         [Undo boost of a status](https://docs.joinmastodon.org/methods/statuses/#unreblog)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1727,6 +2762,20 @@ paths:
 
 
         [Boost a status](https://docs.joinmastodon.org/methods/statuses/#boost)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1753,6 +2802,20 @@ paths:
 
 
         [Undo favourite of a status](https://docs.joinmastodon.org/methods/statuses/#unfavourite)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1777,6 +2840,20 @@ paths:
 
 
         [Favourite a status](https://docs.joinmastodon.org/methods/statuses/#favourite)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1801,6 +2878,35 @@ paths:
 
 
         [See who favourited a status](https://docs.joinmastodon.org/methods/statuses/#favourited_by)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1822,6 +2928,35 @@ paths:
 
 
         [See who boosted a status](https://docs.joinmastodon.org/methods/statuses/#reblogged_by)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          accounts. Max 80 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1843,6 +2978,20 @@ paths:
 
 
         [Translate a status](https://docs.joinmastodon.org/methods/statuses/#translate)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1870,6 +3019,19 @@ paths:
 
 
         [Get parent and child statuses in context](https://docs.joinmastodon.org/methods/statuses/#context)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1895,6 +3057,21 @@ paths:
 
 
         [Post a new status](https://docs.joinmastodon.org/methods/statuses/#create)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: Idempotency-Key
+        in: header
+        description: Provide this header with any arbitrary string to prevent duplicate
+          submissions of the same status. Consider using a hash or UUID generated
+          client-side. Idempotency keys are stored for up to 1 hour.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1931,6 +3108,14 @@ paths:
 
         [Upload media as an attachment (v1) deprecated](https://docs.joinmastodon.org/methods/media/#v1)'
       deprecated: true
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1961,6 +3146,20 @@ paths:
 
 
         [Get media attachment](https://docs.joinmastodon.org/methods/media/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the MediaAttachment in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2000,6 +3199,14 @@ paths:
 
 
         [Upload media as an attachment (async)](https://docs.joinmastodon.org/methods/media/#v2)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2035,6 +3242,20 @@ paths:
 
 
         [Vote on a poll](https://docs.joinmastodon.org/methods/polls/#vote)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Poll in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2062,6 +3283,19 @@ paths:
 
 
         [View a poll](https://docs.joinmastodon.org/methods/polls/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Poll in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2082,6 +3316,20 @@ paths:
 
 
         [View a single scheduled status](https://docs.joinmastodon.org/methods/scheduled_statuses/#get-one)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the ScheduledStatus in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2107,6 +3355,38 @@ paths:
 
 
         [View scheduled statuses](https://docs.joinmastodon.org/methods/scheduled_statuses/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2125,6 +3405,38 @@ paths:
         \ in favor of Conversations API\n- 3.0.0 - removed\n\n[View direct timeline\
         \ deprecated](https://docs.joinmastodon.org/methods/timelines/#direct)"
       deprecated: true
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2152,6 +3464,44 @@ paths:
 
 
         [View list timeline](https://docs.joinmastodon.org/methods/timelines/#list)'
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :list_id
+        in: path
+        description: required String. Local ID of the List in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2180,6 +3530,43 @@ paths:
 
 
         [View link timeline](https://docs.joinmastodon.org/methods/timelines/#link)'
+      parameters:
+      - name: url
+        in: query
+        description: required String. The URL of the trending article.
+        required: true
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2208,6 +3595,38 @@ paths:
 
 
         [View home timeline](https://docs.joinmastodon.org/methods/timelines/#home)'
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2242,6 +3661,78 @@ paths:
 
 
         [View hashtag timeline](https://docs.joinmastodon.org/methods/timelines/#tag)'
+      parameters:
+      - name: any[]
+        in: query
+        description: Array of String. Return statuses that contain any of these additional
+          tags.
+        schema:
+          type: string
+      - name: all[]
+        in: query
+        description: Array of String. Return statuses that contain all of these additional
+          tags.
+        schema:
+          type: string
+      - name: none[]
+        in: query
+        description: Array of String. Return statuses that contain none of these additional
+          tags.
+        schema:
+          type: string
+      - name: local
+        in: query
+        description: Boolean. Return only local statuses? Defaults to false.
+        schema:
+          type: string
+      - name: remote
+        in: query
+        description: Boolean. Return only remote statuses? Defaults to false.
+        schema:
+          type: string
+      - name: only_media
+        in: query
+        description: Boolean. Return only statuses with media attachments? Defaults
+          to false.
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
+      - name: :hashtag
+        in: path
+        description: 'required String. The name of the hashtag (not including the
+          # symbol).'
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2273,6 +3764,53 @@ paths:
 
 
         [View public timeline](https://docs.joinmastodon.org/methods/timelines/#public)'
+      parameters:
+      - name: local
+        in: query
+        description: Boolean. Show only local statuses? Defaults to false.
+        schema:
+          type: string
+      - name: remote
+        in: query
+        description: Boolean. Show only remote statuses? Defaults to false.
+        schema:
+          type: string
+      - name: only_media
+        in: query
+        description: Boolean. Show only statuses with media attached? Defaults to
+          false.
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2290,6 +3828,20 @@ paths:
 
 
         [Mark a conversation as read](https://docs.joinmastodon.org/methods/conversations/#read)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Conversation in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2314,6 +3866,20 @@ paths:
 
 
         [Remove a conversation](https://docs.joinmastodon.org/methods/conversations/#delete)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Conversation in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2339,6 +3905,35 @@ paths:
 
 
         [View all conversations](https://docs.joinmastodon.org/methods/conversations/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          conversations. Max 40 conversations.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2361,6 +3956,41 @@ paths:
 
 
         [View accounts in a list](https://docs.joinmastodon.org/methods/lists/#accounts)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results. Defaults to 40 accounts.
+          Max 80 accounts. Set to 0 in order to get all accounts without pagination.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the List in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2389,6 +4019,20 @@ paths:
 
 
         [Show a single list](https://docs.joinmastodon.org/methods/lists/#get-one)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the List in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2413,6 +4057,14 @@ paths:
 
 
         [View your lists](https://docs.joinmastodon.org/methods/lists/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2434,6 +4086,21 @@ paths:
 
 
         [Get saved timeline positions](https://docs.joinmastodon.org/methods/markers/#get)'
+      parameters:
+      - name: timeline[]
+        in: query
+        description: 'Array of String. Specify the timeline(s) for which markers should
+          be fetched. Possible values: home, notifications. If not provided, an empty
+          object will be returned.'
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2457,6 +4124,14 @@ paths:
 
 
         [Watch for direct messages](https://docs.joinmastodon.org/methods/streaming/#direct)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2480,6 +4155,20 @@ paths:
 
 
         [Watch for list updates](https://docs.joinmastodon.org/methods/streaming/#list)'
+      parameters:
+      - name: list
+        in: query
+        description: required String. The ID of the list to watch.
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2503,6 +4192,19 @@ paths:
 
 
         [Watch the local timeline for a hashtag](https://docs.joinmastodon.org/methods/streaming/#hashtag-local)'
+      parameters:
+      - name: tag
+        in: query
+        description: required String. The name of the hashtag to watch.
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2526,6 +4228,19 @@ paths:
 
 
         [Watch the public timeline for a hashtag](https://docs.joinmastodon.org/methods/streaming/#hashtag)'
+      parameters:
+      - name: tag
+        in: query
+        description: required String. The name of the hashtag to watch.
+        required: true
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2549,6 +4264,18 @@ paths:
 
 
         [Watch for remote statuses](https://docs.joinmastodon.org/methods/streaming/#public-remote)'
+      parameters:
+      - name: only_media
+        in: query
+        description: Boolean. If true, return only statuses with media attachments.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2574,6 +4301,18 @@ paths:
 
 
         [Watch the local timeline](https://docs.joinmastodon.org/methods/streaming/#public-local)'
+      parameters:
+      - name: only_media
+        in: query
+        description: Boolean. If true, return only statuses with media attachments.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2599,6 +4338,18 @@ paths:
 
 
         [Watch the federated timeline](https://docs.joinmastodon.org/methods/streaming/#public)'
+      parameters:
+      - name: only_media
+        in: query
+        description: Boolean. If true, return only statuses with media attachments.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2617,6 +4368,14 @@ paths:
 
 
         [Watch your notifications](https://docs.joinmastodon.org/methods/streaming/#notification)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2645,6 +4404,14 @@ paths:
 
 
         [Watch your home timeline and notifications](https://docs.joinmastodon.org/methods/streaming/#user)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2695,6 +4462,48 @@ paths:
 
 
         [Get the number of unread notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#unread-group-count)'
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          notifications. Max 1000 notifications.
+        schema:
+          type: string
+      - name: types[]
+        in: query
+        description: Array of String. Types of notifications that should count towards
+          unread notifications.
+        schema:
+          type: string
+      - name: exclude_types[]
+        in: query
+        description: Array of String. Types of notifications that should not count
+          towards unread notifications.
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. Only count unread notifications received from the specified
+          account.
+        schema:
+          type: string
+      - name: grouped_types[]
+        in: query
+        description: Array of String. Restrict which notification types can be grouped.
+          Use this if there are notification types for which your client does not
+          support grouping. If omitted, the server will group notifications of all
+          types it supports (currently, favourite, follow and reblog). If you do not
+          want any notification grouping, use GET /api/v1/notifications/unread_count
+          instead.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2710,6 +4519,21 @@ paths:
 
 
         [Get accounts of all notifications in a notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-group-accounts)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :group_key
+        in: path
+        description: required String. The group key of the notifications to get accounts
+          from.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2726,6 +4550,20 @@ paths:
 
 
         [Dismiss a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#dismiss-group)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :group_key
+        in: path
+        description: required String. The group key of the notifications to discard.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2745,6 +4583,20 @@ paths:
 
 
         [Get a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-notification-group)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :group_key
+        in: path
+        description: required String. The group key of the notification group.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2775,6 +4627,87 @@ paths:
 
 
         [Get all grouped notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#get-grouped)'
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be about notifications strictly
+          older than this notification ID. In effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be about notifications strictly
+          newer than this notification ID. In effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results about notifications immediately newer
+          than this notification ID. In effect, sets a cursor at this ID and paginates
+          forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          notifications. Max 80 notification groups.
+        schema:
+          type: string
+      - name: types[]
+        in: query
+        description: Array of String. Types to include in the result.
+        schema:
+          type: string
+      - name: exclude_types[]
+        in: query
+        description: Array of String. Types to exclude from the results.
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. Return only notifications received from the specified
+          account.
+        schema:
+          type: string
+      - name: expand_accounts
+        in: query
+        description: String. One of full (default) or partial_avatars. When set to
+          partial_avatars, some accounts will not be rendered in full in the returned
+          accounts list but will be instead returned in stripped-down form in the
+          partial_accounts list. The most recent account in a notification group is
+          always rendered in full in the accounts attribute.
+        schema:
+          type: string
+      - name: grouped_types[]
+        in: query
+        description: "Array of String. Restrict which notification types can be grouped.\
+          \ Use this if there are notification types for which your client does not\
+          \ support grouping. If omitted, the server will group notifications of all\
+          \ types it supports (currently, favourite, follow and reblog). If you do\
+          \ not want any notification grouping, use GET /api/v1/notifications instead.\
+          \ Notifications that would be grouped if not for this parameter will instead\
+          \ be returned as individual single-notification groups with a unique group_key\
+          \ that can be assumed to be of the form ungrouped-{notification_id}. Please\
+          \ note that neither the streaming API nor the individual notification APIs\
+          \ are aware of this parameter and will always include a \u201Cproper\u201D\
+          \ group_key that can be different from what is returned here, meaning that\
+          \ you may have to ignore group_key for such notifications that you do not\
+          \ want grouped and use ungrouped-{notification_id} instead for consistency."
+        schema:
+          type: string
+      - name: include_filtered
+        in: query
+        description: "Boolean. Whether to include notifications filtered by the user\u2019\
+          s NotificationPolicy. Defaults to false."
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2829,6 +4762,14 @@ paths:
 
 
         [Dismiss multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#dismiss-multiple-requests)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2854,6 +4795,14 @@ paths:
 
 
         [Accept multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#accept-multiple-requests)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2877,6 +4826,20 @@ paths:
 
 
         [Dismiss a single notification request](https://docs.joinmastodon.org/methods/notifications/#dismiss-request)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Notification in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2902,6 +4865,20 @@ paths:
 
 
         [Accept a single notification request](https://docs.joinmastodon.org/methods/notifications/#accept-request)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Notification in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2923,6 +4900,20 @@ paths:
 
 
         [Get a single notification request](https://docs.joinmastodon.org/methods/notifications/#get-one-request)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Notification in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2940,6 +4931,38 @@ paths:
       description: "Notification requests for notifications filtered by the user\u2019\
         s policy. This API returns Link headers containing links to the next/previous\
         \ page.\n## Version history\n\n- 4.3.0 - added\n\n[Get all notification requests](https://docs.joinmastodon.org/methods/notifications/#get-requests)"
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          notification requests. Max 80 notification requests.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2962,6 +4985,14 @@ paths:
 
 
         [Get the filtering policy for notifications](https://docs.joinmastodon.org/methods/notifications/#get-policy)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3001,6 +5032,38 @@ paths:
 
 
         [Get the number of unread notifications](https://docs.joinmastodon.org/methods/notifications/#unread-count)'
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          notifications. Max 1000 notifications.
+        schema:
+          type: string
+      - name: types[]
+        in: query
+        description: Array of String. Types of notifications that should count towards
+          unread notifications.
+        schema:
+          type: string
+      - name: exclude_types[]
+        in: query
+        description: Array of String. Types of notifications that should not count
+          towards unread notifications.
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. Only count unread notifications received from the specified
+          account.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3026,6 +5089,14 @@ paths:
 
 
         [Dismiss a single notification removed](https://docs.joinmastodon.org/methods/notifications/#dismiss-deprecated)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3047,6 +5118,20 @@ paths:
 
 
         [Dismiss a single notification](https://docs.joinmastodon.org/methods/notifications/#dismiss)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Notification in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3068,6 +5153,14 @@ paths:
 
 
         [Dismiss all notifications](https://docs.joinmastodon.org/methods/notifications/#clear)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3089,6 +5182,20 @@ paths:
 
 
         [Get a single notification](https://docs.joinmastodon.org/methods/notifications/#get-one)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Notification in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3133,6 +5240,60 @@ paths:
 
 
         [Get all notifications](https://docs.joinmastodon.org/methods/notifications/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 40
+          notifications. Max 80 notifications.
+        schema:
+          type: string
+      - name: types[]
+        in: query
+        description: Array of String. Types to include in the result.
+        schema:
+          type: string
+      - name: exclude_types[]
+        in: query
+        description: Array of String. Types to exclude from the results.
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. Return only notifications received from the specified
+          account.
+        schema:
+          type: string
+      - name: include_filtered
+        in: query
+        description: "Boolean. Whether to include notifications filtered by the user\u2019\
+          s NotificationPolicy. Defaults to false."
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3171,6 +5332,14 @@ paths:
 
 
         [Subscribe to push notifications](https://docs.joinmastodon.org/methods/push/#create)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3198,6 +5367,61 @@ paths:
 
 
         [Perform a search (v1) removed](https://docs.joinmastodon.org/methods/search/#v1)'
+      parameters:
+      - name: q
+        in: query
+        description: required String. The search query.
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: String. Specify whether to search for only accounts, hashtags,
+          statuses
+        schema:
+          type: string
+      - name: resolve
+        in: query
+        description: Boolean. Attempt WebFinger lookup? Defaults to false.
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. If provided, will only return statuses authored by this
+          account.
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return, per type. Defaults
+          to 20 results per category. Max 40 results per category.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Integer. Offset in search results, used for pagination. Defaults
+          to 0.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3228,6 +5452,77 @@ paths:
 
 
         [Perform a search](https://docs.joinmastodon.org/methods/search/#v2)'
+      parameters:
+      - name: q
+        in: query
+        description: required String. The search query.
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: String. Specify whether to search for only accounts, hashtags,
+          statuses
+        schema:
+          type: string
+      - name: resolve
+        in: query
+        description: Boolean. Only relevant if type includes accounts. If true and
+          (a) the search query is for a remote account (e.g., someaccount@someother.server)
+          and (b) the local server does not know about the account, WebFinger is used
+          to try and resolve the account at someother.server. This provides the best
+          recall at higher latency. If false only accounts the server knows about
+          are returned.
+        schema:
+          type: string
+      - name: following
+        in: query
+        description: Boolean. Only include accounts that the user is following? Defaults
+          to false.
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. If provided, will only return statuses authored by this
+          account.
+        schema:
+          type: string
+      - name: exclude_unreviewed
+        in: query
+        description: Boolean. Filter out unreviewed tags? Defaults to false. Use true
+          when trying to find trending tags.
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return, per type. Defaults
+          to 20 results per category. Max 40 results per category.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Integer. Skip the first n results.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3318,6 +5613,13 @@ paths:
 
 
         [View moderated servers](https://docs.joinmastodon.org/methods/instance/#domain_blocks)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3364,6 +5666,13 @@ paths:
 
 
         [Weekly activity](https://docs.joinmastodon.org/methods/instance/#activity)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3388,6 +5697,13 @@ paths:
 
 
         [List of connected domains](https://docs.joinmastodon.org/methods/instance/#peers)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: Provide this header with Bearer <user_token> to gain authorized
+          access to this API method.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3431,6 +5747,18 @@ paths:
 
 
         [View trending links](https://docs.joinmastodon.org/methods/trends/#links)'
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 10
+          links. Max 20 links.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Integer. Skip the first n results.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3449,6 +5777,18 @@ paths:
 
 
         [View trending statuses](https://docs.joinmastodon.org/methods/trends/#statuses)'
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Integer. Skip the first n results.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3470,6 +5810,18 @@ paths:
 
 
         [View trending tags](https://docs.joinmastodon.org/methods/trends/#tags)'
+      parameters:
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 10
+          tags. Max 20 tags.
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Integer. Skip the first n results.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3488,6 +5840,29 @@ paths:
 
 
         [View profile directory](https://docs.joinmastodon.org/methods/directory/#get)'
+      parameters:
+      - name: offset
+        in: query
+        description: Number. Skip the first n results.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number. How many accounts to load. Defaults to 40 accounts. Max
+          80 accounts.
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: String. Use active to sort by most recently posted statuses (default)
+          or new to sort by most recently created profiles.
+        schema:
+          type: string
+      - name: local
+        in: query
+        description: Boolean. If true, returns only local accounts.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3526,6 +5901,27 @@ paths:
 
 
         [Add a reaction to an announcement](https://docs.joinmastodon.org/methods/announcements/#put-reactions)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Announcement in the database.
+        required: true
+        schema:
+          type: string
+      - name: :name
+        in: path
+        description: required String. Unicode emoji, or the shortcode of a custom
+          emoji.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3553,6 +5949,20 @@ paths:
 
 
         [Dismiss an announcement](https://docs.joinmastodon.org/methods/announcements/#dismiss)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Announcement in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3577,6 +5987,14 @@ paths:
 
 
         [View all announcements](https://docs.joinmastodon.org/methods/announcements/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3593,6 +6011,20 @@ paths:
       description: "Stops marking an account\u2019s posts as sensitive, if it was\
         \ previously flagged as sensitive.\n## Version history\n\n- 3.3.0 - added\n\
         - 4.0.0 - support custom roles and permissions\n\n[Unmark an account as sensitive](https://docs.joinmastodon.org/methods/admin/accounts/#unsensitive)"
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3621,6 +6053,20 @@ paths:
 
 
         [Unsuspend an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsuspend)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3648,6 +6094,20 @@ paths:
 
 
         [Unsilence an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsilence)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3675,6 +6135,20 @@ paths:
 
 
         [Enable a currently disabled account](https://docs.joinmastodon.org/methods/admin/accounts/#enable)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3706,6 +6180,20 @@ paths:
 
 
         [Perform an action against an account](https://docs.joinmastodon.org/methods/admin/accounts/#action)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3736,6 +6224,20 @@ paths:
 
 
         [View a specific account](https://docs.joinmastodon.org/methods/admin/accounts/#get-one)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3764,6 +6266,20 @@ paths:
 
 
         [Reject a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#reject)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3792,6 +6308,20 @@ paths:
 
 
         [Approve a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#approve)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3823,6 +6353,90 @@ paths:
 
 
         [View accounts (v2)](https://docs.joinmastodon.org/methods/admin/accounts/#v2)'
+      parameters:
+      - name: origin
+        in: query
+        description: String. Filter for local or remote accounts.
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: String. Filter for active, pending, disabled, silenced, or suspended
+          accounts.
+        schema:
+          type: string
+      - name: permissions
+        in: query
+        description: String. Filter for accounts with staff permissions (users that
+          can manage reports).
+        schema:
+          type: string
+      - name: role_ids[]
+        in: query
+        description: Array of String. Filter for users with these roles.
+        schema:
+          type: string
+      - name: invited_by
+        in: query
+        description: String. Lookup users invited by the account with this ID.
+        schema:
+          type: string
+      - name: username
+        in: query
+        description: String. Search for the given username.
+        schema:
+          type: string
+      - name: display_name
+        in: query
+        description: String. Search for the given display name.
+        schema:
+          type: string
+      - name: by_domain
+        in: query
+        description: String. Filter by the given domain.
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: String. Lookup a user with this email.
+        schema:
+          type: string
+      - name: ip
+        in: query
+        description: String. Lookup users with this IP address.
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          accounts. Max 200 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3854,6 +6468,108 @@ paths:
 
 
         [View accounts (v1)](https://docs.joinmastodon.org/methods/admin/accounts/#v1)'
+      parameters:
+      - name: local
+        in: query
+        description: Boolean. Filter for local accounts?
+        schema:
+          type: string
+      - name: remote
+        in: query
+        description: Boolean. Filter for remote accounts?
+        schema:
+          type: string
+      - name: active
+        in: query
+        description: Boolean. Filter for currently active accounts?
+        schema:
+          type: string
+      - name: pending
+        in: query
+        description: Boolean. Filter for currently pending accounts?
+        schema:
+          type: string
+      - name: disabled
+        in: query
+        description: Boolean. Filter for currently disabled accounts?
+        schema:
+          type: string
+      - name: silenced
+        in: query
+        description: Boolean. Filter for currently silenced accounts?
+        schema:
+          type: string
+      - name: suspended
+        in: query
+        description: Boolean. Filter for currently suspended accounts?
+        schema:
+          type: string
+      - name: sensitized
+        in: query
+        description: Boolean. Filter for accounts force-marked as sensitive?
+        schema:
+          type: string
+      - name: username
+        in: query
+        description: String. Search for the given username
+        schema:
+          type: string
+      - name: display_name
+        in: query
+        description: String. Search for the given display name
+        schema:
+          type: string
+      - name: by_domain
+        in: query
+        description: String. Filter by the given domain
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: String. Lookup a user with this email
+        schema:
+          type: string
+      - name: ip
+        in: query
+        description: String. Lookup users with this IP address
+        schema:
+          type: string
+      - name: staff
+        in: query
+        description: Boolean. Filter for staff accounts?
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: String. All results returned will be lesser than this ID. In
+          effect, sets an upper bound on results.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: String. All results returned will be greater than this ID. In
+          effect, sets a lower bound on results.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: String. Returns results immediately newer than this ID. In effect,
+          sets a cursor at this ID and paginates forward.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          accounts. Max 200 accounts.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3876,6 +6592,21 @@ paths:
 
 
         [Show a single canonical email block](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get-one)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Admin::CanonicalEmailBlock in
+          the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3901,6 +6632,35 @@ paths:
 
 
         [List all canonical email blocks](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          blocks. Max 200 blocks.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3926,6 +6686,14 @@ paths:
 
 
         [Test](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#test)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3955,6 +6723,14 @@ paths:
 
 
         [Get dimensional data](https://docs.joinmastodon.org/methods/admin/dimensions/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4004,6 +6780,35 @@ paths:
 
 
         [List all allowed domains](https://docs.joinmastodon.org/methods/admin/domain_allows/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          allows. Max 200 allows.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4054,6 +6859,35 @@ paths:
 
 
         [List all blocked domains](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          blocks. Max 200 blocks.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4106,6 +6940,35 @@ paths:
 
 
         [List all blocked email domains](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          blocks. Max 200 blocks.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4155,6 +7018,35 @@ paths:
 
 
         [List all IP blocks](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get)'
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          blocks. Max 200 blocks.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4181,6 +7073,14 @@ paths:
 
 
         [Get measurable data](https://docs.joinmastodon.org/methods/admin/measures/#get)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4206,6 +7106,20 @@ paths:
 
 
         [Reopen a closed report](https://docs.joinmastodon.org/methods/admin/reports/#reopen)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Report in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4231,6 +7145,20 @@ paths:
 
 
         [Mark report as resolved](https://docs.joinmastodon.org/methods/admin/reports/#resolve)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Report in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4255,6 +7183,20 @@ paths:
 
 
         [Unassign report](https://docs.joinmastodon.org/methods/admin/reports/#unassign)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Report in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4280,6 +7222,20 @@ paths:
 
 
         [Assign report to self](https://docs.joinmastodon.org/methods/admin/reports/#assign_to_self)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Report in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4304,6 +7260,20 @@ paths:
 
 
         [View a single report](https://docs.joinmastodon.org/methods/admin/reports/#get-one)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
+      - name: :id
+        in: path
+        description: required String. The ID of the Report in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4329,6 +7299,50 @@ paths:
 
 
         [View all reports](https://docs.joinmastodon.org/methods/admin/reports/#get)'
+      parameters:
+      - name: resolved
+        in: query
+        description: Boolean. Filter for resolved reports?
+        schema:
+          type: string
+      - name: account_id
+        in: query
+        description: String. Filter for reports filed by this account.
+        schema:
+          type: string
+      - name: target_account_id
+        in: query
+        description: String. Filter for reports targeting this account.
+        schema:
+          type: string
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 100
+          reports. Max 200 reports.
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4355,6 +7369,14 @@ paths:
 
 
         [Calculate retention data](https://docs.joinmastodon.org/methods/admin/retention/#create)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4385,6 +7407,14 @@ paths:
 
 
         [View trending tags](https://docs.joinmastodon.org/methods/admin/trends/#tags)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4410,6 +7440,14 @@ paths:
 
 
         [View trending statuses](https://docs.joinmastodon.org/methods/admin/trends/#statuses)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4435,6 +7473,14 @@ paths:
 
 
         [View trending links](https://docs.joinmastodon.org/methods/admin/trends/#links)'
+      parameters:
+      - name: Authorization
+        in: header
+        description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4457,6 +7503,18 @@ paths:
 
 
         [View identity proofs removed](https://docs.joinmastodon.org/methods/proofs/#get)'
+      parameters:
+      - name: provider
+        in: query
+        description: String. The identity provider to be looked up. Currently only
+          supports keybase (case-sensitive).
+        schema:
+          type: string
+      - name: username
+        in: query
+        description: String. The username on the selected identity provider.
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4478,6 +7536,23 @@ paths:
 
 
         [Get OEmbed info as JSON](https://docs.joinmastodon.org/methods/oembed/#get)'
+      parameters:
+      - name: url
+        in: query
+        description: required String. URL of a status.
+        required: true
+        schema:
+          type: string
+      - name: maxwidth
+        in: query
+        description: Number. Width of the iframe. Defaults to 400
+        schema:
+          type: string
+      - name: maxheight
+        in: query
+        description: Number. Height of the iframe. Defaults to null
+        schema:
+          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'

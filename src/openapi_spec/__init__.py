@@ -10,7 +10,10 @@ from .path import Operation
 from .path import PathItem
 from .path import Paths
 from .path import Responses
+from .types import BuildInType
 from .types import MediaTypeObject
+from .types import ParameterIn
+from .types import ParameterObject
 from .types import ReferenceObject
 from .types import ResponseObject
 from .types import SchemaObject
@@ -44,5 +47,8 @@ __all__ = list(
         "ReferenceObject",
         "SchemaObject",
         "Component",
+        "ParameterObject",
+        "ParameterIn",
+        "BuildInType",
     }
 )

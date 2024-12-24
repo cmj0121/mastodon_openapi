@@ -14,6 +14,13 @@ class BuildInType(StrEnum):
     string = auto()
 
 
+class ParameterIn(StrEnum):
+    query = auto()
+    header = auto()
+    path = auto()
+    cookie = auto()
+
+
 class SchemaObject(BaseModel):
     """
     The Schema Object allows the definition of input and output data types.
@@ -61,3 +68,18 @@ class ResponseObject(BaseModel):
 
     description: str
     content: dict[str, MediaTypeObject]
+
+
+class ParameterObject(BaseModel):
+    """
+    Describes a single operation parameter.
+
+    ref: https://swagger.io/specification/#parameter-object
+    """
+
+    name: str
+    in_: str = Field(..., alias="in")
+    description: str | None = None
+    required: bool | None = None
+    deprecated: bool | None = None
+    schema: SchemaObject
