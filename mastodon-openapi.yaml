@@ -26,8 +26,7 @@ paths:
         \ history\n\n- 2.0.0 - added\n- 2.7.2 - now returns vapid_key\n- 4.3.0 - deprecated\
         \ vapid_key, please see api/v2/instance\n- 4.3.0 - removed needing read scope\
         \ to access this API, now any valid App token can be used\n- 4.3.0 - added\
-        \ scopes and redirect_uris properties\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        \ scopes and redirect_uris properties\n\n[Verify your app works](https://docs.joinmastodon.org/methods/apps/#verify_credentials)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -64,7 +63,7 @@ paths:
         - 4.3.0 - changed entity type from Application to CredentialApplication
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Create an application](https://docs.joinmastodon.org/methods/apps/#create)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -87,8 +86,7 @@ paths:
         \ endpoint for Dynamic Client Registration.\nThe properties exposed by this\
         \ endpoint can help you better integrate with the Mastodon API, such as allowing\
         \ for negotiation of scopes across different versions of Mastodon.\n## Version\
-        \ history\n\n- 4.3.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        \ history\n\n- 4.3.0 - added\n\n[Discover OAuth Server Configuration](https://docs.joinmastodon.org/methods/oauth/#authorization-server-metadata)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -111,7 +109,7 @@ paths:
         - 0.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Revoke a token](https://docs.joinmastodon.org/methods/oauth/#revoke)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -138,7 +136,7 @@ paths:
         - 4.3.0 - added support for PKCE parameter
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Obtain a token](https://docs.joinmastodon.org/methods/oauth/#token)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -180,7 +178,7 @@ paths:
         - 4.3.0 - added support for PKCE parameters
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Authorize a user](https://docs.joinmastodon.org/methods/oauth/#authorize)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -198,8 +196,7 @@ paths:
         \ the unconfirmed user\u2019s email before resending the confirmation email."
       description: "Resend a new confirmation email. If an email is provided, updates\
         \ the unconfirmed user\u2019s email before resending the confirmation email.\n\
-        ## Version history\n\n- 3.4.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        ## Version history\n\n- 3.4.0 - added\n\n[Resend confirmation email](https://docs.joinmastodon.org/methods/emails/#confirmation)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -223,7 +220,7 @@ paths:
         - 3.5.0 - deprecated. now returns an empty array.
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Identity proofs deprecated](https://docs.joinmastodon.org/methods/accounts/#identity_proofs)'
       deprecated: true
       responses:
         200:
@@ -253,7 +250,7 @@ paths:
         - 3.4.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Lookup account ID from Webfinger address](https://docs.joinmastodon.org/methods/accounts/#lookup)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -276,7 +273,7 @@ paths:
         - 2.8.0 - add limit, offset and following
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Search for matching accounts](https://docs.joinmastodon.org/methods/accounts/#search)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -301,7 +298,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Find familiar followers](https://docs.joinmastodon.org/methods/accounts/#familiar_followers)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -328,7 +325,7 @@ paths:
         - 4.3.0 - added with_suspended parameter
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Check relationships to other accounts](https://docs.joinmastodon.org/methods/accounts/#relationships)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -352,7 +349,7 @@ paths:
         - 3.2.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Set private note on profile](https://docs.joinmastodon.org/methods/accounts/#note)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -369,8 +366,7 @@ paths:
       - accounts
       summary: "Remove the given account from the user\u2019s featured profiles."
       description: "Remove the given account from the user\u2019s featured profiles.\n\
-        ## Version history\n\n- 2.5.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        ## Version history\n\n- 2.5.0 - added\n\n[Unfeature account from profile](https://docs.joinmastodon.org/methods/accounts/#unpin)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -390,7 +386,7 @@ paths:
       description: "Add the given account to the user\u2019s featured profiles. (Featured\
         \ profiles are currently shown on the user\u2019s own public profile.)\n##\
         \ Version history\n\n- 2.5.0 - added\n- 4.0.0 - calling this method is now\
-        \ idempotent\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+        \ idempotent\n\n[Feature account on your profile](https://docs.joinmastodon.org/methods/accounts/#pin)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -422,7 +418,7 @@ paths:
         - 3.5.0 - deprecated follow scope. now additionally accepts write
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unmute account](https://docs.joinmastodon.org/methods/accounts/#unmute)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -452,7 +448,7 @@ paths:
         - 3.5.0 - deprecated follow scope. now additionally accepts write
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Mute account](https://docs.joinmastodon.org/methods/accounts/#mute)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -480,7 +476,7 @@ paths:
         - 3.5.0 - deprecated follow scope. now additionally accepts write
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unblock account](https://docs.joinmastodon.org/methods/accounts/#unblock)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -508,7 +504,7 @@ paths:
         - 3.5.0 - deprecated follow scope. now additionally accepts write
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Block account](https://docs.joinmastodon.org/methods/accounts/#block)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -532,7 +528,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Remove account from followers](https://docs.joinmastodon.org/methods/accounts/#remove_from_followers)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -559,7 +555,7 @@ paths:
         - 3.5.0 - deprecated follow scope. now additionally accepts write
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unfollow account](https://docs.joinmastodon.org/methods/accounts/#unfollow)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -591,7 +587,7 @@ paths:
         - 4.0.0 - added languages
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Follow account](https://docs.joinmastodon.org/methods/accounts/#follow)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -615,7 +611,7 @@ paths:
         - 2.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get lists containing this account](https://docs.joinmastodon.org/methods/accounts/#lists)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -640,15 +636,8 @@ paths:
       tags:
       - accounts
       summary: Tags featured by this account.
-      description: 'Tags featured by this account.
-
-        ## Version history
-
-
-        - 3.3.0 - added
-
-
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      description: "Tags featured by this account.\n## Version history\n\n- 3.3.0\
+        \ - added\n\n[Get account\u2019s featured tags](https://docs.joinmastodon.org/methods/accounts/#featured_tags)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -659,20 +648,10 @@ paths:
       - accounts
       summary: Accounts which the given account is following, if network is not hidden
         by the account owner.
-      description: 'Accounts which the given account is following, if network is not
-        hidden by the account owner.
-
-        ## Version history
-
-
-        - 0.0.0 - added
-
-        - 3.3.0 - both min_id and max_id can be used at the same time now
-
-        - 4.0.0 - no longer requires an app token + read:accounts
-
-
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      description: "Accounts which the given account is following, if network is not\
+        \ hidden by the account owner.\n## Version history\n\n- 0.0.0 - added\n- 3.3.0\
+        \ - both min_id and max_id can be used at the same time now\n- 4.0.0 - no\
+        \ longer requires an app token + read:accounts\n\n[Get account\u2019s following](https://docs.joinmastodon.org/methods/accounts/#following)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -693,20 +672,10 @@ paths:
       - accounts
       summary: Accounts which follow the given account, if network is not hidden by
         the account owner.
-      description: 'Accounts which follow the given account, if network is not hidden
-        by the account owner.
-
-        ## Version history
-
-
-        - 0.0.0 - added
-
-        - 3.3.0 - both min_id and max_id can be used at the same time now
-
-        - 4.0.0 - no longer requires an app token + read:accounts
-
-
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      description: "Accounts which follow the given account, if network is not hidden\
+        \ by the account owner.\n## Version history\n\n- 0.0.0 - added\n- 3.3.0 -\
+        \ both min_id and max_id can be used at the same time now\n- 4.0.0 - no longer\
+        \ requires an app token + read:accounts\n\n[Get account\u2019s followers](https://docs.joinmastodon.org/methods/accounts/#followers)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -726,27 +695,11 @@ paths:
       tags:
       - accounts
       summary: Statuses posted to the given account.
-      description: 'Statuses posted to the given account.
-
-        ## Version history
-
-
-        - 0.0.0 - added
-
-        - 1.4.2 - add only_media and exclude_replies
-
-        - 1.6.0 - add pinned
-
-        - 2.6.0 - add min_id
-
-        - 2.7.0 - add exclude_reblogs and allow unauthed use
-
-        - 2.8.0 - add tagged parameter
-
-        - 3.3.0 - both min_id and max_id can be used at the same time now
-
-
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+      description: "Statuses posted to the given account.\n## Version history\n\n\
+        - 0.0.0 - added\n- 1.4.2 - add only_media and exclude_replies\n- 1.6.0 - add\
+        \ pinned\n- 2.6.0 - add min_id\n- 2.7.0 - add exclude_reblogs and allow unauthed\
+        \ use\n- 2.8.0 - add tagged parameter\n- 3.3.0 - both min_id and max_id can\
+        \ be used at the same time now\n\n[Get account\u2019s statuses](https://docs.joinmastodon.org/methods/accounts/#statuses)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -787,7 +740,7 @@ paths:
         - 3.4.0 - added details to failure response
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Register an account](https://docs.joinmastodon.org/methods/accounts/#create)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -824,7 +777,7 @@ paths:
         - 3.3.0 - returns an Account with suspended: true instead of 410
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get account](https://docs.joinmastodon.org/methods/accounts/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -849,8 +802,7 @@ paths:
         \n- 1.1.1 - added\n- 2.3.0 - added locked parameter\n- 2.4.0 - added source[privacy,sensitive]\
         \ parameters\n- 2.4.2 - added source[language] parameter\n- 2.7.0 - added\
         \ discoverable parameter\n- 4.1.0 - added hide_collections parameter\n- 4.2.0\
-        \ - added indexable parameter\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        \ - added indexable parameter\n\n[Update account credentials](https://docs.joinmastodon.org/methods/accounts/#update_credentials)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -877,7 +829,7 @@ paths:
         - 4.3.0 - added profile scope
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Verify account credentials](https://docs.joinmastodon.org/methods/accounts/#verify_credentials)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -910,7 +862,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View bookmarked statuses](https://docs.joinmastodon.org/methods/bookmarks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -937,7 +889,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View favourited statuses](https://docs.joinmastodon.org/methods/favourites/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -960,7 +912,7 @@ paths:
         - 3.3.0 - added mute_expires_at
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View muted accounts](https://docs.joinmastodon.org/methods/mutes/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -982,7 +934,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View blocked users](https://docs.joinmastodon.org/methods/blocks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1005,7 +957,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get domain blocks](https://docs.joinmastodon.org/methods/domain_blocks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1029,7 +981,7 @@ paths:
         presented in the phrase attribute)
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Client-side (v1) methods](https://docs.joinmastodon.org/methods/filters/#v1)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1057,7 +1009,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Server-side (v2) methods](https://docs.joinmastodon.org/methods/filters/#v2)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1089,7 +1041,7 @@ paths:
         - 4.2.0 - add legal category
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [File a report](https://docs.joinmastodon.org/methods/reports/#post)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1118,7 +1070,7 @@ paths:
         - 3.0.0 - now returns Relationship instead of nothing
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Reject follow request](https://docs.joinmastodon.org/methods/follow_requests/#reject)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1143,7 +1095,7 @@ paths:
         - 3.0.0 - now returns Relationship instead of nothing
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Accept follow request](https://docs.joinmastodon.org/methods/follow_requests/#accept)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1167,7 +1119,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View pending follow requests](https://docs.joinmastodon.org/methods/follow_requests/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1189,7 +1141,7 @@ paths:
         - 2.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View currently featured profiles](https://docs.joinmastodon.org/methods/endorsements/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1210,7 +1162,7 @@ paths:
         - 3.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View suggested tags to feature](https://docs.joinmastodon.org/methods/featured_tags/#suggestions)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1231,7 +1183,7 @@ paths:
         - 3.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unfeature a tag](https://docs.joinmastodon.org/methods/featured_tags/#unfeature)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1255,7 +1207,7 @@ paths:
         - 3.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View your featured tags](https://docs.joinmastodon.org/methods/featured_tags/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1276,7 +1228,7 @@ paths:
         - 2.8.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View user preferences](https://docs.joinmastodon.org/methods/preferences/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1299,7 +1251,7 @@ paths:
         - 4.1.0 - add pagination headers
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View all followed tags](https://docs.joinmastodon.org/methods/followed_tags/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1324,7 +1276,7 @@ paths:
         - 3.4.0 - deprecated
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View follow suggestions (v1) deprecated](https://docs.joinmastodon.org/methods/suggestions/#v1)'
       deprecated: true
       responses:
         200:
@@ -1346,7 +1298,7 @@ paths:
         - 2.4.3 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Remove a suggestion](https://docs.joinmastodon.org/methods/suggestions/#remove)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1371,7 +1323,7 @@ paths:
         - 3.4.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View follow suggestions (v2)](https://docs.joinmastodon.org/methods/suggestions/#v2)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1394,7 +1346,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unfollow a hashtag](https://docs.joinmastodon.org/methods/tags/#unfollow)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1419,7 +1371,7 @@ paths:
         - 4.1.0 - this action is now idempotent
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Follow a hashtag](https://docs.joinmastodon.org/methods/tags/#follow)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1443,7 +1395,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View information about a single tag](https://docs.joinmastodon.org/methods/tags/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1460,7 +1412,7 @@ paths:
         - 4.2.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Delete profile header](https://docs.joinmastodon.org/methods/profile/#delete-profile-header)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1479,7 +1431,7 @@ paths:
         - 4.2.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Delete profile avatar](https://docs.joinmastodon.org/methods/profile/#delete-profile-avatar)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1502,7 +1454,7 @@ paths:
         - 3.0.0 - removed
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Fetch preview card deprecated](https://docs.joinmastodon.org/methods/statuses/#card)'
       deprecated: true
       responses:
         200:
@@ -1524,7 +1476,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View status source](https://docs.joinmastodon.org/methods/statuses/#source)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1550,7 +1502,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View edit history of a status](https://docs.joinmastodon.org/methods/statuses/#history)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1573,7 +1525,7 @@ paths:
         - 2.7.0 - public statuses no longer require token
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View a single status](https://docs.joinmastodon.org/methods/statuses/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1597,7 +1549,7 @@ paths:
         - 1.6.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unpin status from profile](https://docs.joinmastodon.org/methods/statuses/#unpin)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1623,7 +1575,7 @@ paths:
         - 3.5.0 - you can now pin private posts
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Pin status to profile](https://docs.joinmastodon.org/methods/statuses/#pin)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1653,7 +1605,7 @@ paths:
         - 1.4.2 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unmute a conversation](https://docs.joinmastodon.org/methods/statuses/#unmute)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1679,7 +1631,7 @@ paths:
         - 1.4.2 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Mute a conversation](https://docs.joinmastodon.org/methods/statuses/#mute)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1703,7 +1655,7 @@ paths:
         - 3.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Undo bookmark of a status](https://docs.joinmastodon.org/methods/statuses/#unbookmark)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1727,7 +1679,7 @@ paths:
         - 3.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Bookmark a status](https://docs.joinmastodon.org/methods/statuses/#bookmark)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1748,7 +1700,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Undo boost of a status](https://docs.joinmastodon.org/methods/statuses/#unreblog)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1774,7 +1726,7 @@ paths:
         - 2.8.0 - add visibility parameter
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Boost a status](https://docs.joinmastodon.org/methods/statuses/#boost)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1800,7 +1752,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Undo favourite of a status](https://docs.joinmastodon.org/methods/statuses/#unfavourite)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1824,7 +1776,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Favourite a status](https://docs.joinmastodon.org/methods/statuses/#favourite)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1848,7 +1800,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [See who favourited a status](https://docs.joinmastodon.org/methods/statuses/#favourited_by)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1869,7 +1821,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [See who boosted a status](https://docs.joinmastodon.org/methods/statuses/#reblogged_by)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1890,7 +1842,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Translate a status](https://docs.joinmastodon.org/methods/statuses/#translate)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1917,7 +1869,7 @@ paths:
         - 4.0.0 - limit unauthenticated requests
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get parent and child statuses in context](https://docs.joinmastodon.org/methods/statuses/#context)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1942,7 +1894,7 @@ paths:
         - 2.8.0 - poll added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Post a new status](https://docs.joinmastodon.org/methods/statuses/#create)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1977,7 +1929,7 @@ paths:
         - 3.2.0 - add thumbnail parameter
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Upload media as an attachment (v1) deprecated](https://docs.joinmastodon.org/methods/media/#v1)'
       deprecated: true
       responses:
         200:
@@ -2008,7 +1960,7 @@ paths:
         - 3.1.3 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get media attachment](https://docs.joinmastodon.org/methods/media/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2047,7 +1999,7 @@ paths:
         continue to be processed asynchronously and return 202.
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Upload media as an attachment (async)](https://docs.joinmastodon.org/methods/media/#v2)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2082,7 +2034,7 @@ paths:
         - 2.8.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Vote on a poll](https://docs.joinmastodon.org/methods/polls/#vote)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2109,7 +2061,7 @@ paths:
         - 2.8.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View a poll](https://docs.joinmastodon.org/methods/polls/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2129,7 +2081,7 @@ paths:
         - 2.7.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View a single scheduled status](https://docs.joinmastodon.org/methods/scheduled_statuses/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2154,7 +2106,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View scheduled statuses](https://docs.joinmastodon.org/methods/scheduled_statuses/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2170,8 +2122,8 @@ paths:
         \ or in your notifications."
       description: "View statuses with a \u201Cdirect\u201D privacy, from your account\
         \ or in your notifications.\n## Version history\n\n- 2.6.0 - add min_id. deprecated\
-        \ in favor of Conversations API\n- 3.0.0 - removed\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        \ in favor of Conversations API\n- 3.0.0 - removed\n\n[View direct timeline\
+        \ deprecated](https://docs.joinmastodon.org/methods/timelines/#direct)"
       deprecated: true
       responses:
         200:
@@ -2199,7 +2151,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View list timeline](https://docs.joinmastodon.org/methods/timelines/#list)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2227,7 +2179,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View link timeline](https://docs.joinmastodon.org/methods/timelines/#link)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2255,7 +2207,7 @@ paths:
         may appear in the timeline
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View home timeline](https://docs.joinmastodon.org/methods/timelines/#home)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2289,7 +2241,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now. add remote
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View hashtag timeline](https://docs.joinmastodon.org/methods/timelines/#tag)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2320,7 +2272,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View public timeline](https://docs.joinmastodon.org/methods/timelines/#public)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2337,7 +2289,7 @@ paths:
         - 2.6.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Mark a conversation as read](https://docs.joinmastodon.org/methods/conversations/#read)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2361,7 +2313,7 @@ paths:
         - 2.6.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Remove a conversation](https://docs.joinmastodon.org/methods/conversations/#delete)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2386,7 +2338,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View all conversations](https://docs.joinmastodon.org/methods/conversations/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2408,7 +2360,7 @@ paths:
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View accounts in a list](https://docs.joinmastodon.org/methods/lists/#accounts)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2436,7 +2388,7 @@ paths:
         - 2.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Show a single list](https://docs.joinmastodon.org/methods/lists/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2460,7 +2412,7 @@ paths:
         - 2.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View your lists](https://docs.joinmastodon.org/methods/lists/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2481,7 +2433,7 @@ paths:
         - 3.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get saved timeline positions](https://docs.joinmastodon.org/methods/markers/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2504,7 +2456,7 @@ paths:
         - 2.6.0 - now returns conversation instead of update
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch for direct messages](https://docs.joinmastodon.org/methods/streaming/#direct)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2527,7 +2479,7 @@ paths:
         #23989
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch for list updates](https://docs.joinmastodon.org/methods/streaming/#list)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2550,7 +2502,7 @@ paths:
         #23989
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch the local timeline for a hashtag](https://docs.joinmastodon.org/methods/streaming/#hashtag-local)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2573,7 +2525,7 @@ paths:
         #23989
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch the public timeline for a hashtag](https://docs.joinmastodon.org/methods/streaming/#hashtag)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2596,7 +2548,7 @@ paths:
         #23989
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch for remote statuses](https://docs.joinmastodon.org/methods/streaming/#public-remote)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2621,7 +2573,7 @@ paths:
         #23989
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch the local timeline](https://docs.joinmastodon.org/methods/streaming/#public-local)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2646,7 +2598,7 @@ paths:
         #23989
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch the federated timeline](https://docs.joinmastodon.org/methods/streaming/#public)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2664,7 +2616,7 @@ paths:
         - 1.4.2 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch your notifications](https://docs.joinmastodon.org/methods/streaming/#notification)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2692,7 +2644,7 @@ paths:
         - 3.5.0 - now returns status.update
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Watch your home timeline and notifications](https://docs.joinmastodon.org/methods/streaming/#user)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2711,7 +2663,7 @@ paths:
         - 2.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Check if the server is alive](https://docs.joinmastodon.org/methods/streaming/#health)'
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -2730,13 +2682,19 @@ paths:
         and is thus a relatively slow operation (although faster than getting the
         full corresponding notifications), therefore the number of returned notifications
         is capped.'
-      description: "Get the (capped) number of unread notification groups for the\
-        \ current user.\nA notification is considered unread if it is more recent\
-        \ than the notifications read marker.\nBecause the count is dependant on the\
-        \ parameters, it is computed every time and is thus a relatively slow operation\
-        \ (although faster than getting the full corresponding notifications), therefore\
-        \ the number of returned notifications is capped.\n## Version history\n\n\
-        - \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+      description: 'Get the (capped) number of unread notification groups for the
+        current user.
+
+        A notification is considered unread if it is more recent than the notifications
+        read marker.
+
+        Because the count is dependant on the parameters, it is computed every time
+        and is thus a relatively slow operation (although faster than getting the
+        full corresponding notifications), therefore the number of returned notifications
+        is capped.
+
+
+        [Get the number of unread notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#unread-group-count)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2748,8 +2706,10 @@ paths:
     get:
       tags:
       - grouped notifications
-      description: "\n## Version history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+      description: '
+
+
+        [Get accounts of all notifications in a notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-group-accounts)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2762,8 +2722,10 @@ paths:
       tags:
       - grouped notifications
       summary: Dismiss a single notification group from the server.
-      description: "Dismiss a single notification group from the server.\n## Version\
-        \ history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+      description: 'Dismiss a single notification group from the server.
+
+
+        [Dismiss a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#dismiss-group)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2778,9 +2740,11 @@ paths:
       - grouped notifications
       summary: View information about a specific notification group with a given group
         key.
-      description: "View information about a specific notification group with a given\
-        \ group key.\n## Version history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+      description: 'View information about a specific notification group with a given
+        group key.
+
+
+        [Get a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-notification-group)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2796,17 +2760,21 @@ paths:
       summary: Return grouped notifications concerning the user. This API returns
         Link headers containing links to the next/previous page. However, the links
         can also be constructed dynamically using query params and id values.
-      description: "Return grouped notifications concerning the user. This API returns\
-        \ Link headers containing links to the next/previous page. However, the links\
-        \ can also be constructed dynamically using query params and id values.\n\
-        Notifications of type favourite, follow or reblog with the same type and the\
-        \ same target made in a similar timeframe are given a same group_key by the\
-        \ server, and querying this endpoint will return aggregated notifications,\
-        \ with only one object per group_key. Other notification types may be grouped\
-        \ in the future. The grouped_types parameter should be used by the client\
-        \ to explictely list the types it supports showing grouped notifications for.\n\
-        Types to filter include:\n## Version history\n\n- \n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+      description: 'Return grouped notifications concerning the user. This API returns
+        Link headers containing links to the next/previous page. However, the links
+        can also be constructed dynamically using query params and id values.
+
+        Notifications of type favourite, follow or reblog with the same type and the
+        same target made in a similar timeframe are given a same group_key by the
+        server, and querying this endpoint will return aggregated notifications, with
+        only one object per group_key. Other notification types may be grouped in
+        the future. The grouped_types parameter should be used by the client to explictely
+        list the types it supports showing grouped notifications for.
+
+        Types to filter include:
+
+
+        [Get all grouped notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#get-grouped)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2836,7 +2804,7 @@ paths:
         \ history:4.3.0 - added\nA successful call returns whether the notifications\
         \ have been merged and are ready for being loaded.\nInvalid or missing Authorization\
         \ header.\nJoin Mastodon \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7\
-        \ Imprint\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"id\"]})"
+        \ Imprint\n\n[Check if accepted notification requests have been merged](https://docs.joinmastodon.org/methods/notifications/#requests-merged)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2860,7 +2828,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Dismiss multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#dismiss-multiple-requests)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2885,7 +2853,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Accept multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#accept-multiple-requests)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2908,7 +2876,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Dismiss a single notification request](https://docs.joinmastodon.org/methods/notifications/#dismiss-request)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2933,7 +2901,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Accept a single notification request](https://docs.joinmastodon.org/methods/notifications/#accept-request)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2954,7 +2922,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get a single notification request](https://docs.joinmastodon.org/methods/notifications/#get-one-request)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2971,8 +2939,7 @@ paths:
         \ page."
       description: "Notification requests for notifications filtered by the user\u2019\
         s policy. This API returns Link headers containing links to the next/previous\
-        \ page.\n## Version history\n\n- 4.3.0 - added\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        \ page.\n## Version history\n\n- 4.3.0 - added\n\n[Get all notification requests](https://docs.joinmastodon.org/methods/notifications/#get-requests)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2994,7 +2961,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get the filtering policy for notifications](https://docs.joinmastodon.org/methods/notifications/#get-policy)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3033,7 +3000,7 @@ paths:
         - 4.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get the number of unread notifications](https://docs.joinmastodon.org/methods/notifications/#unread-count)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3058,7 +3025,7 @@ paths:
         - 3.0.0 - removed
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Dismiss a single notification removed](https://docs.joinmastodon.org/methods/notifications/#dismiss-deprecated)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3079,7 +3046,7 @@ paths:
         - 1.3.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Dismiss a single notification](https://docs.joinmastodon.org/methods/notifications/#dismiss)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3100,7 +3067,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Dismiss all notifications](https://docs.joinmastodon.org/methods/notifications/#clear)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3121,7 +3088,7 @@ paths:
         - 0.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get a single notification](https://docs.joinmastodon.org/methods/notifications/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3165,7 +3132,7 @@ paths:
         - 4.3.0 - added include_filtered parameter
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get all notifications](https://docs.joinmastodon.org/methods/notifications/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3203,7 +3170,7 @@ paths:
         be accepted, but silently fail.
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Subscribe to push notifications](https://docs.joinmastodon.org/methods/push/#create)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3230,7 +3197,7 @@ paths:
         - 3.0.0 - removed; use v2 search instead
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Perform a search (v1) removed](https://docs.joinmastodon.org/methods/search/#v1)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3260,7 +3227,7 @@ paths:
         cannot use the resolve or offset parameters.
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Perform a search](https://docs.joinmastodon.org/methods/search/#v2)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3293,7 +3260,7 @@ paths:
         - 4.0.0 - deprecated. added configuration[accounts].
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View server information (v1) deprecated](https://docs.joinmastodon.org/methods/instance/#v1)'
       deprecated: true
       responses:
         200:
@@ -3314,7 +3281,7 @@ paths:
         - 4.2.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View translation languages](https://docs.joinmastodon.org/methods/instance/#translation_languages)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3332,7 +3299,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View extended description](https://docs.joinmastodon.org/methods/instance/#extended_description)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3350,7 +3317,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View moderated servers](https://docs.joinmastodon.org/methods/instance/#domain_blocks)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3376,7 +3343,7 @@ paths:
         - 3.4.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List of rules](https://docs.joinmastodon.org/methods/instance/#rules)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3396,7 +3363,7 @@ paths:
         - 3.0.0 - requires user token if instance is in whitelist mode
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Weekly activity](https://docs.joinmastodon.org/methods/instance/#activity)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3420,7 +3387,7 @@ paths:
         - 3.0.0 - requires user token if instance is in whitelist mode
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List of connected domains](https://docs.joinmastodon.org/methods/instance/#peers)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3445,7 +3412,7 @@ paths:
         - 4.3.0 - added configuration.vapid.public_key
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View server information](https://docs.joinmastodon.org/methods/instance/#v2)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3463,7 +3430,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View trending links](https://docs.joinmastodon.org/methods/trends/#links)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3481,7 +3448,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View trending statuses](https://docs.joinmastodon.org/methods/trends/#statuses)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3502,7 +3469,7 @@ paths:
         The former is a deprecated alias that may be removed in the future.
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View trending tags](https://docs.joinmastodon.org/methods/trends/#tags)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3520,7 +3487,7 @@ paths:
         - 3.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View profile directory](https://docs.joinmastodon.org/methods/directory/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3540,7 +3507,7 @@ paths:
         - 3.0.0 - optional category added to response
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View all custom emoji](https://docs.joinmastodon.org/methods/custom_emojis/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3558,7 +3525,7 @@ paths:
         - 3.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Add a reaction to an announcement](https://docs.joinmastodon.org/methods/announcements/#put-reactions)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3585,7 +3552,7 @@ paths:
         - 3.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Dismiss an announcement](https://docs.joinmastodon.org/methods/announcements/#dismiss)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3609,7 +3576,7 @@ paths:
         - 3.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View all announcements](https://docs.joinmastodon.org/methods/announcements/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3625,8 +3592,7 @@ paths:
         \ flagged as sensitive."
       description: "Stops marking an account\u2019s posts as sensitive, if it was\
         \ previously flagged as sensitive.\n## Version history\n\n- 3.3.0 - added\n\
-        - 4.0.0 - support custom roles and permissions\n\n[{method_dom.text.strip()}]({link}#{method_dom[\"\
-        id\"]})"
+        - 4.0.0 - support custom roles and permissions\n\n[Unmark an account as sensitive](https://docs.joinmastodon.org/methods/admin/accounts/#unsensitive)"
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3654,7 +3620,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unsuspend an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsuspend)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3681,7 +3647,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unsilence an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsilence)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3708,7 +3674,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Enable a currently disabled account](https://docs.joinmastodon.org/methods/admin/accounts/#enable)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3739,7 +3705,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Perform an action against an account](https://docs.joinmastodon.org/methods/admin/accounts/#action)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3769,7 +3735,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View a specific account](https://docs.joinmastodon.org/methods/admin/accounts/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3797,7 +3763,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Reject a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#reject)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3825,7 +3791,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Approve a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#approve)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3856,7 +3822,7 @@ paths:
         - 4.0.0 - added role_ids. Support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View accounts (v2)](https://docs.joinmastodon.org/methods/admin/accounts/#v2)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3887,7 +3853,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View accounts (v1)](https://docs.joinmastodon.org/methods/admin/accounts/#v1)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3909,7 +3875,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Show a single canonical email block](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3934,7 +3900,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List all canonical email blocks](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3959,7 +3925,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Test](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#test)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3988,7 +3954,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get dimensional data](https://docs.joinmastodon.org/methods/admin/dimensions/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4011,7 +3977,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get a single allowed domain](https://docs.joinmastodon.org/methods/admin/domain_allows/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4037,7 +4003,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List all allowed domains](https://docs.joinmastodon.org/methods/admin/domain_allows/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4061,7 +4027,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get a single blocked domain](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4087,7 +4053,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List all blocked domains](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4112,7 +4078,7 @@ paths:
         - 4.1.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get a single blocked email domain](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4139,7 +4105,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List all blocked email domains](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4162,7 +4128,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get a single IP block](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4188,7 +4154,7 @@ paths:
         - 4.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [List all IP blocks](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4214,7 +4180,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get measurable data](https://docs.joinmastodon.org/methods/admin/measures/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4239,7 +4205,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Reopen a closed report](https://docs.joinmastodon.org/methods/admin/reports/#reopen)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4264,7 +4230,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Mark report as resolved](https://docs.joinmastodon.org/methods/admin/reports/#resolve)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4288,7 +4254,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Unassign report](https://docs.joinmastodon.org/methods/admin/reports/#unassign)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4313,7 +4279,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Assign report to self](https://docs.joinmastodon.org/methods/admin/reports/#assign_to_self)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4337,7 +4303,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View a single report](https://docs.joinmastodon.org/methods/admin/reports/#get-one)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4362,7 +4328,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View all reports](https://docs.joinmastodon.org/methods/admin/reports/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4388,7 +4354,7 @@ paths:
         - 4.0.0 - support custom roles and permissions
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Calculate retention data](https://docs.joinmastodon.org/methods/admin/retention/#create)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4418,7 +4384,7 @@ paths:
         - 4.1.0 - Bug fixed
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View trending tags](https://docs.joinmastodon.org/methods/admin/trends/#tags)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4443,7 +4409,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View trending statuses](https://docs.joinmastodon.org/methods/admin/trends/#statuses)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4468,7 +4434,7 @@ paths:
         - 3.5.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View trending links](https://docs.joinmastodon.org/methods/admin/trends/#links)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4490,7 +4456,7 @@ paths:
         - 2.8.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [View identity proofs removed](https://docs.joinmastodon.org/methods/proofs/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4511,7 +4477,7 @@ paths:
         - 1.0.0 - added
 
 
-        [{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+        [Get OEmbed info as JSON](https://docs.joinmastodon.org/methods/oembed/#get)'
       responses:
         200:
           $ref: '#/components/responses/Error'

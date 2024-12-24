@@ -130,7 +130,7 @@ def handle_description(text: str) -> str:
     versions = re.split(r"(\d+\.\d+\.\d+ -)", version)[1:]
     versions = ["".join(versions[n : n + 2]).strip() for n in range(0, len(versions), 2)]
 
-    return f"\n## Version history\n\n- {'\n- '.join(versions)}"
+    return f"\n## Version history\n\n- {'\n- '.join(versions)}" if versions else ""
 
 
 def handle_response(tag: Tag) -> Responses:
