@@ -5,6 +5,7 @@ from enum import auto
 
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import RootModel
 
 
 class BuildInType(StrEnum):
@@ -83,3 +84,24 @@ class ParameterObject(BaseModel):
     required: bool | None = None
     deprecated: bool | None = None
     schema: SchemaObject
+
+
+class SecuritySchemeObject(BaseModel):
+    """
+    Defines a security scheme that can be used by the operations.
+
+    ref: https://swagger.io/specification/#security-scheme-object
+    """
+
+    type: str
+    description: str | None = None
+    scheme: str | None = None
+    bearerFormat: str | None = None
+
+
+class SecurityRequirementObject(RootModel[dict[str, list[str]]]):
+    """
+    Lists the required security schemes to execute this operation.
+
+    ref: https://swagger.io/specification/#security-requirement-object
+    """

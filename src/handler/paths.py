@@ -15,6 +15,7 @@ from src.openapi_spec import Paths
 from src.openapi_spec import ReferenceObject
 from src.openapi_spec import Responses
 from src.openapi_spec import SchemaObject
+from src.openapi_spec import SecurityRequirementObject
 
 
 def handle_paths(link: str, html: str) -> Paths:
@@ -117,19 +118,29 @@ def handle_operation(tag: Tag) -> Operation:
     summary = summaries[0] if summaries else None
     description = "\n".join(summaries) + handle_description(tag.text if tag else "")
 
-    return Operation(summary=summary, description=description, parameters=handle_parameters(tag))
+    parameters = handle_parameters(tag)
+    security = None
+    if parameters:
+        for idx, param in enumerate(parameters):
+            if isinstance(param, ParameterObject) and param.name == "Authorization":
+                # remove the Authorization header from the parameters and add the security only
+                parameters.pop(idx)
+                security = [SecurityRequirementObject({"BearerAuth": []})]
+                break
+
+    return Operation(summary=summary, description=description, parameters=parameters, security=security)
 
 
-def handle_parameters(tag: Tag) -> list[ParameterObject | ReferenceObject] | None:
+def handle_parameters(tag: Tag) -> list[ParameterObject | ReferenceObject]:
     """
     Handle the parameters of the API method, based on the ParameterIn
     """
     if not tag:
-        return None
+        return []
 
     request_dom = tag.find_next("h4", {"id": lambda x: x and x.startswith("request")})
     if not request_dom:
-        return None
+        return []
 
     parameters = [param for param_type in ParameterIn for param in handle_parameter_by_type(request_dom, param_type)]
     return parameters if parameters else None

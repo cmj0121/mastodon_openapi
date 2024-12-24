@@ -10,6 +10,7 @@ from src.openapi_spec import MediaTypeObject
 from src.openapi_spec import ReferenceObject
 from src.openapi_spec import ResponseObject
 from src.openapi_spec import SchemaObject
+from src.openapi_spec import SecuritySchemeObject
 
 
 def default_streaming_response() -> ResponseObject:
@@ -27,6 +28,15 @@ def default_streaming_response() -> ResponseObject:
     )
 
 
+def default_security_scheme() -> dict[str, SecuritySchemeObject]:
+    spec = SecuritySchemeObject(
+        type="http",
+        description="Bearer token",
+        scheme="bearer",
+    )
+    return {"BearerAuth": spec}
+
+
 def handle_components(link: str, html: str) -> Component:
     """
     Handle the base URL of the Mastodon API documentation and return the OpenAPI Components object.
@@ -39,7 +49,7 @@ def handle_components(link: str, html: str) -> Component:
         entity_link = f'{link}{entity["href"]}'
         spec.update(handle_component(entity_link))
 
-    return Component(responses=spec)
+    return Component(responses=spec, securitySchemes=default_security_scheme())
 
 
 def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:

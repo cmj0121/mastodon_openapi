@@ -17,6 +17,8 @@ from .types import ParameterObject
 from .types import ReferenceObject
 from .types import ResponseObject
 from .types import SchemaObject
+from .types import SecurityRequirementObject
+from .types import SecuritySchemeObject
 
 
 class OpenAPI(BaseModel):
@@ -50,5 +52,7 @@ __all__ = list(
         "ParameterObject",
         "ParameterIn",
         "BuildInType",
+        "SecuritySchemeObject",
+        "SecurityRequirementObject",
     }
 )

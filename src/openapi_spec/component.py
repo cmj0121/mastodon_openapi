@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 from .types import ReferenceObject
 from .types import ResponseObject
+from .types import SecuritySchemeObject
 
 
 class Component(BaseModel):
@@ -12,3 +13,4 @@ class Component(BaseModel):
     """
 
     responses: dict[str, ResponseObject | ReferenceObject] = {}
+    securitySchemes: dict[str, SecuritySchemeObject] | None = None

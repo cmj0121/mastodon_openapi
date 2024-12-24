@@ -27,15 +27,7 @@ paths:
         \ vapid_key, please see api/v2/instance\n- 4.3.0 - removed needing read scope\
         \ to access this API, now any valid App token can be used\n- 4.3.0 - added\
         \ scopes and redirect_uris properties\n\n[Verify your app works](https://docs.joinmastodon.org/methods/apps/#verify_credentials)"
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <app_token> to gain
-          authorized access to this API method. <app_token> may be either a client_credential
-          or access_token returned from /oauth/token
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -46,6 +38,8 @@ paths:
           description: If the Authorization header contains an invalid token, is malformed,
             or is not present, an error will be returned indicating an authorization
             failure.
+      security:
+      - BearerAuth: []
   /api/v1/apps:
     post:
       tags:
@@ -73,6 +67,7 @@ paths:
 
 
         [Create an application](https://docs.joinmastodon.org/methods/apps/#create)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -96,6 +91,7 @@ paths:
         \ endpoint can help you better integrate with the Mastodon API, such as allowing\
         \ for negotiation of scopes across different versions of Mastodon.\n## Version\
         \ history\n\n- 4.3.0 - added\n\n[Discover OAuth Server Configuration](https://docs.joinmastodon.org/methods/oauth/#authorization-server-metadata)"
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -263,14 +259,7 @@ paths:
       description: "Resend a new confirmation email. If an email is provided, updates\
         \ the unconfirmed user\u2019s email before resending the confirmation email.\n\
         ## Version history\n\n- 3.4.0 - added\n\n[Resend confirmation email](https://docs.joinmastodon.org/methods/emails/#confirmation)"
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -280,6 +269,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: The client associated with the token does not own the unconfirmed
             user.
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/identity_proofs:
     get:
       tags:
@@ -392,13 +383,6 @@ paths:
           to false.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -408,6 +392,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: resolve=true, but the domain part of the user@domain address
             is not a currently live website
+      security:
+      - BearerAuth: []
   /api/v1/accounts/familiar_followers:
     get:
       tags:
@@ -431,13 +417,6 @@ paths:
           IDs.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -448,6 +427,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/relationships:
     get:
       tags:
@@ -478,13 +459,6 @@ paths:
           users, defaults to false.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -495,6 +469,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/note:
     post:
       tags:
@@ -510,13 +486,6 @@ paths:
 
         [Set private note on profile](https://docs.joinmastodon.org/methods/accounts/#note)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -533,6 +502,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/unpin:
     post:
       tags:
@@ -541,13 +512,6 @@ paths:
       description: "Remove the given account from the user\u2019s featured profiles.\n\
         ## Version history\n\n- 2.5.0 - added\n\n[Unfeature account from profile](https://docs.joinmastodon.org/methods/accounts/#unpin)"
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -564,6 +528,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/pin:
     post:
       tags:
@@ -575,13 +541,6 @@ paths:
         \ Version history\n\n- 2.5.0 - added\n- 4.0.0 - calling this method is now\
         \ idempotent\n\n[Feature account on your profile](https://docs.joinmastodon.org/methods/accounts/#pin)"
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -604,6 +563,8 @@ paths:
         500:
           $ref: '#/components/responses/Error'
           description: Can sometimes be returned if the account already endorsed.
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/unmute:
     post:
       tags:
@@ -621,13 +582,6 @@ paths:
 
         [Unmute account](https://docs.joinmastodon.org/methods/accounts/#unmute)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -644,6 +598,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/mute:
     post:
       tags:
@@ -665,13 +621,6 @@ paths:
 
         [Mute account](https://docs.joinmastodon.org/methods/accounts/#mute)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -690,6 +639,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/unblock:
     post:
       tags:
@@ -707,13 +658,6 @@ paths:
 
         [Unblock account](https://docs.joinmastodon.org/methods/accounts/#unblock)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -730,6 +674,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/block:
     post:
       tags:
@@ -749,13 +695,6 @@ paths:
 
         [Block account](https://docs.joinmastodon.org/methods/accounts/#block)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -772,6 +711,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/remove_from_followers:
     post:
       tags:
@@ -787,13 +728,6 @@ paths:
 
         [Remove account from followers](https://docs.joinmastodon.org/methods/accounts/#remove_from_followers)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -811,6 +745,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/unfollow:
     post:
       tags:
@@ -828,13 +764,6 @@ paths:
 
         [Unfollow account](https://docs.joinmastodon.org/methods/accounts/#unfollow)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -851,6 +780,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/follow:
     post:
       tags:
@@ -874,13 +805,6 @@ paths:
 
         [Follow account](https://docs.joinmastodon.org/methods/accounts/#follow)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -897,6 +821,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/lists:
     get:
       tags:
@@ -912,13 +838,6 @@ paths:
 
         [Get lists containing this account](https://docs.joinmastodon.org/methods/accounts/#lists)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -944,6 +863,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/featured_tags:
     get:
       tags:
@@ -952,12 +873,6 @@ paths:
       description: "Tags featured by this account.\n## Version history\n\n- 3.3.0\
         \ - added\n\n[Get account\u2019s featured tags](https://docs.joinmastodon.org/methods/accounts/#featured_tags)"
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -968,6 +883,8 @@ paths:
         200:
           $ref: '#/components/responses/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/following:
     get:
       tags:
@@ -1000,12 +917,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -1026,6 +937,8 @@ paths:
         410:
           $ref: '#/components/responses/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/followers:
     get:
       tags:
@@ -1058,12 +971,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -1084,6 +991,8 @@ paths:
         410:
           $ref: '#/components/responses/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id/statuses:
     get:
       tags:
@@ -1146,12 +1055,6 @@ paths:
         description: String. Filter for statuses using a specific hashtag.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -1173,6 +1076,8 @@ paths:
         410:
           $ref: '#/components/responses/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+      security:
+      - BearerAuth: []
   /api/v1/accounts:
     post:
       tags:
@@ -1199,14 +1104,7 @@ paths:
 
 
         [Register an account](https://docs.joinmastodon.org/methods/accounts/#create)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <app_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1226,6 +1124,8 @@ paths:
         429:
           $ref: '#/components/responses/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
   /api/v1/accounts/:id:
     get:
       tags:
@@ -1245,12 +1145,6 @@ paths:
 
         [Get account](https://docs.joinmastodon.org/methods/accounts/#get)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -1272,6 +1166,8 @@ paths:
         410:
           $ref: '#/components/responses/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+      security:
+      - BearerAuth: []
   /api/v1/accounts/update_credentials:
     patch:
       tags:
@@ -1282,14 +1178,7 @@ paths:
         \ parameters\n- 2.4.2 - added source[language] parameter\n- 2.7.0 - added\
         \ discoverable parameter\n- 4.1.0 - added hide_collections parameter\n- 4.2.0\
         \ - added indexable parameter\n\n[Update account credentials](https://docs.joinmastodon.org/methods/accounts/#update_credentials)"
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1301,6 +1190,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/accounts/verify_credentials:
     get:
       tags:
@@ -1317,14 +1208,7 @@ paths:
 
 
         [Verify account credentials](https://docs.joinmastodon.org/methods/accounts/#verify_credentials)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1342,6 +1226,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/bookmarks:
     get:
       tags:
@@ -1358,6 +1244,7 @@ paths:
 
 
         [View bookmarked statuses](https://docs.joinmastodon.org/methods/bookmarks/#get)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1407,13 +1294,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1421,6 +1301,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/mutes:
     get:
       tags:
@@ -1454,13 +1336,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1468,6 +1343,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/blocks:
     get:
       tags:
@@ -1505,13 +1382,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1519,6 +1389,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/domain_blocks:
     get:
       tags:
@@ -1557,13 +1429,6 @@ paths:
           domain blocks. Max 200 domain blocks.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1571,6 +1436,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/filters:
     get:
       tags:
@@ -1589,13 +1456,6 @@ paths:
 
         [Client-side (v1) methods](https://docs.joinmastodon.org/methods/filters/#v1)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the FilterKeyword in the database.
@@ -1616,6 +1476,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: 'If phrase is not provided properly:'
+      security:
+      - BearerAuth: []
   /api/v2/filters:
     get:
       tags:
@@ -1631,13 +1493,6 @@ paths:
 
         [Server-side (v2) methods](https://docs.joinmastodon.org/methods/filters/#v2)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Filter in the database.
@@ -1657,6 +1512,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: No keyword was provided
+      security:
+      - BearerAuth: []
   /api/v1/reports:
     post:
       tags:
@@ -1676,14 +1533,7 @@ paths:
 
 
         [File a report](https://docs.joinmastodon.org/methods/reports/#post)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1698,6 +1548,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
   /api/v1/follow_requests/:account_id/reject:
     post:
       tags:
@@ -1714,13 +1566,6 @@ paths:
 
         [Reject follow request](https://docs.joinmastodon.org/methods/follow_requests/#reject)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :account_id
         in: path
         description: required String. The ID of the Account in the database.
@@ -1737,6 +1582,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: No pending follow request from that account ID
+      security:
+      - BearerAuth: []
   /api/v1/follow_requests/:account_id/authorize:
     post:
       tags:
@@ -1753,13 +1600,6 @@ paths:
 
         [Accept follow request](https://docs.joinmastodon.org/methods/follow_requests/#accept)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :account_id
         in: path
         description: required String. The ID of the Account in the database.
@@ -1777,6 +1617,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: No pending follow request from that account ID
+      security:
+      - BearerAuth: []
   /api/v1/follow_requests:
     get:
       tags:
@@ -1807,13 +1649,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1822,6 +1657,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/endorsements:
     get:
       tags:
@@ -1853,13 +1690,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1867,6 +1697,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/featured_tags/suggestions:
     get:
       tags:
@@ -1881,14 +1713,7 @@ paths:
 
 
         [View suggested tags to feature](https://docs.joinmastodon.org/methods/featured_tags/#suggestions)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1896,6 +1721,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/featured_tags/:id:
     delete:
       tags:
@@ -1911,13 +1738,6 @@ paths:
 
         [Unfeature a tag](https://docs.joinmastodon.org/methods/featured_tags/#unfeature)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the FeaturedTag in the database.
@@ -1934,6 +1754,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: FeaturedTag is not owned by you or does not exist
+      security:
+      - BearerAuth: []
   /api/v1/featured_tags:
     get:
       tags:
@@ -1948,14 +1770,7 @@ paths:
 
 
         [View your featured tags](https://docs.joinmastodon.org/methods/featured_tags/#get)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1963,6 +1778,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/preferences:
     get:
       tags:
@@ -1977,14 +1794,7 @@ paths:
 
 
         [View user preferences](https://docs.joinmastodon.org/methods/preferences/#get)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -1992,6 +1802,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/followed_tags:
     get:
       tags:
@@ -2030,13 +1842,6 @@ paths:
           tags. Max 200 tags.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2044,6 +1849,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/suggestions:
     get:
       tags:
@@ -2070,13 +1877,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2084,6 +1884,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/suggestions/:account_id:
     delete:
       tags:
@@ -2099,13 +1901,6 @@ paths:
 
         [Remove a suggestion](https://docs.joinmastodon.org/methods/suggestions/#remove)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :account_id
         in: path
         description: required String. The ID of the Account in the database.
@@ -2121,6 +1916,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/suggestions:
     get:
       tags:
@@ -2144,13 +1941,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -2158,6 +1948,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/tags/:id/unfollow:
     post:
       tags:
@@ -2175,13 +1967,6 @@ paths:
 
         [Unfollow a hashtag](https://docs.joinmastodon.org/methods/tags/#unfollow)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The name of the hashtag.
@@ -2195,6 +1980,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/tags/:id/follow:
     post:
       tags:
@@ -2214,13 +2001,6 @@ paths:
 
         [Follow a hashtag](https://docs.joinmastodon.org/methods/tags/#follow)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The name of the hashtag.
@@ -2237,6 +2017,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: 'Prior to 4.1.0: Tag was already followed'
+      security:
+      - BearerAuth: []
   /api/v1/tags/:id:
     get:
       tags:
@@ -2252,12 +2034,6 @@ paths:
 
         [View information about a single tag](https://docs.joinmastodon.org/methods/tags/#get)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The name of the hashtag.
@@ -2268,6 +2044,8 @@ paths:
         200:
           $ref: '#/components/responses/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
   /api/v1/profile/header:
     delete:
       tags:
@@ -2281,20 +2059,15 @@ paths:
 
 
         [Delete profile header](https://docs.joinmastodon.org/methods/profile/#delete-profile-header)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
           description: "The header was successfully deleted from the user\u2019s profile.\
             \ If there were no header associated with the profile, the response will\
             \ still indicate a successful deletion."
+      security:
+      - BearerAuth: []
   /api/v1/profile/avatar:
     delete:
       tags:
@@ -2308,20 +2081,15 @@ paths:
 
 
         [Delete profile avatar](https://docs.joinmastodon.org/methods/profile/#delete-profile-avatar)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
           description: "The avatar was successfully deleted from the user\u2019s profile.\
             \ If there were no avatar associated with the profile, the response will\
             \ still indicate a successful deletion."
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/card:
     get:
       tags:
@@ -2341,12 +2109,6 @@ paths:
         [Fetch preview card deprecated](https://docs.joinmastodon.org/methods/statuses/#card)'
       deprecated: true
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The local ID of the Status in the database.
@@ -2360,6 +2122,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/source:
     get:
       tags:
@@ -2375,12 +2139,6 @@ paths:
 
         [View status source](https://docs.joinmastodon.org/methods/statuses/#source)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The local ID of the Status in the database.
@@ -2397,6 +2155,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/history:
     get:
       tags:
@@ -2414,12 +2174,6 @@ paths:
 
         [View edit history of a status](https://docs.joinmastodon.org/methods/statuses/#history)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The local ID of the Status in the database.
@@ -2433,6 +2187,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id:
     get:
       tags:
@@ -2450,12 +2206,6 @@ paths:
 
         [View a single status](https://docs.joinmastodon.org/methods/statuses/#get)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2472,6 +2222,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/unpin:
     post:
       tags:
@@ -2487,13 +2239,6 @@ paths:
 
         [Unpin status from profile](https://docs.joinmastodon.org/methods/statuses/#unpin)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The local ID of the Status in the database.
@@ -2510,6 +2255,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/pin:
     post:
       tags:
@@ -2527,13 +2274,6 @@ paths:
 
         [Pin status to profile](https://docs.joinmastodon.org/methods/statuses/#pin)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The local ID of the Status in the database.
@@ -2555,6 +2295,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: 'Status is not owned by you:'
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/unmute:
     post:
       tags:
@@ -2572,13 +2314,6 @@ paths:
 
         [Unmute a conversation](https://docs.joinmastodon.org/methods/statuses/#unmute)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2595,6 +2330,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/mute:
     post:
       tags:
@@ -2612,13 +2349,6 @@ paths:
 
         [Mute a conversation](https://docs.joinmastodon.org/methods/statuses/#mute)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2635,6 +2365,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/unbookmark:
     post:
       tags:
@@ -2650,13 +2382,6 @@ paths:
 
         [Undo bookmark of a status](https://docs.joinmastodon.org/methods/statuses/#unbookmark)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2673,6 +2398,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/bookmark:
     post:
       tags:
@@ -2688,13 +2415,6 @@ paths:
 
         [Bookmark a status](https://docs.joinmastodon.org/methods/statuses/#bookmark)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2708,6 +2428,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/unreblog:
     post:
       tags:
@@ -2723,13 +2445,6 @@ paths:
 
         [Undo boost of a status](https://docs.joinmastodon.org/methods/statuses/#unreblog)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2746,6 +2461,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/reblog:
     post:
       tags:
@@ -2763,13 +2480,6 @@ paths:
 
         [Boost a status](https://docs.joinmastodon.org/methods/statuses/#boost)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2788,6 +2498,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/unfavourite:
     post:
       tags:
@@ -2803,13 +2515,6 @@ paths:
 
         [Undo favourite of a status](https://docs.joinmastodon.org/methods/statuses/#unfavourite)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2826,6 +2531,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/favourite:
     post:
       tags:
@@ -2841,13 +2548,6 @@ paths:
 
         [Favourite a status](https://docs.joinmastodon.org/methods/statuses/#favourite)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2864,6 +2564,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/favourited_by:
     get:
       tags:
@@ -2895,12 +2597,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2914,6 +2610,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/reblogged_by:
     get:
       tags:
@@ -2945,12 +2643,6 @@ paths:
           accounts. Max 80 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -2964,6 +2656,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/translate:
     post:
       tags:
@@ -2979,13 +2673,6 @@ paths:
 
         [Translate a status](https://docs.joinmastodon.org/methods/statuses/#translate)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -3003,6 +2690,8 @@ paths:
         503:
           $ref: '#/components/responses/Error'
           description: The translation request failed
+      security:
+      - BearerAuth: []
   /api/v1/statuses/:id/context:
     get:
       tags:
@@ -3020,12 +2709,6 @@ paths:
 
         [Get parent and child statuses in context](https://docs.joinmastodon.org/methods/statuses/#context)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -3039,6 +2722,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Status is private or does not exist
+      security:
+      - BearerAuth: []
   /api/v1/statuses:
     post:
       tags:
@@ -3058,13 +2743,6 @@ paths:
 
         [Post a new status](https://docs.joinmastodon.org/methods/statuses/#create)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: Idempotency-Key
         in: header
         description: Provide this header with any arbitrary string to prevent duplicate
@@ -3082,6 +2760,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
   /api/v1/media:
     post:
       tags:
@@ -3108,14 +2788,7 @@ paths:
 
         [Upload media as an attachment (v1) deprecated](https://docs.joinmastodon.org/methods/media/#v1)'
       deprecated: true
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3128,6 +2801,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: File or file type is unsupported or invalid
+      security:
+      - BearerAuth: []
   /api/v1/media/:id:
     get:
       tags:
@@ -3147,13 +2822,6 @@ paths:
 
         [Get media attachment](https://docs.joinmastodon.org/methods/media/#get)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the MediaAttachment in the database.
@@ -3177,6 +2845,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: There was an error processing the media attachment
+      security:
+      - BearerAuth: []
   /api/v2/media:
     post:
       tags:
@@ -3199,14 +2869,7 @@ paths:
 
 
         [Upload media as an attachment (async)](https://docs.joinmastodon.org/methods/media/#v2)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3228,6 +2891,8 @@ paths:
         500:
           $ref: '#/components/responses/Error'
           description: Could not generate a thumbnail for the attachment
+      security:
+      - BearerAuth: []
   /api/v1/polls/:id/votes:
     post:
       tags:
@@ -3243,13 +2908,6 @@ paths:
 
         [Vote on a poll](https://docs.joinmastodon.org/methods/polls/#vote)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Poll in the database.
@@ -3269,6 +2927,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: The poll has expired
+      security:
+      - BearerAuth: []
   /api/v1/polls/:id:
     get:
       tags:
@@ -3284,12 +2944,6 @@ paths:
 
         [View a poll](https://docs.joinmastodon.org/methods/polls/#get)'
       parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Poll in the database.
@@ -3303,6 +2957,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: "Poll does not exist, or poll\u2019s parent status is private"
+      security:
+      - BearerAuth: []
   /api/v1/scheduled_statuses/:id:
     get:
       tags:
@@ -3317,13 +2973,6 @@ paths:
 
         [View a single scheduled status](https://docs.joinmastodon.org/methods/scheduled_statuses/#get-one)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the ScheduledStatus in the database.
@@ -3340,6 +2989,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: ScheduledStatus is not owned by you or does not exist
+      security:
+      - BearerAuth: []
   /api/v1/scheduled_statuses:
     get:
       tags:
@@ -3380,13 +3031,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3394,6 +3038,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/timelines/direct:
     get:
       tags:
@@ -3430,13 +3076,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3446,6 +3085,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/timelines/list/:list_id:
     get:
       tags:
@@ -3489,13 +3130,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :list_id
         in: path
         description: required String. Local ID of the List in the database.
@@ -3512,6 +3146,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: List is not owned by you or does not exist
+      security:
+      - BearerAuth: []
   /api/v1/timelines/link?url=:url:
     get:
       tags:
@@ -3561,12 +3197,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3574,6 +3204,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: The provided URL is not currently trending.
+      security:
+      - BearerAuth: []
   /api/v1/timelines/home:
     get:
       tags:
@@ -3620,13 +3252,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3637,6 +3262,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/timelines/tag/:hashtag:
     get:
       tags:
@@ -3720,12 +3347,6 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       - name: :hashtag
         in: path
         description: 'required String. The name of the hashtag (not including the
@@ -3740,6 +3361,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Hashtag does not exist
+      security:
+      - BearerAuth: []
   /api/v1/timelines/public:
     get:
       tags:
@@ -3805,16 +3428,12 @@ paths:
           statuses. Max 40 statuses.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
           description: Sample API call with limit=2
+      security:
+      - BearerAuth: []
   /api/v1/conversations/:id/read:
     post:
       tags:
@@ -3829,13 +3448,6 @@ paths:
 
         [Mark a conversation as read](https://docs.joinmastodon.org/methods/conversations/#read)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Conversation in the database.
@@ -3852,6 +3464,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: The conversation does not exist, or is not owned by you.
+      security:
+      - BearerAuth: []
   /api/v1/conversations/:id:
     delete:
       tags:
@@ -3867,13 +3481,6 @@ paths:
 
         [Remove a conversation](https://docs.joinmastodon.org/methods/conversations/#delete)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Conversation in the database.
@@ -3890,6 +3497,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: The conversation does not exist, or is not owned by you.
+      security:
+      - BearerAuth: []
   /api/v1/conversations:
     get:
       tags:
@@ -3927,13 +3536,6 @@ paths:
           conversations. Max 40 conversations.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -3941,6 +3543,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/lists/:id/accounts:
     get:
       tags:
@@ -3978,13 +3582,6 @@ paths:
           Max 80 accounts. Set to 0 in order to get all accounts without pagination.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the List in the database.
@@ -4003,6 +3600,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: List does not exist or is not owned by you.
+      security:
+      - BearerAuth: []
   /api/v1/lists/:id:
     get:
       tags:
@@ -4020,13 +3619,6 @@ paths:
 
         [Show a single list](https://docs.joinmastodon.org/methods/lists/#get-one)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the List in the database.
@@ -4043,6 +3635,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: List does not exist or is not owned by you
+      security:
+      - BearerAuth: []
   /api/v1/lists:
     get:
       tags:
@@ -4057,14 +3651,7 @@ paths:
 
 
         [View your lists](https://docs.joinmastodon.org/methods/lists/#get)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4072,6 +3659,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/markers:
     get:
       tags:
@@ -4094,13 +3683,6 @@ paths:
           object will be returned.'
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4108,6 +3690,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/direct:
     get:
       tags:
@@ -4124,18 +3708,13 @@ paths:
 
 
         [Watch for direct messages](https://docs.joinmastodon.org/methods/streaming/#direct)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/list:
     get:
       tags:
@@ -4162,17 +3741,12 @@ paths:
         required: true
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/hashtag/local:
     get:
       tags:
@@ -4199,16 +3773,12 @@ paths:
         required: true
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/hashtag:
     get:
       tags:
@@ -4235,16 +3805,12 @@ paths:
         required: true
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/public/remote:
     get:
       tags:
@@ -4270,16 +3836,12 @@ paths:
         description: Boolean. If true, return only statuses with media attachments.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/public/local:
     get:
       tags:
@@ -4307,16 +3869,12 @@ paths:
         description: Boolean. If true, return only statuses with media attachments.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/public:
     get:
       tags:
@@ -4344,16 +3902,12 @@ paths:
         description: Boolean. If true, return only statuses with media attachments.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/user/notification:
     get:
       tags:
@@ -4368,18 +3922,13 @@ paths:
 
 
         [Watch your notifications](https://docs.joinmastodon.org/methods/streaming/#notification)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/user:
     get:
       tags:
@@ -4404,18 +3953,13 @@ paths:
 
 
         [Watch your home timeline and notifications](https://docs.joinmastodon.org/methods/streaming/#user)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Streaming'
           description: The streaming response.
+      security:
+      - BearerAuth: []
   /api/v1/streaming/health:
     get:
       tags:
@@ -4431,6 +3975,7 @@ paths:
 
 
         [Check if the server is alive](https://docs.joinmastodon.org/methods/streaming/#health)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Streaming'
@@ -4497,13 +4042,6 @@ paths:
           instead.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4511,6 +4049,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/notifications/:group_key/accounts:
     get:
       tags:
@@ -4520,13 +4060,6 @@ paths:
 
         [Get accounts of all notifications in a notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-group-accounts)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :group_key
         in: path
         description: required String. The group key of the notifications to get accounts
@@ -4541,6 +4074,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/notifications/:group_key/dismiss:
     post:
       tags:
@@ -4551,13 +4086,6 @@ paths:
 
         [Dismiss a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#dismiss-group)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :group_key
         in: path
         description: required String. The group key of the notifications to discard.
@@ -4572,6 +4100,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/notifications/:group_key:
     get:
       tags:
@@ -4584,13 +4114,6 @@ paths:
 
         [Get a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-notification-group)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :group_key
         in: path
         description: required String. The group key of the notification group.
@@ -4605,6 +4128,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/notifications:
     get:
       tags:
@@ -4701,13 +4226,6 @@ paths:
           s NotificationPolicy. Defaults to false."
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4716,6 +4234,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/requests/merged:
     get:
       tags:
@@ -4738,6 +4258,7 @@ paths:
         \ have been merged and are ready for being loaded.\nInvalid or missing Authorization\
         \ header.\nJoin Mastodon \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7\
         \ Imprint\n\n[Check if accepted notification requests have been merged](https://docs.joinmastodon.org/methods/notifications/#requests-merged)"
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4762,14 +4283,7 @@ paths:
 
 
         [Dismiss multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#dismiss-multiple-requests)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4777,6 +4291,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/requests/accept:
     post:
       tags:
@@ -4795,14 +4311,7 @@ paths:
 
 
         [Accept multiple notification requests](https://docs.joinmastodon.org/methods/notifications/#accept-multiple-requests)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4810,6 +4319,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/requests/:id/dismiss:
     post:
       tags:
@@ -4827,13 +4338,6 @@ paths:
 
         [Dismiss a single notification request](https://docs.joinmastodon.org/methods/notifications/#dismiss-request)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Notification in the database.
@@ -4847,6 +4351,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/requests/:id/accept:
     post:
       tags:
@@ -4866,13 +4372,6 @@ paths:
 
         [Accept a single notification request](https://docs.joinmastodon.org/methods/notifications/#accept-request)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Notification in the database.
@@ -4886,6 +4385,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/requests/:id:
     get:
       tags:
@@ -4901,13 +4402,6 @@ paths:
 
         [Get a single notification request](https://docs.joinmastodon.org/methods/notifications/#get-one-request)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Notification in the database.
@@ -4921,6 +4415,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/requests:
     get:
       tags:
@@ -4956,13 +4452,6 @@ paths:
           notification requests. Max 80 notification requests.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -4971,6 +4460,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/notifications/policy:
     get:
       tags:
@@ -4985,14 +4476,7 @@ paths:
 
 
         [Get the filtering policy for notifications](https://docs.joinmastodon.org/methods/notifications/#get-policy)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5001,6 +4485,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/unread_count:
     get:
       tags:
@@ -5057,13 +4543,6 @@ paths:
           account.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5071,6 +4550,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/dismiss:
     post:
       tags:
@@ -5089,14 +4570,7 @@ paths:
 
 
         [Dismiss a single notification removed](https://docs.joinmastodon.org/methods/notifications/#dismiss-deprecated)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5104,6 +4578,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/:id/dismiss:
     post:
       tags:
@@ -5119,13 +4595,6 @@ paths:
 
         [Dismiss a single notification](https://docs.joinmastodon.org/methods/notifications/#dismiss)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Notification in the database.
@@ -5139,6 +4608,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/clear:
     post:
       tags:
@@ -5153,14 +4624,7 @@ paths:
 
 
         [Dismiss all notifications](https://docs.joinmastodon.org/methods/notifications/#clear)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5168,6 +4632,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications/:id:
     get:
       tags:
@@ -5183,13 +4649,6 @@ paths:
 
         [Get a single notification](https://docs.joinmastodon.org/methods/notifications/#get-one)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Notification in the database.
@@ -5203,6 +4662,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/notifications:
     get:
       tags:
@@ -5287,13 +4748,6 @@ paths:
           s NotificationPolicy. Defaults to false."
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5302,6 +4756,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/push/subscription:
     post:
       tags:
@@ -5332,14 +4788,7 @@ paths:
 
 
         [Subscribe to push notifications](https://docs.joinmastodon.org/methods/push/#create)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5348,6 +4797,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/search:
     get:
       tags:
@@ -5415,13 +4866,6 @@ paths:
           to 0.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5430,6 +4874,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v2/search:
     get:
       tags:
@@ -5516,13 +4962,6 @@ paths:
         description: Integer. Skip the first n results.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5531,6 +4970,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/instance:
     get:
       tags:
@@ -5557,6 +4998,7 @@ paths:
 
         [View server information (v1) deprecated](https://docs.joinmastodon.org/methods/instance/#v1)'
       deprecated: true
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5577,6 +5019,7 @@ paths:
 
 
         [View translation languages](https://docs.joinmastodon.org/methods/instance/#translation_languages)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5595,6 +5038,7 @@ paths:
 
 
         [View extended description](https://docs.joinmastodon.org/methods/instance/#extended_description)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5613,13 +5057,7 @@ paths:
 
 
         [View moderated servers](https://docs.joinmastodon.org/methods/instance/#domain_blocks)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5632,6 +5070,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: The admin has chosen to show domain blocks to no one. The response
             body is empty; only the HTTP 404 error code is relevant.
+      security:
+      - BearerAuth: []
   /api/v1/instance/rules:
     get:
       tags:
@@ -5646,6 +5086,7 @@ paths:
 
 
         [List of rules](https://docs.joinmastodon.org/methods/instance/#rules)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5666,13 +5107,7 @@ paths:
 
 
         [Weekly activity](https://docs.joinmastodon.org/methods/instance/#activity)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5681,6 +5116,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+      security:
+      - BearerAuth: []
   /api/v1/instance/peers:
     get:
       tags:
@@ -5697,13 +5134,7 @@ paths:
 
 
         [List of connected domains](https://docs.joinmastodon.org/methods/instance/#peers)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: Provide this header with Bearer <user_token> to gain authorized
-          access to this API method.
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5713,6 +5144,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+      security:
+      - BearerAuth: []
   /api/v2/instance:
     get:
       tags:
@@ -5729,6 +5162,7 @@ paths:
 
 
         [View server information](https://docs.joinmastodon.org/methods/instance/#v2)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5883,6 +5317,7 @@ paths:
 
 
         [View all custom emoji](https://docs.joinmastodon.org/methods/custom_emojis/#get)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -5902,13 +5337,6 @@ paths:
 
         [Add a reaction to an announcement](https://docs.joinmastodon.org/methods/announcements/#put-reactions)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Announcement in the database.
@@ -5935,6 +5363,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
   /api/v1/announcements/:id/dismiss:
     post:
       tags:
@@ -5950,13 +5380,6 @@ paths:
 
         [Dismiss an announcement](https://docs.joinmastodon.org/methods/announcements/#dismiss)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Announcement in the database.
@@ -5973,6 +5396,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Announcement with given ID does not exist
+      security:
+      - BearerAuth: []
   /api/v1/announcements:
     get:
       tags:
@@ -5987,14 +5412,7 @@ paths:
 
 
         [View all announcements](https://docs.joinmastodon.org/methods/announcements/#get)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6002,6 +5420,8 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/unsensitive:
     post:
       tags:
@@ -6012,13 +5432,6 @@ paths:
         \ previously flagged as sensitive.\n## Version history\n\n- 3.3.0 - added\n\
         - 4.0.0 - support custom roles and permissions\n\n[Unmark an account as sensitive](https://docs.joinmastodon.org/methods/admin/accounts/#unsensitive)"
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6037,6 +5450,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/unsuspend:
     post:
       tags:
@@ -6054,13 +5469,6 @@ paths:
 
         [Unsuspend an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsuspend)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6078,6 +5486,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/unsilence:
     post:
       tags:
@@ -6095,13 +5505,6 @@ paths:
 
         [Unsilence an account](https://docs.joinmastodon.org/methods/admin/accounts/#unsilence)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6119,6 +5522,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/enable:
     post:
       tags:
@@ -6136,13 +5541,6 @@ paths:
 
         [Enable a currently disabled account](https://docs.joinmastodon.org/methods/admin/accounts/#enable)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6160,6 +5558,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/action:
     post:
       tags:
@@ -6181,13 +5581,6 @@ paths:
 
         [Perform an action against an account](https://docs.joinmastodon.org/methods/admin/accounts/#action)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6208,6 +5601,8 @@ paths:
         422:
           $ref: '#/components/responses/Error'
           description: type is not provided or is not understood
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id:
     get:
       tags:
@@ -6225,13 +5620,6 @@ paths:
 
         [View a specific account](https://docs.joinmastodon.org/methods/admin/accounts/#get-one)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6250,6 +5638,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/reject:
     post:
       tags:
@@ -6267,13 +5657,6 @@ paths:
 
         [Reject a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#reject)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6292,6 +5675,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts/:id/approve:
     post:
       tags:
@@ -6309,13 +5694,6 @@ paths:
 
         [Approve a pending account](https://docs.joinmastodon.org/methods/admin/accounts/#approve)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Account in the database.
@@ -6333,6 +5711,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
+      security:
+      - BearerAuth: []
   /api/v2/admin/accounts:
     get:
       tags:
@@ -6430,13 +5810,6 @@ paths:
           accounts. Max 200 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6446,6 +5819,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/accounts:
     get:
       tags:
@@ -6563,13 +5938,6 @@ paths:
           accounts. Max 200 accounts.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6579,6 +5947,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/canonical_email_blocks/:id:
     get:
       tags:
@@ -6593,13 +5963,6 @@ paths:
 
         [Show a single canonical email block](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#get-one)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Admin::CanonicalEmailBlock in
@@ -6619,6 +5982,8 @@ paths:
         404:
           $ref: '#/components/responses/Error'
           description: Canonical email block does not exist or was already deleted
+      security:
+      - BearerAuth: []
   /api/v1/admin/canonical_email_blocks:
     get:
       tags:
@@ -6654,13 +6019,6 @@ paths:
           blocks. Max 200 blocks.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6672,6 +6030,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/canonical_email_blocks/test:
     post:
       tags:
@@ -6686,14 +6046,7 @@ paths:
 
 
         [Test](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#test)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6705,6 +6058,8 @@ paths:
         500:
           $ref: '#/components/responses/Error'
           description: No email was provided
+      security:
+      - BearerAuth: []
   /api/v1/admin/dimensions:
     post:
       tags:
@@ -6723,14 +6078,7 @@ paths:
 
 
         [Get dimensional data](https://docs.joinmastodon.org/methods/admin/dimensions/#get)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6740,6 +6088,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/domain_allows/:id:
     get:
       tags:
@@ -6754,6 +6104,7 @@ paths:
 
 
         [Get a single allowed domain](https://docs.joinmastodon.org/methods/admin/domain_allows/#get-one)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6802,13 +6153,6 @@ paths:
           allows. Max 200 allows.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6819,6 +6163,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/domain_blocks/:id:
     get:
       tags:
@@ -6833,6 +6179,7 @@ paths:
 
 
         [Get a single blocked domain](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get-one)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6881,13 +6228,6 @@ paths:
           blocks. Max 200 blocks.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6898,6 +6238,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/email_domain_blocks/:id:
     get:
       tags:
@@ -6913,6 +6255,7 @@ paths:
 
 
         [Get a single blocked email domain](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get-one)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6962,13 +6305,6 @@ paths:
           blocks. Max 200 blocks.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -6978,6 +6314,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/ip_blocks/:id:
     get:
       tags:
@@ -6992,6 +6330,7 @@ paths:
 
 
         [Get a single IP block](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get-one)'
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7040,13 +6379,6 @@ paths:
           blocks. Max 200 blocks.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7057,6 +6389,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/measures:
     post:
       tags:
@@ -7073,14 +6407,7 @@ paths:
 
 
         [Get measurable data](https://docs.joinmastodon.org/methods/admin/measures/#get)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7090,6 +6417,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/reports/:id/reopen:
     post:
       tags:
@@ -7107,13 +6436,6 @@ paths:
 
         [Reopen a closed report](https://docs.joinmastodon.org/methods/admin/reports/#reopen)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Report in the database.
@@ -7129,6 +6451,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/reports/:id/resolve:
     post:
       tags:
@@ -7146,13 +6470,6 @@ paths:
 
         [Mark report as resolved](https://docs.joinmastodon.org/methods/admin/reports/#resolve)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Report in the database.
@@ -7167,6 +6484,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/reports/:id/unassign:
     post:
       tags:
@@ -7184,13 +6503,6 @@ paths:
 
         [Unassign report](https://docs.joinmastodon.org/methods/admin/reports/#unassign)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Report in the database.
@@ -7206,6 +6518,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/reports/:id/assign_to_self:
     post:
       tags:
@@ -7223,13 +6537,6 @@ paths:
 
         [Assign report to self](https://docs.joinmastodon.org/methods/admin/reports/#assign_to_self)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Report in the database.
@@ -7245,6 +6552,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/reports/:id:
     get:
       tags:
@@ -7261,13 +6570,6 @@ paths:
 
         [View a single report](https://docs.joinmastodon.org/methods/admin/reports/#get-one)'
       parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       - name: :id
         in: path
         description: required String. The ID of the Report in the database.
@@ -7283,6 +6585,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/reports:
     get:
       tags:
@@ -7336,13 +6640,6 @@ paths:
           reports. Max 200 reports.
         schema:
           type: string
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7353,6 +6650,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/retention:
     post:
       tags:
@@ -7369,14 +6668,7 @@ paths:
 
 
         [Calculate retention data](https://docs.joinmastodon.org/methods/admin/retention/#create)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7387,6 +6679,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/trends/tags:
     get:
       tags:
@@ -7407,14 +6701,7 @@ paths:
 
 
         [View trending tags](https://docs.joinmastodon.org/methods/admin/trends/#tags)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7424,6 +6711,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/trends/statuses:
     get:
       tags:
@@ -7440,14 +6729,7 @@ paths:
 
 
         [View trending statuses](https://docs.joinmastodon.org/methods/admin/trends/#statuses)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7457,6 +6739,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/v1/admin/trends/links:
     get:
       tags:
@@ -7473,14 +6757,7 @@ paths:
 
 
         [View trending links](https://docs.joinmastodon.org/methods/admin/trends/#links)'
-      parameters:
-      - name: Authorization
-        in: header
-        description: required Provide this header with Bearer <user_token> to gain
-          authorized access to this API method.
-        required: true
-        schema:
-          type: string
+      parameters: []
       responses:
         200:
           $ref: '#/components/responses/Error'
@@ -7490,6 +6767,8 @@ paths:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+      security:
+      - BearerAuth: []
   /api/proofs:
     get:
       tags:
@@ -9392,3 +8671,8 @@ components:
               alerts:
                 type: HashVersion
                 description: Which alerts should be delivered to the endpoint.
+  securitySchemes:
+    BearerAuth:
+      type: http
+      description: Bearer token
+      scheme: bearer

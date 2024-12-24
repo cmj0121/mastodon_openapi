@@ -4,6 +4,7 @@ from pydantic import RootModel
 from .types import ParameterObject
 from .types import ReferenceObject
 from .types import ResponseObject
+from .types import SecurityRequirementObject
 
 
 class Responses(RootModel[dict[int, ResponseObject | ReferenceObject]]):
@@ -27,6 +28,7 @@ class Operation(BaseModel):
     deprecated: bool | None = None
     parameters: list[ParameterObject | ReferenceObject] | None = None
     responses: Responses | None = None
+    security: list[SecurityRequirementObject] | None = None
 
 
 class PathItem(RootModel[dict[str, Operation]]):
