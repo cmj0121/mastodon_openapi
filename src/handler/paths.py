@@ -7,12 +7,15 @@ from loguru import logger
 
 from src.handler.utils import canonicalize
 from src.openapi_spec import BuildInType
+from src.openapi_spec import MediaTypeObject
+from src.openapi_spec import OneOfObject
 from src.openapi_spec import Operation
 from src.openapi_spec import ParameterIn
 from src.openapi_spec import ParameterObject
 from src.openapi_spec import PathItem
 from src.openapi_spec import Paths
 from src.openapi_spec import ReferenceObject
+from src.openapi_spec import ResponseObject
 from src.openapi_spec import Responses
 from src.openapi_spec import SchemaObject
 from src.openapi_spec import SecurityRequirementObject
@@ -68,9 +71,15 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
             if matched:
                 method, endpoint = matched.groups()
+                logger.info(f"processing [{method}] {endpoint=}")
+
+                removed = method_dom.find("span", class_="api-method-parameter-removed", string="removed")
+                if removed:
+                    logger.info(f"[{method}] {endpoint} has been removed")
+                    continue
 
                 deprecated = method_dom.find("span", class_="api-method-parameter-deprecated", string="deprecated")
-                operation = handle_operation(code)
+                operation, response_object = handle_operation(code)
                 # add the method link to the operation description
                 operation.description += f'\n\n[{method_dom.text.strip()}]({link}#{method_dom["id"]})'
                 operation.tags = [tag]
@@ -90,7 +99,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                         )
                         operation.responses = streaming_response
                     case _:
-                        operation.responses = handle_response(method_dom)
+                        operation.responses = handle_response(method_dom, response_object)
 
                 spec[endpoint] = PathItem({method.lower(): operation})
 
@@ -102,7 +111,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
     return spec
 
 
-def handle_operation(tag: Tag) -> Operation:
+def handle_operation(tag: Tag) -> tuple[Operation, ResponseObject | None]:
     """
     Handle the API method per bs4 Tag and return the OpenAPI Operation object.
     """
@@ -118,7 +127,7 @@ def handle_operation(tag: Tag) -> Operation:
     summary = summaries[0] if summaries else None
     description = "\n".join(summaries) + handle_description(tag.text if tag else "")
 
-    parameters = handle_parameters(tag)
+    parameters, response_object = handle_parameters(tag)
     security = None
     if parameters:
         for idx, param in enumerate(parameters):
@@ -128,22 +137,26 @@ def handle_operation(tag: Tag) -> Operation:
                 security = [SecurityRequirementObject({"BearerAuth": []})]
                 break
 
-    return Operation(summary=summary, description=description, parameters=parameters, security=security)
+    operation = Operation(summary=summary, description=description, parameters=parameters, security=security)
+    return operation, response_object
 
 
-def handle_parameters(tag: Tag) -> list[ParameterObject | ReferenceObject]:
+def handle_parameters(tag: Tag) -> tuple[list[ParameterObject | ReferenceObject], ResponseObject | None]:
     """
-    Handle the parameters of the API method, based on the ParameterIn
+    Handle the parameters of the API method, based on the ParameterIn enum.
+
+    at the same time, get the default response object in the API method.
     """
     if not tag:
-        return []
+        return [], None
 
+    response_object = parse_response_object(tag)
     request_dom = tag.find_next("h4", {"id": lambda x: x and x.startswith("request")})
     if not request_dom:
-        return []
+        return [], response_object
 
     parameters = [param for param_type in ParameterIn for param in handle_parameter_by_type(request_dom, param_type)]
-    return parameters if parameters else None
+    return (parameters or []), response_object
 
 
 def handle_parameter_by_type(tag: Tag, param_type: ParameterIn) -> list[ParameterObject | ReferenceObject]:
@@ -202,7 +215,7 @@ def handle_description(text: str) -> str:
     return f"\n## Version history\n\n- {'\n- '.join(versions)}" if versions else ""
 
 
-def handle_response(tag: Tag) -> Responses:
+def handle_response(tag: Tag, response_object: ResponseObject | None) -> Responses:
     response = {}
 
     for code in tag.find_all_next("h5", class_="heading"):
@@ -215,11 +228,85 @@ def handle_response(tag: Tag) -> Responses:
         status_code = int(matched.groups()[0])
         description = code.find_next("p").text if code.find_next("p") else ""
 
-        response[status_code] = ReferenceObject.model_validate(
-            {
-                "$ref": "#/components/responses/Error",
-                "description": description,
-            }
-        )
+        if status_code == 200 and response_object:
+            response[status_code] = response_object
+        else:
+            response[status_code] = ReferenceObject.model_validate(
+                {
+                    "$ref": "#/components/responses/Error",
+                    "description": description,
+                }
+            )
 
     return Responses(response)
+
+
+def parse_response_object(tag: Tag) -> ResponseObject | None:
+    """parse and return the API response object."""
+    matched = re.search(r"^Returns:([\s\S]+?)OAuth", tag.text)
+    if not matched:
+        logger.warning(f"no response object found {tag.text=}")
+        return None
+
+    (rvalue,) = matched.groups()
+    rvalue = rvalue.strip()
+    schema_object = parse_schema_object(rvalue)
+    return ResponseObject(
+        description=rvalue,
+        content={"application/json": MediaTypeObject.model_validate({"schema": schema_object})},
+    )
+
+
+def parse_schema_object(text: str) -> SchemaObject:
+    text = text.strip()
+
+    logger.debug(f"try to parse SchemaObject: {text=}")
+    if matched := re.match(r"(?:Array|List) of ([\w:]+)", text):
+        (value,) = matched.groups()
+
+        schema_object = SchemaObject(
+            type="array",
+            description=text,
+            items=parse_schema_object(value),
+        )
+    elif "String (URL) or HTML response" == text:
+        schema_object = SchemaObject(type="string", description=text)
+    elif "Preferences by key and value" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+    elif "the user\u2019s own Account with source attribute" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/Account"})
+    elif "MediaAttachment, but without a URL" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/MediaAttachment"})
+    elif "Hash of timeline key and associated Marker" == text:
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+        )
+    elif "Hash with a single key of count" == text:
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={"count": SchemaObject(type="integer")},
+        )
+    elif "JSON as per the above description" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+    elif "OEmbed metadata" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+    elif "Object with source language codes as keys and arrays of target language codes as values." == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+    elif "Search, but hashtags is an array of strings instead of an array of Tag." == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/Search"})
+    elif "Status. When scheduled_at is present, ScheduledStatus is returned instead." == text:
+        schema_object = OneOfObject(
+            oneOf=[
+                ReferenceObject.model_validate({"$ref": "#/components/responses/Status"}),
+                ReferenceObject.model_validate({"$ref": "#/components/responses/ScheduledStatus"}),
+            ]
+        )
+    elif text.lower() in BuildInType:
+        schema_object = SchemaObject(type=canonicalize(text.lower()))
+    else:
+        schema_object = ReferenceObject.model_validate({"$ref": f"#/components/responses/{canonicalize(text)}"})
+
+    logger.info(f"parse {text=} as {schema_object}")
+    return schema_object

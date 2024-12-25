@@ -12,6 +12,7 @@ from .path import Paths
 from .path import Responses
 from .types import BuildInType
 from .types import MediaTypeObject
+from .types import OneOfObject
 from .types import ParameterIn
 from .types import ParameterObject
 from .types import ReferenceObject
@@ -54,5 +55,6 @@ __all__ = list(
         "BuildInType",
         "SecuritySchemeObject",
         "SecurityRequirementObject",
+        "OneOfObject",
     }
 )

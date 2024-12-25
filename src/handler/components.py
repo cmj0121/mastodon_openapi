@@ -13,21 +13,6 @@ from src.openapi_spec import SchemaObject
 from src.openapi_spec import SecuritySchemeObject
 
 
-def default_streaming_response() -> ResponseObject:
-    return ResponseObject(
-        description="Represents an error message.",
-        content={
-            "text/event-stream": MediaTypeObject.model_validate(
-                {
-                    "schema": SchemaObject(
-                        type="string",
-                    )
-                }
-            )
-        },
-    )
-
-
 def default_security_scheme() -> dict[str, SecuritySchemeObject]:
     spec = SecuritySchemeObject(
         type="http",
@@ -41,7 +26,33 @@ def handle_components(link: str, html: str) -> Component:
     """
     Handle the base URL of the Mastodon API documentation and return the OpenAPI Components object.
     """
-    spec = {"Streaming": default_streaming_response()}
+    spec = {
+        "Empty": ResponseObject(description="Empty content"),
+        "Streaming": ResponseObject(
+            description="Represents an error message.",
+            content={
+                "text/event-stream": MediaTypeObject.model_validate(
+                    {
+                        "schema": SchemaObject(
+                            type="string",
+                        )
+                    }
+                )
+            },
+        ),
+        "JSON": ResponseObject(
+            description="Represents an JSON object.",
+            content={
+                "text/event-stream": MediaTypeObject.model_validate(
+                    {
+                        "schema": SchemaObject(
+                            type="object",
+                        )
+                    }
+                )
+            },
+        ),
+    }
     soup = BeautifulSoup(html, "html.parser")
 
     entities = soup.find_all("a", href=lambda href: href and href.startswith("/entities/"))

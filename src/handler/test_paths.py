@@ -2,6 +2,9 @@ import pytest
 import responses
 
 from src.handler.paths import handle_path_item
+from src.openapi_spec import ReferenceObject
+from src.openapi_spec import ResponseObject
+from src.openapi_spec import SchemaObject
 
 
 class TestHandlePaths:
@@ -38,18 +41,22 @@ class TestHandlePaths:
         load_api_html_fn("instance")
 
         resp = handle_path_item("instance", link)
-        assert "/api/v1/instance" in resp
-        assert "get" in resp["/api/v1/instance"].root
 
-        operation = resp["/api/v1/instance"].root["get"]
+        assert "/api/v1/instance/rules" in resp
+        assert "get" in resp["/api/v1/instance/rules"].root
+
+        operation = resp["/api/v1/instance/rules"].root["get"]
         assert 200 in operation.responses.root
 
-        assert "/api/v1/instance/peers" in resp
-        assert "get" in resp["/api/v1/instance/peers"].root
+        response = operation.responses.root[200]
+        assert isinstance(response, ResponseObject)
+        assert isinstance(response.content["application/json"].schema_object, SchemaObject)
 
-        operation = resp["/api/v1/instance/peers"].root["get"]
-        assert 200 in operation.responses.root
-        assert 401 in operation.responses.root
+        schema_object = response.content["application/json"].schema_object
+        assert schema_object.type == "array"
+
+        items = schema_object.items
+        assert isinstance(items, ReferenceObject) and items.ref == "#/components/responses/Rule"
 
     @responses.activate
     def test_handle_parameter(self, load_api_html_fn, app="accounts"):

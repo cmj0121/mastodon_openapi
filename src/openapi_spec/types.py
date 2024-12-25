@@ -13,6 +13,7 @@ class BuildInType(StrEnum):
     integer = auto()
     number = auto()
     string = auto()
+    hash = auto()
 
 
 class ParameterIn(StrEnum):
@@ -32,7 +33,7 @@ class SchemaObject(BaseModel):
     type: str
     description: str | None = None
     nullable: bool | None = None
-    items: list[SchemaObject] | None = None
+    items: SchemaObject | ReferenceObject | None = None
     properties: dict[str, SchemaObject] | None = None
 
 
@@ -44,7 +45,7 @@ class MediaTypeObject(BaseModel):
     ref: https://swagger.io/specification/#media-type-object
     """
 
-    schema_object: SchemaObject = Field(..., alias="schema")
+    schema_object: SchemaObject | OneOfObject | ReferenceObject = Field(..., alias="schema")
 
 
 class ReferenceObject(BaseModel):
@@ -68,7 +69,13 @@ class ResponseObject(BaseModel):
     """
 
     description: str
-    content: dict[str, MediaTypeObject]
+    content: dict[str, MediaTypeObject] | None = None
+
+
+class OneOfObject(BaseModel):
+    """The choice of the object type"""
+
+    oneOf: list[ReferenceObject]
 
 
 class ParameterObject(BaseModel):

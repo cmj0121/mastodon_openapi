@@ -30,9 +30,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: If the Authorization header was provided with a valid token,
-            you should see your app returned as an Application entity.
+          description: Application
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Application'
         401:
           $ref: '#/components/responses/Error'
           description: If the Authorization header contains an invalid token, is malformed,
@@ -70,9 +72,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Store the client_id and client_secret in your cache, as these
-            will be used to obtain OAuth tokens.
+          description: CredentialApplication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/CredentialApplication'
         422:
           $ref: '#/components/responses/Error'
           description: If a required parameter is missing or improperly formatted,
@@ -94,9 +98,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: On Mastodon versions before 4.3.0, requesting this endpoint
-            will result in a 404 Not Found error.
+          description: JSON as per the above description
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JSON'
         404:
           $ref: '#/components/responses/Error'
           description: On Mastodon versions before 4.3.0, requesting this endpoint
@@ -115,12 +121,14 @@ paths:
 
 
         [Revoke a token](https://docs.joinmastodon.org/methods/oauth/#revoke)'
+      parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: If you own the provided token, the API call will provide an
-            empty response. This operation is idempotent, so calling this API multiple
-            times will still return OK.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         403:
           $ref: '#/components/responses/Error'
           description: If you provide a token you do not own, or no token at all,
@@ -142,12 +150,14 @@ paths:
 
 
         [Obtain a token](https://docs.joinmastodon.org/methods/oauth/#token)'
+      parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Store this access_token for later use with methods that require
-            authentication. The token should be passed as an HTTP Authorization header
-            when making API calls, with the value Bearer <access_token>
+          description: Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Token'
         400:
           $ref: '#/components/responses/Error'
           description: If you try to request a scope that was not included when registering
@@ -243,9 +253,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The authorization code will be returned as a query parameter
-            named code.
+          description: String (URL) or HTML response
+          content:
+            application/json:
+              schema:
+                type: string
+                description: String (URL) or HTML response
         400:
           $ref: '#/components/responses/Error'
           description: If the authorization code is incorrect or has been used already,
@@ -262,9 +275,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The client associated with the token does not own the unconfirmed
-            user.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         403:
           $ref: '#/components/responses/Error'
           description: The client associated with the token does not own the unconfirmed
@@ -296,8 +311,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Account does not exist
+          description: Array of IdentityProof
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of IdentityProof
+                items:
+                  $ref: '#/components/responses/IdentityProof'
         404:
           $ref: '#/components/responses/Error'
           description: Account does not exist
@@ -332,8 +353,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with ?acct=trwnh
+          description: Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Account'
         404:
           $ref: '#/components/responses/Error'
           description: Username or address does not map to an account
@@ -385,9 +409,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Accounts matching \u201Ctrwnh\u201D in username or display\
-            \ name"
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         503:
           $ref: '#/components/responses/Error'
           description: resolve=true, but the domain part of the user@domain address
@@ -419,8 +448,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with id[]=1&id[]=2
+          description: Array of FamiliarFollowers
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of FamiliarFollowers
+                items:
+                  $ref: '#/components/responses/FamiliarFollowers'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -461,8 +496,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with id[]=1&id[]=2
+          description: Array of Relationship
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Relationship
+                items:
+                  $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -494,8 +535,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully updated profile note
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -520,8 +564,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully unendorsed, or account was already not endorsed
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -549,8 +596,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully endorsed, or was already endorsing.
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -590,8 +640,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully unmuted, or account was already unmuted
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -629,10 +682,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully muted, or account was already muted. Note that
-            you can call this API method again with notifications=false to update
-            the relationship so that only statuses are muted.
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -666,8 +720,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully unblocked, or account was already not blocked
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -703,8 +760,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully blocked, or account was already blocked
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -736,9 +796,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully removed from followers, or account was already
-            not following you
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -772,8 +834,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully unfollowed, or account was already not followed
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -813,8 +878,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Successfully followed, or account was already followed
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         403:
           $ref: '#/components/responses/Error'
           description: Trying to follow someone that you block or that blocks you
@@ -846,10 +914,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: If the account is part of any lists, those entities will be
-            returned. If the account is not part of any of your lists, then an empty
-            array will be returned.
+          description: Array of List
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of List
+                items:
+                  $ref: '#/components/responses/List'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header, or instance is in
@@ -881,8 +953,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Array of FeaturedTag
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of FeaturedTag
+                items:
+                  $ref: '#/components/responses/FeaturedTag'
       security:
       - BearerAuth: []
   /api/v1/accounts/:id/following:
@@ -925,8 +1003,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample output with limit=2.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header, or instance is in
@@ -979,8 +1063,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample output with limit=2.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header, or instance is in
@@ -1063,9 +1153,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: If the instance is in whitelist mode and the Authorization
-            header is missing or invalid
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
@@ -1107,10 +1202,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The details parameter contains all detected errors. Its structure
-            is a Hash with the key being the erroneous parameter, and its value being
-            an array of all errors found.
+          description: Token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Token'
         401:
           $ref: '#/components/responses/Error'
           description: The details parameter contains all detected errors. Its structure
@@ -1153,9 +1249,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The Account record will be returned. Note that acct of local
-            users does not include the domain name.
+          description: Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
@@ -1181,9 +1279,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: 'To update account fields, you will need to construct your
-            hash like so for example:'
+          description: "the user\u2019s own Account with source attribute"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Token does not have an authorized user
@@ -1211,10 +1311,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Note the extra source property, which is not visible on accounts
-            other than your own. Also note that plain-text is used within source and
-            HTML is used for their corresponding properties such as note and fields.
+          description: CredentialAccount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/CredentialAccount'
         401:
           $ref: '#/components/responses/Error'
           description: Your credential verification will fail if the token is invalid
@@ -1247,10 +1348,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because Bookmark IDs are generally not exposed via any API
-            responses, you will have to parse the HTTP Link header to load older or
-            newer results. See Paginating through API responses for more information.
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1296,8 +1401,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: An example call with limit=2.
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1338,8 +1449,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample response with limit=2.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1384,8 +1501,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with limit=2.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1431,8 +1554,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with limit=2.
+          description: Array of String
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of String
+                items:
+                  type: string
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1464,9 +1593,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The filter has been deleted successfully, so an empty object
-            will be returned.
+          description: List of V1::Filter
+          content:
+            application/json:
+              schema:
+                type: array
+                description: List of V1::Filter
+                items:
+                  $ref: '#/components/responses/V1Filter'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1501,8 +1635,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: FilterStatus deleted successfully
+          description: Array of Filter
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Filter
+                items:
+                  $ref: '#/components/responses/Filter'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1536,9 +1676,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with one status ID provided and a category of spam
-            with a comment
+          description: Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Report'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header
@@ -1574,8 +1716,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Your Relationship with this account should be unchanged.
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1608,9 +1753,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Your Relationship with this account should be updated so that
-            you are followed_by this account.
+          description: Relationship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Relationship'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1651,9 +1798,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call for Accounts that are requesting a follow, with
-            limit=2
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1692,8 +1844,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample call with limit=2.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1716,8 +1874,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Truncated results to first and last tag.
+          description: Array of Tag
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Tag
+                items:
+                  $ref: '#/components/responses/Tag'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1746,8 +1910,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The tag was unfeatured.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1773,8 +1940,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Array of FeaturedTag
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of FeaturedTag
+                items:
+                  $ref: '#/components/responses/FeaturedTag'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1797,8 +1970,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Preferences by key and value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JSON'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1844,8 +2020,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: List of followed hashtags
+          description: Array of Tag
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Tag
+                items:
+                  $ref: '#/components/responses/Tag'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1879,8 +2061,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1909,10 +2097,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A successful call will return an empty object. Note the call
-            will be successful even if the account id provided is invalid or is not
-            a suggested account.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1943,8 +2132,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Array of Suggestion
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Suggestion
+                items:
+                  $ref: '#/components/responses/Suggestion'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -1975,8 +2170,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Tag has been successfully unfollowed, or was already unfollowed
+          description: Tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Tag'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2009,8 +2207,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Tag has been successfully followed
+          description: Tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Tag'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2042,8 +2243,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Tag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Tag'
       security:
       - BearerAuth: []
   /api/v1/profile/header:
@@ -2062,10 +2266,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "The header was successfully deleted from the user\u2019s profile.\
-            \ If there were no header associated with the profile, the response will\
-            \ still indicate a successful deletion."
+          description: CredentialAccount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/CredentialAccount'
       security:
       - BearerAuth: []
   /api/v1/profile/avatar:
@@ -2084,10 +2289,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "The avatar was successfully deleted from the user\u2019s profile.\
-            \ If there were no avatar associated with the profile, the response will\
-            \ still indicate a successful deletion."
+          description: CredentialAccount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/CredentialAccount'
       security:
       - BearerAuth: []
   /api/v1/statuses/:id/card:
@@ -2117,8 +2323,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status does not exist or is private.
+          description: PreviewCard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/PreviewCard'
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
@@ -2147,8 +2356,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: StatusSource
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/StatusSource'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2182,8 +2394,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status does not exist or is private.
+          description: Array of StatusEdit
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of StatusEdit
+                items:
+                  $ref: '#/components/responses/StatusEdit'
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private.
@@ -2214,8 +2432,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Instance is in authorized-fetch mode.
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Instance is in authorized-fetch mode.
@@ -2247,8 +2468,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status unpinned, or was already not pinned
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2283,9 +2507,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status pinned. Note the status is not a reblog and its authoring
-            account is your own.
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2322,8 +2548,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Status\u2019s conversation unmuted, or was already unmuted"
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2357,8 +2586,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Status\u2019s conversation muted, or was already muted"
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2390,8 +2622,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status was unbookmarked or was already not bookmarked
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2423,8 +2658,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status bookmarked or was already bookmarked
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2453,8 +2691,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status unboosted or was already not boosted
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2488,10 +2729,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status has been reblogged. Note that the top-level id has changed.
-            The id of the boosted status is now inside the reblog property. The top-level
-            id is the id of the reblog itself. Also note that reblogs cannot be pinned.
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2523,8 +2765,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status unfavourited or was already not favourited
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2556,8 +2801,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status favourited or was already favourited
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2605,8 +2853,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A list of accounts who favourited the status
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
@@ -2651,8 +2905,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A list of accounts that boosted the status
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         404:
           $ref: '#/components/responses/Error'
           description: Status does not exist or is private
@@ -2681,9 +2941,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Translating a status in Spanish with content warning and media
-            into English
+          description: Translation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Translation'
         404:
           $ref: '#/components/responses/Error'
           description: Status is private or does not exist
@@ -2717,8 +2979,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Status is private or does not exist
+          description: Context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Context'
         404:
           $ref: '#/components/responses/Error'
           description: Status is private or does not exist
@@ -2752,8 +3017,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: 'Status will be posted with chosen parameters:'
+          description: Status. When scheduled_at is present, ScheduledStatus is returned
+            instead.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: '#/components/responses/Status'
+                - $ref: '#/components/responses/ScheduledStatus'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2791,10 +3062,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Attachment created successfully. Note that the MediaAttachment
-            will be created even if the file is not understood correctly due to failed
-            processing.
+          description: MediaAttachment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/MediaAttachment'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2830,9 +3102,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The media file was processed, and a url to the processed media
-            is available.
+          description: MediaAttachment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/MediaAttachment'
         206:
           $ref: '#/components/responses/Error'
           description: The media attachment is still being processed
@@ -2872,9 +3146,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: MediaAttachment was created successfully, and the full-size
-            file was processed synchronously.
+          description: MediaAttachment, but without a URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/MediaAttachment'
         202:
           $ref: '#/components/responses/Error'
           description: "MediaAttachment was created successfully, but the full-size\
@@ -2916,8 +3192,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Poll was voted on
+          description: Poll
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Poll'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -2952,8 +3231,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Poll does not exist, or poll\u2019s parent status is private"
+          description: Poll
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Poll'
         404:
           $ref: '#/components/responses/Error'
           description: "Poll does not exist, or poll\u2019s parent status is private"
@@ -2981,8 +3263,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: ScheduledStatus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ScheduledStatus'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3033,8 +3318,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Array of ScheduledStatus
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of ScheduledStatus
+                items:
+                  $ref: '#/components/responses/ScheduledStatus'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3078,10 +3369,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Statuses with direct visibility, authored by you or mentioning
-            you. Statuses are not grouped by conversation, but are returned in chronological
-            order.
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3138,8 +3433,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Statuses in this list will be returned.
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3199,8 +3500,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The provided URL is not currently trending.
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         404:
           $ref: '#/components/responses/Error'
           description: The provided URL is not currently trending.
@@ -3254,8 +3561,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Statuses in your home timeline will be returned
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         206:
           $ref: '#/components/responses/Error'
           description: Home feed is regenerating
@@ -3356,8 +3669,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: 'Sample timeline for the hashtag #cats and limit=2'
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         404:
           $ref: '#/components/responses/Error'
           description: Hashtag does not exist
@@ -3430,8 +3749,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample API call with limit=2
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
       security:
       - BearerAuth: []
   /api/v1/conversations/:id/read:
@@ -3456,8 +3781,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The value of unread has been changed to false.
+          description: Conversation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Conversation'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3489,8 +3817,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3538,8 +3869,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Truncated sample results of an API call with limit=2
+          description: Array of Conversation
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Conversation
+                items:
+                  $ref: '#/components/responses/Conversation'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3590,10 +3927,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because you do not know beforehand which Accounts are included
-            in a List, you will have to parse the HTTP Link header to load older or
-            newer results. See Paginating through API responses for more information.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3627,8 +3968,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The list 12249 exists and is owned by you
+          description: List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/List'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3654,8 +3998,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Use id as a parameter for related API calls.
+          description: Array of List
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of List
+                items:
+                  $ref: '#/components/responses/List'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -3685,8 +4035,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A request with ?timeline[]=home&timeline[]=notifications
+          description: Hash of timeline key and associated Marker
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Hash of timeline key and associated Marker
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4044,8 +4398,15 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The response body contains the capped count of unread notifications.
+          description: Hash with a single key of count
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Hash with a single key of count
+                properties:
+                  count:
+                    type: integer
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4069,8 +4430,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4094,9 +4461,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Upon a successful request, notifications with the given group
-            key are successfully dismissed.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4122,9 +4491,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: On success, returns a GroupedNotificationsResults with a single
-            notification group.
+          description: GroupedNotificationsResults
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JSON'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4228,9 +4599,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The response body contains one page of grouped notifications.
-            You can use the HTTP Link header for further pagination.
+          description: GroupedNotificationsResults
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JSON'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4286,8 +4659,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A successful call will return an empty object.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4314,8 +4690,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A successful call will return an empty object.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4346,8 +4725,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A successful call will return an empty object.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4380,8 +4762,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A successful call will return an empty object.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4410,8 +4795,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A single notification request.
+          description: NotificationRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotificationRequest'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4454,9 +4842,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The response body contains one page of notification requests.
-            You can use the HTTP Link header for further pagination.
+          description: Array of NotificationRequest
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of NotificationRequest
+                items:
+                  $ref: '#/components/responses/NotificationRequest'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4479,9 +4872,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The response body contains the current notifications filtering
-            policy for the user.
+          description: NotificationPolicy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotificationPolicy'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4545,36 +4940,15 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The response body contains the capped count of unread notifications.
-        401:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
-      security:
-      - BearerAuth: []
-  /api/v1/notifications/dismiss:
-    post:
-      tags:
-      - notifications
-      summary: Dismiss a single notification from the server.
-      description: 'Dismiss a single notification from the server.
-
-        ## Version history
-
-
-        - 0.0.0 - available
-
-        - 1.3.0 - deprecated in favor of notifications/:id/dismiss
-
-        - 3.0.0 - removed
-
-
-        [Dismiss a single notification removed](https://docs.joinmastodon.org/methods/notifications/#dismiss-deprecated)'
-      parameters: []
-      responses:
-        200:
-          $ref: '#/components/responses/Error'
-          description: Notification with given ID successfully dismissed
+          description: Hash with a single key of count
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Hash with a single key of count
+                properties:
+                  count:
+                    type: integer
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4603,8 +4977,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Notification with given ID successfully dismissed
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4627,8 +5004,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Notifications successfully cleared.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4657,8 +5037,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A single Notification
+          description: Notification
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Notification'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4750,9 +5133,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The response body contains one page of notifications. You can
-            use the HTTP Link header for further pagination.
+          description: Array of Notification
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Notification
+                items:
+                  $ref: '#/components/responses/Notification'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4791,86 +5179,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: A new PushSubscription has been generated, which will send
-            the requested alerts to your endpoint.
-        401:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
-      security:
-      - BearerAuth: []
-  /api/v1/search:
-    get:
-      tags:
-      - search
-      description: '
-
-        ## Version history
-
-
-        - 51.5.0 - now requires authentication
-
-        - 2.4.1 - deprecated in favor of v2 search
-
-        - 2.8.0 - added limit, pagination, and account options
-
-        - 3.0.0 - removed; use v2 search instead
-
-
-        [Perform a search (v1) removed](https://docs.joinmastodon.org/methods/search/#v1)'
-      parameters:
-      - name: q
-        in: query
-        description: required String. The search query.
-        required: true
-        schema:
-          type: string
-      - name: type
-        in: query
-        description: String. Specify whether to search for only accounts, hashtags,
-          statuses
-        schema:
-          type: string
-      - name: resolve
-        in: query
-        description: Boolean. Attempt WebFinger lookup? Defaults to false.
-        schema:
-          type: string
-      - name: account_id
-        in: query
-        description: String. If provided, will only return statuses authored by this
-          account.
-        schema:
-          type: string
-      - name: max_id
-        in: query
-        description: String. All results returned will be lesser than this ID. In
-          effect, sets an upper bound on results.
-        schema:
-          type: string
-      - name: min_id
-        in: query
-        description: String. Returns results immediately newer than this ID. In effect,
-          sets a cursor at this ID and paginates forward.
-        schema:
-          type: string
-      - name: limit
-        in: query
-        description: Integer. Maximum number of results to return, per type. Defaults
-          to 20 results per category. Max 40 results per category.
-        schema:
-          type: string
-      - name: offset
-        in: query
-        description: Integer. Offset in search results, used for pagination. Defaults
-          to 0.
-        schema:
-          type: string
-      responses:
-        200:
-          $ref: '#/components/responses/Error'
-          description: v1 search was deprecated because hashtags were returned as
-            strings instead of as Tag entities.
+          description: WebPushSubscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/WebPushSubscription'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -4964,9 +5277,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Truncated results of a sample search for \u201Ccats\u201D\
-            \ with limit=2."
+          description: Search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Search'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -5001,8 +5316,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: V1::Instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/V1Instance'
   /api/v1/instance/translation_languages:
     get:
       tags:
@@ -5022,8 +5340,12 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: All source and target language pairs supported by the server.
+          description: Object with source language codes as keys and arrays of target
+            language codes as values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JSON'
   /api/v1/instance/extended_description:
     get:
       tags:
@@ -5041,8 +5363,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: ExtendedDescription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ExtendedDescription'
   /api/v1/instance/domain_blocks:
     get:
       tags:
@@ -5060,8 +5385,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The complete list of domains blocked by this instance
+          description: Array of DomainBlock
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of DomainBlock
+                items:
+                  $ref: '#/components/responses/DomainBlock'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header, if the admin has chosen
@@ -5089,8 +5420,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Array of Rule
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Rule
+                items:
+                  $ref: '#/components/responses/Rule'
   /api/v1/instance/activity:
     get:
       tags:
@@ -5110,8 +5447,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: 'Each hash in the array will contain the following attributes:'
+          description: Array of Hash
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Hash
+                items:
+                  type: hash
         401:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
@@ -5137,9 +5480,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: If the instance is in whitelist mode and the Authorization
-            header is missing or invalid
+          description: Array of String
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of String
+                items:
+                  type: string
         401:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
@@ -5165,8 +5513,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Instance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Instance'
   /api/v1/trends/links:
     get:
       tags:
@@ -5195,8 +5546,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Array of Trends::Link
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Trends::Link
+                items:
+                  $ref: '#/components/responses/TrendsLink'
   /api/v1/trends/statuses:
     get:
       tags:
@@ -5225,8 +5582,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
   /api/v1/trends/tags:
     get:
       tags:
@@ -5258,8 +5621,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Join Mastodon \xB7 Blog \xB7 "
+          description: Array of Tag
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Tag
+                items:
+                  $ref: '#/components/responses/Tag'
   /api/v1/directory:
     get:
       tags:
@@ -5299,8 +5668,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample results with limit=2
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
   /api/v1/custom_emojis:
     get:
       tags:
@@ -5320,8 +5695,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Sample response from mastodon.social
+          description: Array of CustomEmoji
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of CustomEmoji
+                items:
+                  $ref: '#/components/responses/CustomEmoji'
   /api/v1/announcements/:id/reactions/:name:
     put:
       tags:
@@ -5352,8 +5733,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -5388,8 +5772,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Invalid or missing Authorization header.
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -5415,8 +5802,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Currently active announcements
+          description: Array of Announcement
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Announcement
+                items:
+                  $ref: '#/components/responses/Announcement'
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
@@ -5440,9 +5833,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The account is no longer marked as sensitive, or was already
-            not marked as sensitive.
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5477,8 +5872,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Account successfully unsuspended
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5513,8 +5911,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Account was unsilenced, or was already not silenced
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5549,8 +5950,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Account was enabled, or was already enabled.
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5589,8 +5993,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The action was successfully taken
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5628,9 +6035,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5665,9 +6074,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header, or the account is not currently pending.
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5702,8 +6113,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The account is now approved
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5812,9 +6226,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Array of Admin::Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Account
+                items:
+                  $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5940,9 +6359,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Array of Admin::Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Account
+                items:
+                  $ref: '#/components/responses/AdminAccount'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -5972,9 +6396,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Admin::CanonicalEmailBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminCanonicalEmailBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6021,11 +6447,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because CanonicalEmailBlock IDs are generally not exposed via
-            any API responses, you will have to parse the HTTP Link header to load
-            older or newer results. See Paginating through API responses for more
-            information.
+          description: Array of Admin::CanonicalEmailBlock
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::CanonicalEmailBlock
+                items:
+                  $ref: '#/components/responses/AdminCanonicalEmailBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6049,8 +6478,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: All matching canonical email blocks are returned.
+          description: Array of Admin::CanonicalEmailBlock
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::CanonicalEmailBlock
+                items:
+                  $ref: '#/components/responses/AdminCanonicalEmailBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6081,9 +6516,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Requesting data on mastodon.social and a given trending tag
-            with a limit of 2.
+          description: Array of Admin::Dimension
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Dimension
+                items:
+                  $ref: '#/components/responses/AdminDimension'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6107,9 +6547,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is not allowed to perform this action, or invalid
-            or missing Authorization header
+          description: Admin::DomainAllow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainAllow'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6155,10 +6597,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because DomainAllow IDs are generally not exposed via any API
-            responses, you will have to parse the HTTP Link header to load older or
-            newer results. See Paginating through API responses for more information.
+          description: Array of Admin::DomainAllow
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::DomainAllow
+                items:
+                  $ref: '#/components/responses/AdminDomainAllow'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6182,9 +6628,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is not allowed to perform this action, or invalid
-            or missing Authorization header
+          description: Admin::DomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6230,10 +6678,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because DomainBlock IDs are generally not exposed via any API
-            responses, you will have to parse the HTTP Link header to load older or
-            newer results. See Paginating through API responses for more information.
+          description: Array of Admin::DomainBlock
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::DomainBlock
+                items:
+                  $ref: '#/components/responses/AdminDomainBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6258,9 +6710,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is not allowed to perform this action, or invalid
-            or missing Authorization header
+          description: Admin::EmailDomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminEmailDomainBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6307,9 +6761,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is not allowed to perform this action, or invalid
-            or missing Authorization header
+          description: Array of Admin::EmailDomainBlock
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::EmailDomainBlock
+                items:
+                  $ref: '#/components/responses/AdminEmailDomainBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6333,9 +6792,11 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is not allowed to perform this action, or invalid
-            or missing Authorization header
+          description: Admin::IpBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminIpBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6381,10 +6842,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because IpBlock IDs are generally not exposed via any API responses,
-            you will have to parse the HTTP Link header to load older or newer results.
-            See Paginating through API responses for more information.
+          description: Array of Admin::IpBlock
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::IpBlock
+                items:
+                  $ref: '#/components/responses/AdminIpBlock'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6410,9 +6875,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Returns quantitative data for each measure, in aggregate and
-            also by data bucket.
+          description: Array of Admin::Measure
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Measure
+                items:
+                  $ref: '#/components/responses/AdminMeasure'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6444,9 +6914,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The report no longer has an action taken, or it already had
-            no action taken.
+          description: Admin::Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminReport'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6478,8 +6950,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The report is now resolved, or it was already resolved.
+          description: Admin::Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminReport'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6511,9 +6986,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The report should no longer be assigned to you, or it was already
-            not assigned to anyone.
+          description: Admin::Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminReport'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6545,9 +7022,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: The report should now be assigned to you, or it was already
-            assigned to you.
+          description: Admin::Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminReport'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6578,9 +7057,11 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is not allowed to perform this action, or invalid
-            or missing Authorization header
+          description: Admin::Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminReport'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6642,10 +7123,14 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Because Report IDs are generally not exposed via any API responses,
-            you will have to parse the HTTP Link header to load older or newer results.
-            See Paginating through API responses for more information.
+          description: Array of Admin::Report
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Report
+                items:
+                  $ref: '#/components/responses/AdminReport'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is not allowed to perform this action, or invalid
@@ -6671,10 +7156,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Monthly retention data for the month of 2022-09, given that
-            2 users registered during 2022-09 and were active at least once during
-            that month.
+          description: Array of Admin::Cohort
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Cohort
+                items:
+                  $ref: '#/components/responses/AdminCohort'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6704,9 +7193,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Array of Admin::Tag
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Admin::Tag
+                items:
+                  $ref: '#/components/responses/AdminTag'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6732,9 +7226,14 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
@@ -6760,48 +7259,20 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: Authorized user is missing a permission, or invalid or missing
-            Authorization header
+          description: Array of Trends::Link
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Trends::Link
+                items:
+                  $ref: '#/components/responses/TrendsLink'
         403:
           $ref: '#/components/responses/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
       security:
       - BearerAuth: []
-  /api/proofs:
-    get:
-      tags:
-      - proofs
-      description: '
-
-        ## Version history
-
-
-        - 2.8.0 - added
-
-
-        [View identity proofs removed](https://docs.joinmastodon.org/methods/proofs/#get)'
-      parameters:
-      - name: provider
-        in: query
-        description: String. The identity provider to be looked up. Currently only
-          supports keybase (case-sensitive).
-        schema:
-          type: string
-      - name: username
-        in: query
-        description: String. The username on the selected identity provider.
-        schema:
-          type: string
-      responses:
-        200:
-          $ref: '#/components/responses/Error'
-          description: "Looking up the username \u201Cgargron\u201D via the \u201C\
-            keybase\u201D provider"
-        404:
-          $ref: '#/components/responses/Error'
-          description: No identity proof found for username on provider
   /api/oembed:
     get:
       tags:
@@ -6834,20 +7305,30 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/responses/Error'
-          description: "Represents OEmbed \u201Crich\u201D preview, with associated\
-            \ iframe and metadata."
+          description: OEmbed metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/JSON'
         404:
           $ref: '#/components/responses/Error'
           description: Status not found for given URL
 components:
   responses:
+    Empty:
+      description: Empty content
     Streaming:
       description: Represents an error message.
       content:
         text/event-stream:
           schema:
             type: string
+    JSON:
+      description: Represents an JSON object.
+      content:
+        text/event-stream:
+          schema:
+            type: object
     Field:
       description: ''
       content:

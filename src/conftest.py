@@ -1,7 +1,15 @@
+import sys
 from functools import wraps
 
 import pytest
 import responses
+from loguru import logger
+
+
+@pytest.fixture(autouse=True)
+def override_log_level():
+    logger.remove()
+    logger.add(sys.stderr, level="INFO")
 
 
 @pytest.fixture
