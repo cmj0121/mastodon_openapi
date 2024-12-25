@@ -83,7 +83,7 @@ class ParameterObject(BaseModel):
     description: str | None = None
     required: bool | None = None
     deprecated: bool | None = None
-    schema: SchemaObject
+    schema_object: SchemaObject = Field(..., alias="schema")
 
 
 class SecuritySchemeObject(BaseModel):
