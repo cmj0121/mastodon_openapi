@@ -6848,6 +6848,49 @@ components:
         text/event-stream:
           schema:
             type: string
+    Field:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: StringVersion
+                description: "The key of a given field\u2019s key-value pair."
+              value:
+                type: String
+                description: The value associated with the name key.
+              verified_at:
+                type: String
+                description: "Timestamp of when the server verified a URL value for\
+                  \ a rel=\u201Cme\u201D link."
+                nullable: true
+    MutedAccount:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              mute_expires_at:
+                type: String
+                description: When a timed mute will expire, if applicable.
+                nullable: true
+    CredentialAccount:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              source:
+                type: HashVersion
+                description: An extra attribute that contains source values to be
+                  used with API methods that verify credentials and update credentials.
+              role:
+                type: RoleVersion
+                description: The role assigned to the currently authorized user.
     Account:
       description: Represents a user of Mastodon and their associated profile.
       content:
@@ -7058,6 +7101,24 @@ components:
               canonical_email_hash:
                 type: String
                 description: The SHA256 hash of the canonical email address.
+    CohortData:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              date:
+                type: String
+                description: The timestamp for the start of the bucket, at midnight.
+              rate:
+                type: NumberVersion
+                description: The percentage rate of users who registered in the specified
+                  period and were active for the given date bucket.
+              value:
+                type: IntegerVersion
+                description: How many users registered in the specified period and
+                  were active for the given date bucket.
     AdminCohort:
       description: Represents a retention metric.
       content:
@@ -7075,6 +7136,29 @@ components:
                 type: Array
                 description: Retention data for users who registered during the given
                   period.
+    Data:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              key:
+                type: StringVersion
+                description: The unique keystring for this data item.
+              human_key:
+                type: StringVersion
+                description: A human-readable key for this data item.
+              value:
+                type: StringVersion
+                description: The value for this data item.
+              unit:
+                type: StringVersion
+                description: "The units associated with this data item\u2019s value,\
+                  \ if applicable."
+              human_value:
+                type: StringVersion
+                description: A human-readable formatted value for this data item.
     AdminDimension:
       description: Represents qualitative data about the server.
       content:
@@ -7287,6 +7371,39 @@ components:
               rules:
                 type: Array
                 description: Rules attached to the report, for context.
+    AnnouncementStatus:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of an attached Status in the database.
+              url:
+                type: String
+                description: The URL of an attached Status.
+    AnnouncementAccount:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The account ID of the mentioned user.
+              username:
+                type: StringVersion
+                description: The username of the mentioned user.
+              url:
+                type: String
+                description: "The location of the mentioned user\u2019s profile."
+              acct:
+                type: StringVersion
+                description: 'The webfinger acct: URI of the mentioned user. Equivalent
+                  to username for local users, or username@domain for remote users.'
     Announcement:
       description: Represents an announcement set by an administrator.
       content:
@@ -7355,6 +7472,23 @@ components:
               state:
                 type: String
                 description: State of the appeal.
+    CredentialApplication:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              client_id:
+                type: StringVersion
+                description: Client ID key, to be used for obtaining OAuth tokens
+              client_secret:
+                type: StringVersion
+                description: Client secret key, to be used for obtaining OAuth tokens
+              client_secret_expires_at:
+                type: StringVersion
+                description: When the client secret key will expire at, presently
+                  this always returns 0 indicating that OAuth Clients do not expire
     Application:
       description: Represents an application that interfaces with the REST API to
         access accounts or post statuses.
@@ -7634,6 +7768,19 @@ components:
                 type: String
                 description: "The account owner\u2019s profile URL on the identity\
                   \ provider."
+    InstanceIcon:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              src:
+                type: String4.3.0
+                description: The URL of this icon.
+              size:
+                type: String
+                description: The size of this icon.
     Instance:
       description: Represents the software instance of Mastodon running on this domain.
       content:
@@ -7898,6 +8045,16 @@ components:
                 type: StatusVersion
                 description: Most recent status associated with a filtered notification
                   from that account.
+    PollOption:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: StringVersion
+                description: The text value of the poll option.
     Poll:
       description: Represents a poll attached to a status.
       content:
@@ -7965,6 +8122,16 @@ components:
               reading:expand:spoilers:
                 type: BooleanVersion
                 description: Whether CWs should be expanded by default.
+    TrendsLink:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              history:
+                type: Array
+                description: Usage statistics for given days (typically the past week).
     PreviewCard:
       description: Represents a rich preview card that is generated using OpenGraph
         tags from a URL.
@@ -8276,6 +8443,39 @@ components:
               hashtags:
                 type: Array
                 description: Hashtags which match the given query
+    StatusTag:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: StringVersion
+                description: 'The value of the hashtag after the # sign.'
+              url:
+                type: String
+                description: A link to the hashtag on the instance.
+    StatusMention:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The account ID of the mentioned user.
+              username:
+                type: StringVersion
+                description: The username of the mentioned user.
+              url:
+                type: String
+                description: "The location of the mentioned user\u2019s profile."
+              acct:
+                type: StringVersion
+                description: 'The webfinger acct: URI of the mentioned user. Equivalent
+                  to username for local users, or username@domain for remote users.'
     Status:
       description: Represents a status posted by an account.
       content:
@@ -8465,6 +8665,26 @@ components:
               account:
                 type: AccountVersion
                 description: The account being recommended to follow.
+    AdminTag:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the Tag in the database.
+              trendable:
+                type: BooleanVersion
+                description: Whether the hashtag has been approved to trend.
+              usable:
+                type: BooleanVersion
+                description: Whether the hashtag has not been disabled from auto-linking.
+              requires_review:
+                type: BooleanVersion
+                description: Whether the hashtag has not been reviewed yet to approve
+                  or deny its trending.
     Tag:
       description: Represents a hashtag used within the content of a status.
       content:
@@ -8505,6 +8725,42 @@ components:
               created_at:
                 type: Number
                 description: When the token was generated.
+    TranslationAttachment:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The id of the attachment.
+              description:
+                type: StringVersion
+                description: The translated description of the attachment.
+    TranslationPollOption:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: StringVersion
+                description: The translated title of the poll option.
+    TranslationPoll:
+      description: ''
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: String
+                description: The ID of the poll.
+              options:
+                type: Array
+                description: The translated poll options.
     Translation:
       description: Represents the result of machine translating some status content
       content:
