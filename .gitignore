@@ -1,4 +1,0 @@
-*.sw[po]
-
-*.py[co]
-__pycache__/
