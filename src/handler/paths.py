@@ -21,6 +21,11 @@ from src.openapi_spec import SchemaObject
 from src.openapi_spec import SecurityRequirementObject
 
 
+def canonicalize_path(path: str) -> str:
+    """replace /:id with /{:id}"""
+    return re.sub(r"/(:\w+)", r"/{\1}", path)
+
+
 def handle_paths(link: str, html: str) -> Paths:
     """
     Handle the base URL of the Mastodon API documentation and return the OpenAPI Paths object.
@@ -71,6 +76,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
             if matched:
                 method, endpoint = matched.groups()
+                endpoint = canonicalize_path(endpoint)
                 logger.info(f"processing [{method}] {endpoint=}")
 
                 removed = method_dom.find("span", class_="api-method-parameter-removed", string="removed")

@@ -64,7 +64,7 @@ class TestHandlePaths:
         load_api_html_fn(app)
 
         resp = handle_path_item(app, link)
-        assert "/api/v1/accounts/:id/unmute" in resp
+        assert "/api/v1/accounts/{:id}/unmute" in resp
 
-        operation = resp["/api/v1/accounts/:id/unmute"].root["post"]
+        operation = resp["/api/v1/accounts/{:id}/unmute"].root["post"]
         assert operation.parameters is not None

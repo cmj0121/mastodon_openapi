@@ -286,7 +286,7 @@ paths:
             user.
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/identity_proofs:
+  /api/v1/accounts/{:id}/identity_proofs:
     get:
       tags:
       - accounts
@@ -512,7 +512,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/note:
+  /api/v1/accounts/{:id}/note:
     post:
       tags:
       - accounts
@@ -548,7 +548,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unpin:
+  /api/v1/accounts/{:id}/unpin:
     post:
       tags:
       - accounts
@@ -577,7 +577,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/pin:
+  /api/v1/accounts/{:id}/pin:
     post:
       tags:
       - accounts
@@ -615,7 +615,7 @@ paths:
           description: Can sometimes be returned if the account already endorsed.
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unmute:
+  /api/v1/accounts/{:id}/unmute:
     post:
       tags:
       - accounts
@@ -653,7 +653,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/mute:
+  /api/v1/accounts/{:id}/mute:
     post:
       tags:
       - accounts
@@ -695,7 +695,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unblock:
+  /api/v1/accounts/{:id}/unblock:
     post:
       tags:
       - accounts
@@ -733,7 +733,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/block:
+  /api/v1/accounts/{:id}/block:
     post:
       tags:
       - accounts
@@ -773,7 +773,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/remove_from_followers:
+  /api/v1/accounts/{:id}/remove_from_followers:
     post:
       tags:
       - accounts
@@ -809,7 +809,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unfollow:
+  /api/v1/accounts/{:id}/unfollow:
     post:
       tags:
       - accounts
@@ -847,7 +847,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/follow:
+  /api/v1/accounts/{:id}/follow:
     post:
       tags:
       - accounts
@@ -891,7 +891,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/lists:
+  /api/v1/accounts/{:id}/lists:
     get:
       tags:
       - accounts
@@ -937,7 +937,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/featured_tags:
+  /api/v1/accounts/{:id}/featured_tags:
     get:
       tags:
       - accounts
@@ -963,7 +963,7 @@ paths:
                   $ref: '#/components/responses/FeaturedTag'
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/following:
+  /api/v1/accounts/{:id}/following:
     get:
       tags:
       - accounts
@@ -1023,7 +1023,7 @@ paths:
           description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/followers:
+  /api/v1/accounts/{:id}/followers:
     get:
       tags:
       - accounts
@@ -1083,7 +1083,7 @@ paths:
           description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/statuses:
+  /api/v1/accounts/{:id}/statuses:
     get:
       tags:
       - accounts
@@ -1222,7 +1222,7 @@ paths:
           description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id:
+  /api/v1/accounts/{:id}:
     get:
       tags:
       - accounts
@@ -1692,7 +1692,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/follow_requests/:account_id/reject:
+  /api/v1/follow_requests/{:account_id}/reject:
     post:
       tags:
       - follow_requests
@@ -1729,7 +1729,7 @@ paths:
           description: No pending follow request from that account ID
       security:
       - BearerAuth: []
-  /api/v1/follow_requests/:account_id/authorize:
+  /api/v1/follow_requests/{:account_id}/authorize:
     post:
       tags:
       - follow_requests
@@ -1887,7 +1887,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/featured_tags/:id:
+  /api/v1/featured_tags/{:id}:
     delete:
       tags:
       - featured_tags
@@ -2074,7 +2074,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/suggestions/:account_id:
+  /api/v1/suggestions/{:account_id}:
     delete:
       tags:
       - suggestions
@@ -2145,7 +2145,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/tags/:id/unfollow:
+  /api/v1/tags/{:id}/unfollow:
     post:
       tags:
       - tags
@@ -2180,7 +2180,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/tags/:id/follow:
+  /api/v1/tags/{:id}/follow:
     post:
       tags:
       - tags
@@ -2220,7 +2220,7 @@ paths:
           description: 'Prior to 4.1.0: Tag was already followed'
       security:
       - BearerAuth: []
-  /api/v1/tags/:id:
+  /api/v1/tags/{:id}:
     get:
       tags:
       - tags
@@ -2296,7 +2296,7 @@ paths:
                 $ref: '#/components/responses/CredentialAccount'
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/card:
+  /api/v1/statuses/{:id}/card:
     get:
       tags:
       - statuses
@@ -2333,7 +2333,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/source:
+  /api/v1/statuses/{:id}/source:
     get:
       tags:
       - statuses
@@ -2369,7 +2369,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/history:
+  /api/v1/statuses/{:id}/history:
     get:
       tags:
       - statuses
@@ -2407,7 +2407,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id:
+  /api/v1/statuses/{:id}:
     get:
       tags:
       - statuses
@@ -2445,7 +2445,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unpin:
+  /api/v1/statuses/{:id}/unpin:
     post:
       tags:
       - statuses
@@ -2481,7 +2481,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/pin:
+  /api/v1/statuses/{:id}/pin:
     post:
       tags:
       - statuses
@@ -2523,7 +2523,7 @@ paths:
           description: 'Status is not owned by you:'
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unmute:
+  /api/v1/statuses/{:id}/unmute:
     post:
       tags:
       - statuses
@@ -2561,7 +2561,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/mute:
+  /api/v1/statuses/{:id}/mute:
     post:
       tags:
       - statuses
@@ -2599,7 +2599,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unbookmark:
+  /api/v1/statuses/{:id}/unbookmark:
     post:
       tags:
       - statuses
@@ -2635,7 +2635,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/bookmark:
+  /api/v1/statuses/{:id}/bookmark:
     post:
       tags:
       - statuses
@@ -2668,7 +2668,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unreblog:
+  /api/v1/statuses/{:id}/unreblog:
     post:
       tags:
       - statuses
@@ -2704,7 +2704,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/reblog:
+  /api/v1/statuses/{:id}/reblog:
     post:
       tags:
       - statuses
@@ -2742,7 +2742,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unfavourite:
+  /api/v1/statuses/{:id}/unfavourite:
     post:
       tags:
       - statuses
@@ -2778,7 +2778,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/favourite:
+  /api/v1/statuses/{:id}/favourite:
     post:
       tags:
       - statuses
@@ -2814,7 +2814,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/favourited_by:
+  /api/v1/statuses/{:id}/favourited_by:
     get:
       tags:
       - statuses
@@ -2866,7 +2866,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/reblogged_by:
+  /api/v1/statuses/{:id}/reblogged_by:
     get:
       tags:
       - statuses
@@ -2918,7 +2918,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/translate:
+  /api/v1/statuses/{:id}/translate:
     post:
       tags:
       - statuses
@@ -2954,7 +2954,7 @@ paths:
           description: The translation request failed
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/context:
+  /api/v1/statuses/{:id}/context:
     get:
       tags:
       - statuses
@@ -3075,7 +3075,7 @@ paths:
           description: File or file type is unsupported or invalid
       security:
       - BearerAuth: []
-  /api/v1/media/:id:
+  /api/v1/media/{:id}:
     get:
       tags:
       - media
@@ -3169,7 +3169,7 @@ paths:
           description: Could not generate a thumbnail for the attachment
       security:
       - BearerAuth: []
-  /api/v1/polls/:id/votes:
+  /api/v1/polls/{:id}/votes:
     post:
       tags:
       - polls
@@ -3208,7 +3208,7 @@ paths:
           description: The poll has expired
       security:
       - BearerAuth: []
-  /api/v1/polls/:id:
+  /api/v1/polls/{:id}:
     get:
       tags:
       - polls
@@ -3241,7 +3241,7 @@ paths:
           description: "Poll does not exist, or poll\u2019s parent status is private"
       security:
       - BearerAuth: []
-  /api/v1/scheduled_statuses/:id:
+  /api/v1/scheduled_statuses/{:id}:
     get:
       tags:
       - scheduled_statuses
@@ -3382,7 +3382,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/timelines/list/:list_id:
+  /api/v1/timelines/list/{:list_id}:
     get:
       tags:
       - timelines
@@ -3577,7 +3577,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/timelines/tag/:hashtag:
+  /api/v1/timelines/tag/{:hashtag}:
     get:
       tags:
       - timelines
@@ -3759,7 +3759,7 @@ paths:
                   $ref: '#/components/responses/Status'
       security:
       - BearerAuth: []
-  /api/v1/conversations/:id/read:
+  /api/v1/conversations/{:id}/read:
     post:
       tags:
       - conversations
@@ -3794,7 +3794,7 @@ paths:
           description: The conversation does not exist, or is not owned by you.
       security:
       - BearerAuth: []
-  /api/v1/conversations/:id:
+  /api/v1/conversations/{:id}:
     delete:
       tags:
       - conversations
@@ -3882,7 +3882,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/lists/:id/accounts:
+  /api/v1/lists/{:id}/accounts:
     get:
       tags:
       - lists
@@ -3943,7 +3943,7 @@ paths:
           description: List does not exist or is not owned by you.
       security:
       - BearerAuth: []
-  /api/v1/lists/:id:
+  /api/v1/lists/{:id}:
     get:
       tags:
       - lists
@@ -4412,7 +4412,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v2/notifications/:group_key/accounts:
+  /api/v2/notifications/{:group_key}/accounts:
     get:
       tags:
       - grouped notifications
@@ -4443,7 +4443,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v2/notifications/:group_key/dismiss:
+  /api/v2/notifications/{:group_key}/dismiss:
     post:
       tags:
       - grouped notifications
@@ -4471,7 +4471,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v2/notifications/:group_key:
+  /api/v2/notifications/{:group_key}:
     get:
       tags:
       - grouped notifications
@@ -4700,7 +4700,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/requests/:id/dismiss:
+  /api/v1/notifications/requests/{:id}/dismiss:
     post:
       tags:
       - notifications
@@ -4735,7 +4735,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/requests/:id/accept:
+  /api/v1/notifications/requests/{:id}/accept:
     post:
       tags:
       - notifications
@@ -4772,7 +4772,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/requests/:id:
+  /api/v1/notifications/requests/{:id}:
     get:
       tags:
       - notifications
@@ -4954,7 +4954,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/:id/dismiss:
+  /api/v1/notifications/{:id}/dismiss:
     post:
       tags:
       - notifications
@@ -5014,7 +5014,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/:id:
+  /api/v1/notifications/{:id}:
     get:
       tags:
       - notifications
@@ -5703,7 +5703,7 @@ paths:
                 description: Array of CustomEmoji
                 items:
                   $ref: '#/components/responses/CustomEmoji'
-  /api/v1/announcements/:id/reactions/:name:
+  /api/v1/announcements/{:id}/reactions/{:name}:
     put:
       tags:
       - announcements
@@ -5749,7 +5749,7 @@ paths:
           description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
-  /api/v1/announcements/:id/dismiss:
+  /api/v1/announcements/{:id}/dismiss:
     post:
       tags:
       - announcements
@@ -5815,7 +5815,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/unsensitive:
+  /api/v1/admin/accounts/{:id}/unsensitive:
     post:
       tags:
       - accounts
@@ -5847,7 +5847,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/unsuspend:
+  /api/v1/admin/accounts/{:id}/unsuspend:
     post:
       tags:
       - accounts
@@ -5886,7 +5886,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/unsilence:
+  /api/v1/admin/accounts/{:id}/unsilence:
     post:
       tags:
       - accounts
@@ -5925,7 +5925,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/enable:
+  /api/v1/admin/accounts/{:id}/enable:
     post:
       tags:
       - accounts
@@ -5964,7 +5964,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/action:
+  /api/v1/admin/accounts/{:id}/action:
     post:
       tags:
       - accounts
@@ -6010,7 +6010,7 @@ paths:
           description: type is not provided or is not understood
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id:
+  /api/v1/admin/accounts/{:id}:
     get:
       tags:
       - accounts
@@ -6049,7 +6049,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/reject:
+  /api/v1/admin/accounts/{:id}/reject:
     post:
       tags:
       - accounts
@@ -6088,7 +6088,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/approve:
+  /api/v1/admin/accounts/{:id}/approve:
     post:
       tags:
       - accounts
@@ -6373,7 +6373,7 @@ paths:
             Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/canonical_email_blocks/:id:
+  /api/v1/admin/canonical_email_blocks/{:id}:
     get:
       tags:
       - canonical_email_blocks
@@ -6530,7 +6530,7 @@ paths:
             Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/domain_allows/:id:
+  /api/v1/admin/domain_allows/{:id}:
     get:
       tags:
       - domain_allows
@@ -6611,7 +6611,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/domain_blocks/:id:
+  /api/v1/admin/domain_blocks/{:id}:
     get:
       tags:
       - domain_blocks
@@ -6692,7 +6692,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/email_domain_blocks/:id:
+  /api/v1/admin/email_domain_blocks/{:id}:
     get:
       tags:
       - email_domain_blocks
@@ -6775,7 +6775,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/ip_blocks/:id:
+  /api/v1/admin/ip_blocks/{:id}:
     get:
       tags:
       - ip_blocks
@@ -6889,7 +6889,7 @@ paths:
             Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/reopen:
+  /api/v1/admin/reports/{:id}/reopen:
     post:
       tags:
       - reports
@@ -6925,7 +6925,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/resolve:
+  /api/v1/admin/reports/{:id}/resolve:
     post:
       tags:
       - reports
@@ -6961,7 +6961,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/unassign:
+  /api/v1/admin/reports/{:id}/unassign:
     post:
       tags:
       - reports
@@ -6997,7 +6997,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/assign_to_self:
+  /api/v1/admin/reports/{:id}/assign_to_self:
     post:
       tags:
       - reports
@@ -7033,7 +7033,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id:
+  /api/v1/admin/reports/{:id}:
     get:
       tags:
       - reports
