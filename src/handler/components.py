@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from loguru import logger
 
 from src.handler.utils import canonicalize
+from src.openapi_spec import BuildInType
 from src.openapi_spec import Component
 from src.openapi_spec import MediaTypeObject
 from src.openapi_spec import ReferenceObject
@@ -101,11 +102,24 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
                 raise ValueError(f"failed to find the attribute {text=}")
 
             desc, nullable, typ, version = matched.groups()
-            schema_object.properties[attr_name] = SchemaObject(
-                type=typ,
-                nullable=True if nullable else None,
-                description=desc.strip(),
-            )
+            if typ == "StringVersion":
+                # special case for the attribute type
+                typ = "String"
+
+            if typ.lower() in BuildInType:
+                prop = SchemaObject(
+                    type=[typ.lower(), "null"] if nullable else typ.lower(),
+                    description=desc.strip(),
+                )
+            else:
+                prop = ReferenceObject.model_validate(
+                    {
+                        "$ref": f"#/components/responses/{canonicalize(typ)}",
+                        "description": desc.strip(),
+                    }
+                )
+
+            schema_object.properties[attr_name] = prop
 
         match entity_dom.text:
             case "Attributes":

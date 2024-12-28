@@ -7337,16 +7337,17 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: "The key of a given field\u2019s key-value pair."
               value:
-                type: String
+                type: string
                 description: The value associated with the name key.
               verified_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: "Timestamp of when the server verified a URL value for\
                   \ a rel=\u201Cme\u201D link."
-                nullable: true
     MutedAccount:
       description: ''
       content:
@@ -7355,9 +7356,10 @@ components:
             type: object
             properties:
               mute_expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When a timed mute will expire, if applicable.
-                nullable: true
     CredentialAccount:
       description: ''
       content:
@@ -7366,11 +7368,11 @@ components:
             type: object
             properties:
               source:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: An extra attribute that contains source values to be
                   used with API methods that verify credentials and update credentials.
               role:
-                type: RoleVersion
+                $ref: '#/components/responses/RoleVersion'
                 description: The role assigned to the currently authorized user.
     Account:
       description: Represents a user of Mastodon and their associated profile.
@@ -7380,95 +7382,93 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account id.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the account, not including domain.
               acct:
-                type: StringVersion
+                type: string
                 description: The Webfinger account URI. Equal to username for local
                   users, or username@domain for remote users.
               url:
-                type: String
+                type: string
                 description: "The location of the user\u2019s profile page."
               display_name:
-                type: StringVersion
+                type: string
                 description: "The profile\u2019s display name."
               note:
-                type: String
+                type: string
                 description: "The profile\u2019s bio or description."
               avatar:
-                type: String
+                type: string
                 description: An image icon that is shown next to statuses and in the
                   profile.
               avatar_static:
-                type: String
+                type: string
                 description: A static version of the avatar. Equal to avatar if its
                   value is a static image; different if avatar is an animated GIF.
               header:
-                type: String
+                type: string
                 description: An image banner that is shown above the profile and in
                   profile cards.
               header_static:
-                type: String
+                type: string
                 description: A static version of the header. Equal to header if its
                   value is a static image; different if header is an animated GIF.
               locked:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account manually approves follow requests.
               fields:
-                type: Array
+                type: array
                 description: Additional metadata attached to a profile as name-value
                   pairs.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji entities to be used when rendering the profile.
               bot:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Indicates that the account may perform automated actions,
                   may not be monitored, or identifies as a robot.
               group:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Indicates that the account represents a Group actor.
               discoverable:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account has opted into discovery features
                   such as the profile directory.
-                nullable: true
               noindex:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the local user has opted out of being indexed
                   by search engines.
-                nullable: true
               moved:
-                type: Account,
+                $ref: '#/components/responses/Account,'
                 description: Indicates that the profile is currently inactive and
                   that its user has moved to a new account.
-                nullable: true
               suspended:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: An extra attribute returned only when an account is suspended.
               limited:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: An extra attribute returned only when an account is silenced.
                   If true, indicates that the account should be hidden behind a warning
                   screen.
               created_at:
-                type: String
+                type: string
                 description: When the account was created.
               last_status_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the most recent status was posted.
-                nullable: true
               statuses_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many statuses are attached to this account.
               followers_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: The reported followers of this profile.
               following_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: The reported follows of this profile.
     AccountWarning:
       description: Moderation warning against a particular account.
@@ -7478,29 +7478,28 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the account warning in the database.
               action:
-                type: String
+                type: string
                 description: Action taken against the account.
               text:
-                type: StringVersion
+                type: string
                 description: Message from the moderator to the target account.
               status_ids:
-                type: Array
+                type: array
                 description: List of status IDs that are relevant to the warning.
                   When action is mark_statuses_as_sensitive or delete_statuses, those
                   are the affected statuses.
               target_account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: Account against which a moderation decision has been
                   taken.
               appeal:
-                type: Appeal,
+                $ref: '#/components/responses/Appeal,'
                 description: Appeal submitted by the target account, if any.
-                nullable: true
               created_at:
-                type: String
+                type: string
                 description: When the event took place.
     AdminAccount:
       description: Admin-level information about a given account.
@@ -7510,64 +7509,66 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the account in the database.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the account.
               domain:
-                type: String,
+                $ref: '#/components/responses/String,'
                 description: The domain of the account, if it is remote.
-                nullable: true
               created_at:
-                type: String
+                type: string
                 description: When the account was first discovered.
               email:
-                type: StringVersion
+                type: string
                 description: The email address associated with the account.
               ip:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: The IP address last used to login to this account.
-                nullable: true
               ips:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: The IP address last used to login to this account.
-                nullable: true
               locale:
-                type: String
+                type: string
                 description: The locale of the account.
               invite_request:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: The reason given when requesting an invite (for instances
                   that require manual approval of registrations)
-                nullable: true
               role:
-                type: RoleVersion
+                $ref: '#/components/responses/RoleVersion'
                 description: The current role of the account.
               confirmed:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account has confirmed their email address.
               approved:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account is currently approved.
               disabled:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account is currently disabled.
               silenced:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account is currently silenced.
               suspended:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the account is currently suspended.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: User-level information about the account.
               created_by_application_id:
-                type: String
+                type: string
                 description: The ID of the Application that created this account,
                   if applicable.
               invited_by_account_id:
-                type: String
+                type: string
                 description: The ID of the Account that invited this user, if applicable.
     AdminCanonicalEmailBlock:
       description: Represents a canonical email block (hashed).
@@ -7577,10 +7578,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the email block in the database.
               canonical_email_hash:
-                type: String
+                type: string
                 description: The SHA256 hash of the canonical email address.
     CohortData:
       description: ''
@@ -7590,14 +7591,14 @@ components:
             type: object
             properties:
               date:
-                type: String
+                type: string
                 description: The timestamp for the start of the bucket, at midnight.
               rate:
-                type: NumberVersion
+                $ref: '#/components/responses/NumberVersion'
                 description: The percentage rate of users who registered in the specified
                   period and were active for the given date bucket.
               value:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many users registered in the specified period and
                   were active for the given date bucket.
     AdminCohort:
@@ -7608,13 +7609,13 @@ components:
             type: object
             properties:
               period:
-                type: String
+                type: string
                 description: The timestamp for the start of the period, at midnight.
               frequency:
-                type: String
+                type: string
                 description: The size of the bucket for the returned data.
               data:
-                type: Array
+                type: array
                 description: Retention data for users who registered during the given
                   period.
     Data:
@@ -7625,20 +7626,20 @@ components:
             type: object
             properties:
               key:
-                type: StringVersion
+                type: string
                 description: The unique keystring for this data item.
               human_key:
-                type: StringVersion
+                type: string
                 description: A human-readable key for this data item.
               value:
-                type: StringVersion
+                type: string
                 description: The value for this data item.
               unit:
-                type: StringVersion
+                type: string
                 description: "The units associated with this data item\u2019s value,\
                   \ if applicable."
               human_value:
-                type: StringVersion
+                type: string
                 description: A human-readable formatted value for this data item.
     AdminDimension:
       description: Represents qualitative data about the server.
@@ -7648,10 +7649,10 @@ components:
             type: object
             properties:
               key:
-                type: StringVersion
+                type: string
                 description: The unique keystring for the requested dimension.
               data:
-                type: Array
+                type: array
                 description: The data available for the requested dimension.
     AdminDomainAllow:
       description: Represents a domain allowed to federate.
@@ -7661,13 +7662,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the DomainAllow in the database.
               domain:
-                type: StringVersion
+                type: string
                 description: The domain that is allowed to federate.
               created_at:
-                type: String
+                type: string
                 description: When the domain was allowed to federate.
     AdminDomainBlock:
       description: Represents a domain limited from federating.
@@ -7677,37 +7678,39 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the DomainBlock in the database.
               domain:
-                type: StringVersion
+                type: string
                 description: The domain that is not allowed to federate.
               digest:
-                type: StringVersion
+                type: string
                 description: The sha256 hex digest of the domain that is not allowed
                   to federated.
               created_at:
-                type: String
+                type: string
                 description: When the domain was blocked from federating.
               severity:
-                type: String
+                type: string
                 description: The policy to be applied by this domain block.
               reject_media:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to reject media attachments from this domain
               reject_reports:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to reject reports from this domain
               private_comment:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: ''
-                nullable: true
               public_comment:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: ''
-                nullable: true
               obfuscate:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to obfuscate public displays of this domain block
     AdminEmailDomainBlock:
       description: Represents an email domain that cannot be used to sign up.
@@ -7717,16 +7720,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the EmailDomainBlock in the database.
               domain:
-                type: StringVersion
+                type: string
                 description: The email domain that is not allowed to be used for signups.
               created_at:
-                type: String
+                type: string
                 description: When the email domain was disallowed from signups.
               history:
-                type: Array
+                type: array
                 description: Usage statistics for given days (typically the past week).
     AdminIp:
       description: Represents an IP address associated with a user.
@@ -7736,10 +7739,10 @@ components:
             type: object
             properties:
               ip:
-                type: String
+                type: string
                 description: The IP address.
               used_at:
-                type: String
+                type: string
                 description: The timestamp of when the IP address was last used for
                   this account.
     AdminIpBlock:
@@ -7750,24 +7753,25 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the DomainBlock in the database.
               ip:
-                type: String
+                type: string
                 description: The IP address range that is not allowed to federate.
               severity:
-                type: String
+                type: string
                 description: The associated policy with this IP block.
               comment:
-                type: StringVersion
+                type: string
                 description: The recorded reason for this IP block.
               created_at:
-                type: String
+                type: string
                 description: When the IP block was created.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the IP block will expire.
-                nullable: true
     AdminMeasure:
       description: Represents quantitative data about the server.
       content:
@@ -7776,27 +7780,28 @@ components:
             type: object
             properties:
               key:
-                type: StringVersion
+                type: string
                 description: The unique keystring for the requested measure.
               unit:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: "The units associated with this data item\u2019s value,\
                   \ if applicable."
-                nullable: true
               total:
-                type: String
+                type: string
                 description: The numeric total associated with the requested measure.
               human_value:
-                type: StringVersion
+                type: string
                 description: A human-readable formatted value for this data item.
               previous_total:
-                type: String
+                type: string
                 description: The numeric total associated with the requested measure,
                   in the previous period. Previous period is calculated by subtracting
                   the start_at and end_at dates, then offsetting both start and end
                   dates backwards by the length of the time period.
               data:
-                type: Array
+                type: array
                 description: The data available for the requested measure, split into
                   daily buckets.
     AdminReport:
@@ -7807,50 +7812,49 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the report in the database.
               action_taken:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether an action was taken to resolve this report.
               action_taken_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When an action was taken, if this report is currently
                   resolved.
-                nullable: true
               category:
-                type: String
+                type: string
                 description: The category under which the report is classified.
               comment:
-                type: StringVersion
+                type: string
                 description: An optional reason for reporting.
               forwarded:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether a report was forwarded to a remote instance.
               created_at:
-                type: String
+                type: string
                 description: The time the report was filed.
               updated_at:
-                type: String
+                type: string
                 description: The time of last action on this report.
               account:
-                type: Admin::AccountVersion
+                $ref: '#/components/responses/AdminAccountVersion'
                 description: The account which filed the report.
               target_account:
-                type: Admin::AccountVersion
+                $ref: '#/components/responses/AdminAccountVersion'
                 description: The account being reported.
               assigned_account:
-                type: Admin::Account
+                $ref: '#/components/responses/AdminAccount'
                 description: The account of the moderator assigned to this report.
-                nullable: true
               action_taken_by_account:
-                type: Admin::Account
+                $ref: '#/components/responses/AdminAccount'
                 description: The account of the moderator who handled the report.
-                nullable: true
               statuses:
-                type: Array
+                type: array
                 description: Statuses attached to the report, for context.
               rules:
-                type: Array
+                type: array
                 description: Rules attached to the report, for context.
     AnnouncementStatus:
       description: ''
@@ -7860,10 +7864,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of an attached Status in the database.
               url:
-                type: String
+                type: string
                 description: The URL of an attached Status.
     AnnouncementAccount:
       description: ''
@@ -7873,16 +7877,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account ID of the mentioned user.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the mentioned user.
               url:
-                type: String
+                type: string
                 description: "The location of the mentioned user\u2019s profile."
               acct:
-                type: StringVersion
+                type: string
                 description: 'The webfinger acct: URI of the mentioned user. Equivalent
                   to username for local users, or username@domain for remote users.'
     Announcement:
@@ -7893,51 +7897,53 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the announcement in the database.
               content:
-                type: String
+                type: string
                 description: The text of the announcement.
               starts_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the announcement will start.
-                nullable: true
               ends_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the announcement will end.
-                nullable: true
               published:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the announcement is currently active.
               all_day:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the announcement should start and end on dates
                   only instead of datetimes. Will be false if there is no starts_at
                   or ends_at time.
               published_at:
-                type: String
+                type: string
                 description: When the announcement was published.
               updated_at:
-                type: String
+                type: string
                 description: When the announcement was last updated.
               read:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the announcement has been read by the current
                   user.
               mentions:
-                type: Array
+                type: array
                 description: Accounts mentioned in the announcement text.
               statuses:
-                type: Array
+                type: array
                 description: Statuses linked in the announcement text.
               tags:
-                type: Array
+                type: array
                 description: Tags linked in the announcement text.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji used in the announcement text.
               reactions:
-                type: Array
+                type: array
                 description: Emoji reactions attached to the announcement.
     Appeal:
       description: Appeal against a moderation action.
@@ -7947,11 +7953,11 @@ components:
             type: object
             properties:
               text:
-                type: StringVersion
+                type: string
                 description: Text of the appeal from the moderated account to the
                   moderators.
               state:
-                type: String
+                type: string
                 description: State of the appeal.
     CredentialApplication:
       description: ''
@@ -7961,13 +7967,13 @@ components:
             type: object
             properties:
               client_id:
-                type: StringVersion
+                type: string
                 description: Client ID key, to be used for obtaining OAuth tokens
               client_secret:
-                type: StringVersion
+                type: string
                 description: Client secret key, to be used for obtaining OAuth tokens
               client_secret_expires_at:
-                type: StringVersion
+                type: string
                 description: When the client secret key will expire at, presently
                   this always returns 0 indicating that OAuth Clients do not expire
     Application:
@@ -7979,25 +7985,26 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: The name of your application.
               website:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: The website associated with your application.
-                nullable: true
               scopes:
-                type: Array
+                type: array
                 description: The scopes for your application. This is the registered
                   scopes string split on whitespace.
               redirect_uris:
-                type: Array
+                type: array
                 description: The registered redirection URI(s) for your application.
               redirect_uri:
-                type: StringVersion
+                type: string
                 description: The registered redirection URI(s) for your application.May
                   contain \n characters when multiple redirect URIs are registered.
               vapid_key:
-                type: StringVersion
+                type: string
                 description: Used for Push Streaming API. Returned with POST /api/v1/apps.
                   Equivalent to WebPushSubscription#server_key and Instance#vapid_public_key
     Context:
@@ -8009,10 +8016,10 @@ components:
             type: object
             properties:
               ancestors:
-                type: Array
+                type: array
                 description: Parents in the thread.
               descendants:
-                type: Array
+                type: array
                 description: Children in the thread.
     Conversation:
       description: Represents a conversation with "direct message" visibility.
@@ -8022,18 +8029,17 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the conversation in the database.
               unread:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Is the conversation currently marked as unread?
               accounts:
-                type: Array
+                type: array
                 description: Participants in the conversation.
               last_status:
-                type: StatusVersion
+                $ref: '#/components/responses/StatusVersion'
                 description: The last status in the conversation.
-                nullable: true
     CustomEmoji:
       description: Represents a custom emoji.
       content:
@@ -8042,22 +8048,23 @@ components:
             type: object
             properties:
               shortcode:
-                type: StringVersion
+                type: string
                 description: The name of the custom emoji.
               url:
-                type: String
+                type: string
                 description: A link to the custom emoji.
               static_url:
-                type: String
+                type: string
                 description: A link to a static copy of the custom emoji.
               visible_in_picker:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether this Emoji should be visible in the picker or
                   unlisted.
               category:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: Used for sorting custom emoji in the picker.
-                nullable: true
     DomainBlock:
       description: Represents a domain that is blocked by the instance.
       content:
@@ -8066,17 +8073,17 @@ components:
             type: object
             properties:
               domain:
-                type: StringVersion
+                type: string
                 description: The domain which is blocked. This may be obfuscated or
                   partially censored.
               digest:
-                type: String
+                type: string
                 description: The SHA256 hash digest of the domain string.
               severity:
-                type: String
+                type: string
                 description: The level to which the domain is blocked.
               comment:
-                type: StringVersion
+                type: string
                 description: An optional reason for the domain block.
     Error:
       description: Represents an error message.
@@ -8086,10 +8093,10 @@ components:
             type: object
             properties:
               error:
-                type: StringVersion
+                type: string
                 description: The error message.
               error_description:
-                type: StringVersion
+                type: string
                 description: A longer description of the error, mainly provided with
                   the OAuth API.
     ExtendedDescription:
@@ -8101,11 +8108,11 @@ components:
             type: object
             properties:
               updated_at:
-                type: String
+                type: string
                 description: A timestamp of when the extended description was last
                   updated.
               content:
-                type: String
+                type: string
                 description: The rendered HTML content of the extended description.
     FamiliarFollowers:
       description: Represents a subset of your follows who also follow some other
@@ -8116,10 +8123,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Account in the database.
               accounts:
-                type: Array
+                type: array
                 description: Accounts you follow that also follow this account.
     FeaturedTag:
       description: Represents a hashtag that is featured on a profile.
@@ -8129,19 +8136,19 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The internal ID of the featured tag in the database.
               name:
-                type: StringVersion
+                type: string
                 description: The name of the hashtag being featured.
               url:
-                type: String
+                type: string
                 description: A link to all statuses by a user that contain this hashtag.
               statuses_count:
-                type: StringVersion
+                type: string
                 description: The number of authored statuses containing this hashtag.
               last_status_at:
-                type: String
+                type: string
                 description: The date of the last authored status containing this
                   hashtag.
     Filter:
@@ -8153,26 +8160,27 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Filter in the database.
               title:
-                type: StringVersion
+                type: string
                 description: A title given by the user to name the filter.
               context:
-                type: Array
+                type: array
                 description: The contexts in which the filter should be applied.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the filter should no longer be applied.
-                nullable: true
               filter_action:
-                type: String
+                type: string
                 description: The action to be taken when a status matches this filter.
               keywords:
-                type: Array
+                type: array
                 description: The keywords grouped under this filter.
               statuses:
-                type: Array
+                type: array
                 description: The statuses grouped under this filter.
     FilterKeyword:
       description: Represents a keyword that, if matched, should cause the filter
@@ -8183,13 +8191,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the FilterKeyword in the database.
               keyword:
-                type: StringVersion
+                type: string
                 description: The phrase to be matched against.
               whole_word:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Should the filter consider word boundaries? See implementation
                   guidelines for filters.
     FilterResult:
@@ -8200,16 +8208,18 @@ components:
             type: object
             properties:
               filter:
-                type: FilterVersion
+                $ref: '#/components/responses/FilterVersion'
                 description: The filter that was matched.
               keyword_matches:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: The keyword within the filter that was matched.
-                nullable: true
               status_matches:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: The status ID within the filter that was matched.
-                nullable: true
     FilterStatus:
       description: Represents a status ID that, if matched, should cause the filter
         action to be taken.
@@ -8219,10 +8229,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the FilterStatus in the database.
               status_id:
-                type: String
+                type: string
                 description: The ID of the Status that will be filtered.
     IdentityProof:
       description: Represents a proof from an external identity provider.
@@ -8232,21 +8242,21 @@ components:
             type: object
             properties:
               provider:
-                type: StringVersion
+                type: string
                 description: The name of the identity provider.
               provider_username:
-                type: StringVersion
+                type: string
                 description: "The account owner\u2019s username on the identity provider\u2019\
                   s service."
               updated_at:
-                type: String
+                type: string
                 description: When the identity proof was last updated.
               proof_url:
-                type: String
+                type: string
                 description: A link to a statement of identity proof, hosted by the
                   identity provider.
               profile_url:
-                type: String
+                type: string
                 description: "The account owner\u2019s profile URL on the identity\
                   \ provider."
     InstanceIcon:
@@ -8257,10 +8267,10 @@ components:
             type: object
             properties:
               src:
-                type: String4.3.0
+                $ref: '#/components/responses/String430'
                 description: The URL of this icon.
               size:
-                type: String
+                type: string
                 description: The size of this icon.
     Instance:
       description: Represents the software instance of Mastodon running on this domain.
@@ -8270,59 +8280,59 @@ components:
             type: object
             properties:
               domain:
-                type: StringVersion
+                type: string
                 description: The domain name of the instance.
               title:
-                type: StringVersion
+                type: string
                 description: The title of the website.
               version:
-                type: StringVersion
+                type: string
                 description: The version of Mastodon installed on the instance.
               source_url:
-                type: String
+                type: string
                 description: The URL for the source code of the software running on
                   this instance, in keeping with AGPL license requirements.
               description:
-                type: StringVersion
+                type: string
                 description: A short, plain-text description defined by the admin.
               usage:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Usage data for this instance.
               thumbnail:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: An image used to represent this instance.
               icon:
-                type: Array
+                type: array
                 description: The list of available size variants for this instance
                   configured icon.
               languages:
-                type: Array
+                type: array
                 description: Primary languages of the website and its staff.
               configuration:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Configured values and limits for this website.
               configuration[vapid][public_key]:
-                type: StringVersion
+                type: string
                 description: The instances VAPID public key, used for push notifications,
                   the same as WebPushSubscription#server_key.
               registrations:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Information about registering for this website.
               api_versions:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Information about which version of the API is implemented
                   by this server. It contains at least a mastodon attribute, and other
                   implementations may have their own additional attributes.
               api_versions[mastodon]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: API version number that this server implements. Starting
                   from Mastodon v4.3.0, API changes will come with a version number,
                   which clients can check against this value.
               contact:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Hints related to contacting a representative of the website.
               rules:
-                type: Array
+                type: array
                 description: An itemized list of rules for this website.
     List:
       description: Represents a list of some users that the authenticated user follows.
@@ -8332,13 +8342,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The internal database ID of the list.
               title:
-                type: StringVersion
+                type: string
                 description: The user-defined title of the list.
               replies_policy:
-                type: String
+                type: string
                 description: Which replies should be shown in the list.
     Marker:
       description: Represents the last read position within a user's timelines.
@@ -8348,14 +8358,14 @@ components:
             type: object
             properties:
               last_read_id:
-                type: String
+                type: string
                 description: The ID of the most recently viewed entity.
               version:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: An incrementing counter, used for locking to prevent
                   write conflicts.
               updated_at:
-                type: String
+                type: string
                 description: The timestamp of when the marker was set.
     MediaAttachment:
       description: Represents a file or media attachment that can be added to a status.
@@ -8365,39 +8375,41 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the attachment in the database.
               type:
-                type: String
+                type: string
                 description: The type of the attachment.
               url:
-                type: String
+                type: string
                 description: The location of the original full-size attachment.
               preview_url:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: The location of a scaled-down preview of the attachment.
-                nullable: true
               remote_url:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: The location of the full-size original attachment on
                   the remote website.
-                nullable: true
               meta:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Metadata returned by Paperclip.
               description:
-                type: String,
+                $ref: '#/components/responses/String,'
                 description: Alternate text that describes what is in the media attachment,
                   to be used for the visually impaired or when media attachments do
                   not load.
-                nullable: true
               blurhash:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: A hash computed by the BlurHash algorithm, for generating
                   colorful preview thumbnails when media has not been downloaded yet.
-                nullable: true
               text_url:
-                type: String
+                type: string
                 description: A shorter URL for the attachment.
     Notification:
       description: Represents a notification of an event relevant to the user.
@@ -8407,39 +8419,39 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The id of the notification in the database.
               type:
-                type: String
+                type: string
                 description: The type of event that resulted in the notification.
               group_key:
-                type: StringVersion
+                type: string
                 description: Group key shared by similar notifications, to be used
                   in the grouped notifications feature. Should be considered opaque,
                   but ungrouped notifications can be assumed to have a group_key of
                   the form ungrouped-{notification_id}.
               created_at:
-                type: String
+                type: string
                 description: The timestamp of the notification.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that performed the action that generated
                   the notification.
               status:
-                type: StatusVersion
+                $ref: '#/components/responses/StatusVersion'
                 description: Status that was the object of the notification. Attached
                   when type of the notification is favourite, reblog, status, mention,
                   poll, or update.
               report:
-                type: ReportVersion
+                $ref: '#/components/responses/ReportVersion'
                 description: Report that was the object of the notification. Attached
                   when type of the notification is admin.report.
               relationship_severance_event:
-                type: RelationshipSeveranceEventVersion
+                $ref: '#/components/responses/RelationshipSeveranceEventVersion'
                 description: Summary of the event that caused follow relationships
                   to be severed. Attached when type of the notification is severed_relationships.
               moderation_warning:
-                type: AccountWarningVersion
+                $ref: '#/components/responses/AccountWarningVersion'
                 description: Moderation warning that caused the notification. Attached
                   when type of the notification is moderation_warning.
     NotificationPolicy:
@@ -8450,28 +8462,28 @@ components:
             type: object
             properties:
               for_not_following:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts the user is not following. drop will prevent creation of
                   the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               for_not_followers:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts that are not following the user. drop will prevent creation
                   of the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               for_new_accounts:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts created in the past 30 days. drop will prevent creation
                   of the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               for_private_mentions:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   private mentions. drop will prevent creation of the notification
                   object altogether (without preventing the underlying activity),
@@ -8480,21 +8492,21 @@ components:
                   the user, as well as accounts the user follows, are always allowed,
                   regardless of this value.
               for_limited_accounts:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts that were limited by a moderator. drop will prevent creation
                   of the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               summary:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Summary of the filtered notifications
               summary[pending_requests_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of different accounts from which the user has
                   non-dismissed filtered notifications. Capped at 100.
               summary[pending_notifications_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of total non-dismissed filtered notifications.
                   May be inaccurate.
     NotificationRequest:
@@ -8505,25 +8517,25 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The id of the notification request in the database.
               created_at:
-                type: String
+                type: string
                 description: The timestamp of the notification request, i.e. when
                   the first filtered notification from that user was created.
               updated_at:
-                type: String
+                type: string
                 description: The timestamp of when the notification request was last
                   updated.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that performed the action that generated
                   the filtered notifications.
               notifications_count:
-                type: StringVersion
+                type: string
                 description: "How many of this account\u2019s notifications were filtered."
               last_status:
-                type: StatusVersion
+                $ref: '#/components/responses/StatusVersion'
                 description: Most recent status associated with a filtered notification
                   from that account.
     PollOption:
@@ -8534,7 +8546,7 @@ components:
             type: object
             properties:
               title:
-                type: StringVersion
+                type: string
                 description: The text value of the poll option.
     Poll:
       description: Represents a poll attached to a status.
@@ -8544,38 +8556,38 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the poll in the database.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the poll ends.
-                nullable: true
               expired:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Is the poll currently expired?
               multiple:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Does the poll allow multiple-choice answers?
               votes_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many votes have been received.
               voters_count:
-                type: Integer,
+                $ref: '#/components/responses/Integer,'
                 description: How many unique accounts have voted on a multiple-choice
                   poll.
-                nullable: true
               options:
-                type: Array
+                type: array
                 description: Possible answers for the poll.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji to be used for rendering poll options.
               voted:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: When called with a user token, has the authorized user
                   voted?
               own_votes:
-                type: Array
+                type: array
                 description: When called with a user token, which options has the
                   authorized user chosen? Contains an array of index values for options.
     Preferences:
@@ -8586,22 +8598,23 @@ components:
             type: object
             properties:
               posting:default:visibility:
-                type: String
+                type: string
                 description: Default visibility for new posts. Equivalent to CredentialAccount#source[privacy].
               posting:default:sensitive:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Default sensitivity flag for new posts. Equivalent to
                   CredentialAccount#source[sensitive].
               posting:default:language:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Default language for new posts. Equivalent to CredentialAccount#source[language]
-                nullable: true
               reading:expand:media:
-                type: String
+                type: string
                 description: Whether media attachments should be automatically displayed
                   or blurred/hidden.
               reading:expand:spoilers:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether CWs should be expanded by default.
     TrendsLink:
       description: ''
@@ -8611,7 +8624,7 @@ components:
             type: object
             properties:
               history:
-                type: Array
+                type: array
                 description: Usage statistics for given days (typically the past week).
     PreviewCard:
       description: Represents a rich preview card that is generated using OpenGraph
@@ -8622,55 +8635,57 @@ components:
             type: object
             properties:
               url:
-                type: String
+                type: string
                 description: Location of linked resource.
               title:
-                type: StringVersion
+                type: string
                 description: Title of linked resource.
               description:
-                type: StringVersion
+                type: string
                 description: Description of preview.
               type:
-                type: String
+                type: string
                 description: The type of the preview card.
               authors:
-                type: Array
+                type: array
                 description: Fediverse account of the authors of the original resource.
               author_name:
-                type: StringVersion
+                type: string
                 description: The author of the original resource. Deprecated since
                   4.3.0, clients should use authors instead.
               author_url:
-                type: String
+                type: string
                 description: A link to the author of the original resource. Deprecated
                   since 4.3.0, clients should use authors instead.
               provider_name:
-                type: StringVersion
+                type: string
                 description: The provider of the original resource.
               provider_url:
-                type: String
+                type: string
                 description: A link to the provider of the original resource.
               html:
-                type: String
+                type: string
                 description: HTML to be used for generating the preview card.
               width:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Width of preview, in pixels.
               height:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Width of preview, in pixels.
               image:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Preview thumbnail.
-                nullable: true
               embed_url:
-                type: String
+                type: string
                 description: Used for photo embeds, instead of custom html.
               blurhash:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: A hash computed by the BlurHash algorithm, for generating
                   colorful preview thumbnails when media has not been downloaded yet.
-                nullable: true
     PreviewCardAuthor:
       description: Represents an author in a rich preview card.
       content:
@@ -8679,15 +8694,15 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: "The original resource author\u2019s name. Replaces the\
                   \ deprecated author_name attribute of the preview card."
               url:
-                type: String
+                type: string
                 description: A link to the author of the original resource. Replaces
                   the deprecated author_url attribute of the preview card.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The fediverse account of the author.
     Reaction:
       description: Represents an emoji reaction to an Announcement.
@@ -8697,22 +8712,22 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: "The emoji used for the reaction. Either a unicode emoji,\
                   \ or a custom emoji\u2019s shortcode."
               count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: The total number of users who have added this reaction.
               me:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: 'If there is a currently authorized user: Have you added
                   this reaction?'
               url:
-                type: String
+                type: string
                 description: 'If the reaction is a custom emoji: A link to the custom
                   emoji.'
               static_url:
-                type: String
+                type: string
                 description: 'If the reaction is a custom emoji: A link to a non-animated
                   version of the custom emoji.'
     Relationship:
@@ -8724,50 +8739,50 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account ID.
               following:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Are you following this user?
               showing_reblogs:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: "Are you receiving this user\u2019s boosts in your home\
                   \ timeline?"
               notifying:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Have you enabled notifications for this user?
               languages:
-                type: Array
+                type: array
                 description: Which languages are you following from this user?
               followed_by:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Are you followed by this user?
               blocking:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Are you blocking this user?
               blocked_by:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Is this user blocking you?
               muting:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Are you muting this user?
               muting_notifications:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Are you muting notifications from this user?
               requested:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Do you have a pending follow request for this user?
               requested_by:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Has this user requested to follow you?
               domain_blocking:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: "Are you blocking this user\u2019s domain?"
               endorsed:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Are you featuring this user on your profile?
               note:
-                type: StringVersion
+                type: string
                 description: "This user\u2019s profile bio"
     RelationshipSeveranceEvent:
       description: Summary of a moderation or block event that caused follow relationships
@@ -8778,30 +8793,30 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the relationship severance event in the database.
               type:
-                type: String
+                type: string
                 description: Type of event.
               purged:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the list of severed relationships is unavailable
                   because the underlying issue has been purged.
               target_name:
-                type: StringVersion
+                type: string
                 description: Name of the target of the moderation/block event. This
                   is either a domain name or a user handle, depending on the event
                   type.
               followers_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of followers that were removed as result of the
                   event.
               following_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of accounts the user stopped following as result
                   of the event.
               created_at:
-                type: String
+                type: string
                 description: When the event took place.
     Report:
       description: Reports filed against users and/or statuses, to be taken action
@@ -8812,39 +8827,42 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the report in the database.
               action_taken:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether an action was taken yet.
               action_taken_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When an action was taken against the report.
-                nullable: true
               category:
-                type: String
+                type: string
                 description: The generic reason for the report.
               comment:
-                type: StringVersion
+                type: string
                 description: The reason for the report.
               forwarded:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the report was forwarded to a remote domain.
               created_at:
-                type: String
+                type: string
                 description: When the report was created.
               status_ids:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: IDs of statuses that have been attached to this report
                   for additional context.
-                nullable: true
               rule_ids:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: IDs of the rules that have been cited as a violation
                   by this report.
-                nullable: true
               target_account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that was reported.
     Role:
       description: Represents a custom user role that grants permissions.
@@ -8854,21 +8872,21 @@ components:
             type: object
             properties:
               id:
-                type: StringVersion
+                type: string
                 description: The ID of the Role in the database.
               name:
-                type: StringVersion
+                type: string
                 description: The name of the role.
               color:
-                type: StringVersion
+                type: string
                 description: The hex code assigned to this role. If no hex code is
                   assigned, the string will be empty.
               permissions:
-                type: StringVersion
+                type: string
                 description: A bitmask that represents the sum of all permissions
                   granted to the role.
               highlighted:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the role is publicly visible as a badge on user
                   profiles.
     Rule:
@@ -8879,13 +8897,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: An identifier for the rule.
               text:
-                type: StringVersion
+                type: string
                 description: The rule to be followed.
               hint:
-                type: StringVersion
+                type: string
                 description: Longer-form description of the rule.
     ScheduledStatus:
       description: Represents a status that will be published at a future scheduled
@@ -8896,17 +8914,17 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: ID of the scheduled status in the database.
               scheduled_at:
-                type: String
+                type: string
                 description: The timestamp for when the status will be posted.
               params:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: The parameters that were used when scheduling the status,
                   to be used when the status is posted.
               media_attachments:
-                type: Array
+                type: array
                 description: Media that will be attached when the status is posted.
     Search:
       description: Represents the results of a search.
@@ -8916,13 +8934,13 @@ components:
             type: object
             properties:
               accounts:
-                type: Array
+                type: array
                 description: Accounts which match the given query
               statuses:
-                type: Array
+                type: array
                 description: Statuses which match the given query
               hashtags:
-                type: Array
+                type: array
                 description: Hashtags which match the given query
     StatusTag:
       description: ''
@@ -8932,10 +8950,10 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: 'The value of the hashtag after the # sign.'
               url:
-                type: String
+                type: string
                 description: A link to the hashtag on the instance.
     StatusMention:
       description: ''
@@ -8945,16 +8963,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account ID of the mentioned user.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the mentioned user.
               url:
-                type: String
+                type: string
                 description: "The location of the mentioned user\u2019s profile."
               acct:
-                type: StringVersion
+                type: string
                 description: 'The webfinger acct: URI of the mentioned user. Equivalent
                   to username for local users, or username@domain for remote users.'
     Status:
@@ -8965,116 +8983,119 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: ID of the status in the database.
               uri:
-                type: StringVersion
+                type: string
                 description: URI of the status used for federation.
               created_at:
-                type: String
+                type: string
                 description: The date when this status was created.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that authored this status.
               content:
-                type: String
+                type: string
                 description: HTML-encoded status content.
               visibility:
-                type: String
+                type: string
                 description: Visibility of this status.
               sensitive:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Is this status marked as sensitive content?
               spoiler_text:
-                type: StringVersion
+                type: string
                 description: Subject or summary line, below which status content is
                   collapsed until expanded.
               media_attachments:
-                type: Array
+                type: array
                 description: Media that is attached to this status.
               application:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: The application used to post this status.
               mentions:
-                type: Array
+                type: array
                 description: Mentions of users within the status content.
               tags:
-                type: Array
+                type: array
                 description: Hashtags used within the status content.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji to be used when rendering status content.
               reblogs_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many boosts this status has received.
               favourites_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many favourites this status has received.
               replies_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many replies this status has received.
               url:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: "A link to the status\u2019s HTML representation."
-                nullable: true
               in_reply_to_id:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: ID of the status being replied to.
-                nullable: true
               in_reply_to_account_id:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: ID of the account that authored the status being replied
                   to.
-                nullable: true
               reblog:
-                type: Status
+                $ref: '#/components/responses/Status'
                 description: The status being reblogged.
-                nullable: true
               poll:
-                type: Poll
+                $ref: '#/components/responses/Poll'
                 description: The poll attached to the status.
-                nullable: true
               card:
-                type: PreviewCard
+                $ref: '#/components/responses/PreviewCard'
                 description: Preview card for links included within status content.
-                nullable: true
               language:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Primary language of this status.
-                nullable: true
               text:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Plain-text source of a status. Returned instead of content
                   when status is deleted, so the user may redraft from the source
                   text without the client having to reverse-engineer the original
                   text from the HTML content.
-                nullable: true
               edited_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Timestamp of when the status was last edited.
-                nullable: true
               favourited:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: 'If the current token has an authorized user: Have you
                   favourited this status?'
               reblogged:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: 'If the current token has an authorized user: Have you
                   boosted this status?'
               muted:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: "If the current token has an authorized user: Have you\
                   \ muted notifications for this status\u2019s conversation?"
               bookmarked:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: 'If the current token has an authorized user: Have you
                   bookmarked this status?'
               pinned:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: 'If the current token has an authorized user: Have you
                   pinned this status? Only appears if the status is pinnable.'
               filtered:
-                type: Array
+                type: array
                 description: 'If the current token has an authorized user: The filter
                   and keywords that matched this status.'
     StatusEdit:
@@ -9085,31 +9106,31 @@ components:
             type: object
             properties:
               content:
-                type: String
+                type: string
                 description: The content of the status at this revision.
               spoiler_text:
-                type: String
+                type: string
                 description: The content of the subject or content warning at this
                   revision.
               sensitive:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the status was marked sensitive at this revision.
               created_at:
-                type: String
+                type: string
                 description: The timestamp of when the revision was published.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that published this revision.
               poll:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: The current state of the poll options at this revision.
                   Note that edits changing the poll options will be collapsed together
                   into one edit, since this action resets the poll.
               media_attachments:
-                type: Array
+                type: array
                 description: The current state of the media attachments at this revision.
               emojis:
-                type: Array
+                type: array
                 description: Any custom emoji that are used in the current revision.
     StatusSource:
       description: Represents a status's source as plain text.
@@ -9119,13 +9140,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: ID of the status in the database.
               text:
-                type: StringVersion
+                type: string
                 description: The plain text used to compose the status.
               spoiler_text:
-                type: StringVersion
+                type: string
                 description: "The plain text used to compose the status\u2019s subject\
                   \ or content warning."
     Suggestion:
@@ -9137,14 +9158,14 @@ components:
             type: object
             properties:
               source:
-                type: String
+                type: string
                 description: The reason this account is being suggested.
               sources:
-                type: Array
+                type: array
                 description: A list of reasons this account is being suggested. This
                   replaces source
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account being recommended to follow.
     AdminTag:
       description: ''
@@ -9154,16 +9175,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Tag in the database.
               trendable:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the hashtag has been approved to trend.
               usable:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the hashtag has not been disabled from auto-linking.
               requires_review:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether the hashtag has not been reviewed yet to approve
                   or deny its trending.
     Tag:
@@ -9174,16 +9195,16 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: 'The value of the hashtag after the # sign.'
               url:
-                type: String
+                type: string
                 description: A link to the hashtag on the instance.
               history:
-                type: Array
+                type: array
                 description: Usage statistics for given days (typically the past week).
               following:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: "Whether the current token\u2019s authorized user is\
                   \ following this tag."
     Token:
@@ -9195,16 +9216,16 @@ components:
             type: object
             properties:
               access_token:
-                type: StringVersion
+                type: string
                 description: An OAuth token to be used for authorization.
               token_type:
-                type: StringVersion
+                type: string
                 description: The OAuth token type. Mastodon uses Bearer tokens.
               scope:
-                type: StringVersion
+                type: string
                 description: The OAuth scopes granted by this token, space-separated.
               created_at:
-                type: Number
+                type: number
                 description: When the token was generated.
     TranslationAttachment:
       description: ''
@@ -9214,10 +9235,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The id of the attachment.
               description:
-                type: StringVersion
+                type: string
                 description: The translated description of the attachment.
     TranslationPollOption:
       description: ''
@@ -9227,7 +9248,7 @@ components:
             type: object
             properties:
               title:
-                type: StringVersion
+                type: string
                 description: The translated title of the poll option.
     TranslationPoll:
       description: ''
@@ -9237,10 +9258,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the poll.
               options:
-                type: Array
+                type: array
                 description: The translated poll options.
     Translation:
       description: Represents the result of machine translating some status content
@@ -9250,23 +9271,23 @@ components:
             type: object
             properties:
               content:
-                type: String
+                type: string
                 description: HTML-encoded translated content of the status.
               spoiler_text:
-                type: StringVersion
+                type: string
                 description: The translated spoiler warning of the status.
               poll:
-                type: Translation::PollVersion
+                $ref: '#/components/responses/TranslationPollVersion'
                 description: The translated poll of the status.
               media_attachments:
-                type: Array
+                type: array
                 description: The translated media descriptions of the status.
               detected_source_language:
-                type: String
+                type: string
                 description: The language of the source text, as auto-detected by
                   the machine translation provider.
               provider:
-                type: StringVersion
+                type: string
                 description: The service that provided the machine translation.
     V1Filter:
       description: Represents a user-defined filter for determining which statuses
@@ -9277,24 +9298,25 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the filter in the database.
               phrase:
-                type: StringVersion
+                type: string
                 description: The text to be filtered.
               context:
-                type: Array
+                type: array
                 description: The contexts in which the filter should be applied.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the filter should no longer be applied.
-                nullable: true
               irreversible:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Should matching entities in home and notifications be
                   dropped by the server? See implementation guidelines for filters.
               whole_word:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Should the filter consider word boundaries? See implementation
                   guidelines for filters.
     V1Instance:
@@ -9305,54 +9327,54 @@ components:
             type: object
             properties:
               uri:
-                type: StringVersion
+                type: string
                 description: The domain name of the instance.
               title:
-                type: StringVersion
+                type: string
                 description: The title of the website.
               short_description:
-                type: StringVersion
+                type: string
                 description: A short, plain-text description defined by the admin.
               description:
-                type: StringVersion
+                type: string
                 description: An HTML-permitted description of the Mastodon site.
               email:
-                type: StringVersion
+                type: string
                 description: An email that may be contacted for any inquiries.
               version:
-                type: StringVersion
+                type: string
                 description: The version of Mastodon installed on the instance.
               urls:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: URLs of interest for clients apps.
               stats:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Statistics about how much information the instance contains.
               thumbnail:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Banner image for the website.
-                nullable: true
               languages:
-                type: Array
+                type: array
                 description: Primary languages of the website and its staff.
               registrations:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether registrations are enabled.
               approval_required:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether registrations require moderator approval.
               invites_enabled:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether invites are enabled.
               configuration:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Configured values and limits for this website.
               contact_account:
-                type: Account
+                $ref: '#/components/responses/Account'
                 description: A user that can be contacted, as an alternative to email.
-                nullable: true
               rules:
-                type: Array
+                type: array
                 description: An itemized list of rules for this website.
     V1NotificationPolicy:
       description: Represents the notification filtering policy of the user.
@@ -9362,31 +9384,31 @@ components:
             type: object
             properties:
               filter_not_following:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to filter notifications from accounts the user
                   is not following.
               filter_not_followers:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to filter notifications from accounts that are
                   not following the user.
               filter_new_accounts:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to filter notifications from accounts created
                   in the past 30 days.
               filter_private_mentions:
-                type: BooleanVersion
+                $ref: '#/components/responses/BooleanVersion'
                 description: Whether to filter notifications from private mentions.
                   Replies to private mentions initiated by the user, as well as accounts
                   the user follows, are never filtered.
               summary:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Summary of the filtered notifications
               summary[pending_requests_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of different accounts from which the user has
                   non-dismissed filtered notifications. Capped at 100.
               summary[pending_notifications_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of total non-dismissed filtered notifications.
                   May be inaccurate.
     WebPushSubscription:
@@ -9397,16 +9419,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Web Push subscription in the database.
               endpoint:
-                type: String
+                type: string
                 description: Where push alerts will be sent to.
               server_key:
-                type: StringVersion
+                type: string
                 description: "The streaming server\u2019s VAPID key."
               alerts:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Which alerts should be delivered to the endpoint.
   securitySchemes:
     BearerAuth:

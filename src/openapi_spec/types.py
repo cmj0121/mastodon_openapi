@@ -14,6 +14,7 @@ class BuildInType(StrEnum):
     number = auto()
     string = auto()
     hash = auto()
+    array = auto()
 
 
 class ParameterIn(StrEnum):
@@ -30,11 +31,10 @@ class SchemaObject(BaseModel):
     ref: https://swagger.io/specification/#schema-object
     """
 
-    type: str
+    type: str | list[str]
     description: str | None = None
-    nullable: bool | None = None
     items: SchemaObject | ReferenceObject | None = None
-    properties: dict[str, SchemaObject] | None = None
+    properties: dict[str, SchemaObject | ReferenceObject] | None = None
 
 
 class MediaTypeObject(BaseModel):
