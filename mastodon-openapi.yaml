@@ -286,7 +286,7 @@ paths:
             user.
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/identity_proofs:
+  /api/v1/accounts/{:id}/identity_proofs:
     get:
       tags:
       - accounts
@@ -512,7 +512,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/note:
+  /api/v1/accounts/{:id}/note:
     post:
       tags:
       - accounts
@@ -548,7 +548,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unpin:
+  /api/v1/accounts/{:id}/unpin:
     post:
       tags:
       - accounts
@@ -577,7 +577,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/pin:
+  /api/v1/accounts/{:id}/pin:
     post:
       tags:
       - accounts
@@ -615,7 +615,7 @@ paths:
           description: Can sometimes be returned if the account already endorsed.
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unmute:
+  /api/v1/accounts/{:id}/unmute:
     post:
       tags:
       - accounts
@@ -653,7 +653,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/mute:
+  /api/v1/accounts/{:id}/mute:
     post:
       tags:
       - accounts
@@ -695,7 +695,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unblock:
+  /api/v1/accounts/{:id}/unblock:
     post:
       tags:
       - accounts
@@ -733,7 +733,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/block:
+  /api/v1/accounts/{:id}/block:
     post:
       tags:
       - accounts
@@ -773,7 +773,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/remove_from_followers:
+  /api/v1/accounts/{:id}/remove_from_followers:
     post:
       tags:
       - accounts
@@ -809,7 +809,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/unfollow:
+  /api/v1/accounts/{:id}/unfollow:
     post:
       tags:
       - accounts
@@ -847,7 +847,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/follow:
+  /api/v1/accounts/{:id}/follow:
     post:
       tags:
       - accounts
@@ -891,7 +891,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/lists:
+  /api/v1/accounts/{:id}/lists:
     get:
       tags:
       - accounts
@@ -937,7 +937,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/featured_tags:
+  /api/v1/accounts/{:id}/featured_tags:
     get:
       tags:
       - accounts
@@ -963,7 +963,7 @@ paths:
                   $ref: '#/components/responses/FeaturedTag'
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/following:
+  /api/v1/accounts/{:id}/following:
     get:
       tags:
       - accounts
@@ -1023,7 +1023,7 @@ paths:
           description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/followers:
+  /api/v1/accounts/{:id}/followers:
     get:
       tags:
       - accounts
@@ -1083,7 +1083,7 @@ paths:
           description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id/statuses:
+  /api/v1/accounts/{:id}/statuses:
     get:
       tags:
       - accounts
@@ -1174,6 +1174,44 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/accounts:
+    get:
+      tags:
+      - accounts
+      summary: View information about multiple profiles.
+      description: 'View information about multiple profiles.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [Get multiple accounts](https://docs.joinmastodon.org/methods/accounts/#index)'
+      parameters:
+      - name: id[]
+        in: query
+        description: Array of String. The IDs of the Accounts in the database.
+        schema:
+          type: string
+      - name: id[]
+        in: header
+        description: Array of String. The IDs of the Accounts in the database.
+        schema:
+          type: string
+      responses:
+        200:
+          description: Array of Account
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/responses/Account'
+        401:
+          $ref: '#/components/responses/Error'
+          description: If the instance is in whitelist mode and the Authorization
+            header is missing or invalid
     post:
       tags:
       - accounts
@@ -1222,7 +1260,7 @@ paths:
           description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
-  /api/v1/accounts/:id:
+  /api/v1/accounts/{:id}:
     get:
       tags:
       - accounts
@@ -1515,6 +1553,56 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/domain_blocks:
+    delete:
+      tags:
+      - domain_blocks
+      summary: "Remove a domain block, if it exists in the user\u2019s array of blocked\
+        \ domains."
+      description: "Remove a domain block, if it exists in the user\u2019s array of\
+        \ blocked domains.\n## Version history\n\n- 1.4.0 - added\n\n[Unblock a domain](https://docs.joinmastodon.org/methods/domain_blocks/#unblock)"
+      parameters: []
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: If domain is not provided, the request will fail.
+    post:
+      tags:
+      - domain_blocks
+      summary: 'Block a domain to:'
+      description: 'Block a domain to:
+
+        ## Version history
+
+
+        - 1.4.0 - added
+
+
+        [Block a domain](https://docs.joinmastodon.org/methods/domain_blocks/#block)'
+      parameters: []
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: If domain is not provided, the request will fail.
+      security:
+      - BearerAuth: []
     get:
       tags:
       - domain_blocks
@@ -1567,7 +1655,160 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
+  /api/v1/filters/{:id}:
+    delete:
+      tags:
+      - filters
+      description: '
+
+        ## Version history
+
+
+        - 2.4.3 - added
+
+        - 4.0.0 - deprecated. This method will delete only the FilterKeyword from
+        its parent Filter. To delete the parent Filter, you must use the v2 filters
+        API.
+
+
+        [Remove a filter deprecated](https://docs.joinmastodon.org/methods/filters/#delete-v1)'
+      deprecated: true
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter does not exist or is not owned by you
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - filters
+      summary: "Replaces a filter\u2019s parameters in-place."
+      description: "Replaces a filter\u2019s parameters in-place.\n## Version history\n\
+        \n- 2.4.3 - added\n- 3.1.0 - added account context to filter in profile views\n\
+        - 4.0.0 - deprecated. For compatibility purposes, now returns a V1::Filter\
+        \ representing one FilterKeyword (with the keyword being presented in the\
+        \ phrase attribute). This method will return an error if you attempt to change\
+        \ expires_in, irreversible, or context for a filter with multiple keywords.\
+        \ Changing phrase and whole_word is always safe.\n\n[Update a filter deprecated](https://docs.joinmastodon.org/methods/filters/#update-v1)"
+      deprecated: true
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterKeyword in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: V1::Filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/V1Filter'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter does not exist or is not owned by you
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'If phrase is not provided properly:'
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - filters
+      description: '
+
+        ## Version history
+
+
+        - 2.4.3 - added
+
+        - 4.0.0 - deprecated. For compatibility purposes, now returns a V1::Filter
+        representing one FilterKeyword (with the keyword being presented in the phrase
+        attribute)
+
+
+        [View a single filter deprecated](https://docs.joinmastodon.org/methods/filters/#get-one-v1)'
+      deprecated: true
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterKeyword in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: V1::Filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/V1Filter'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter ID does not exist, or is not owned by you
+      security:
+      - BearerAuth: []
   /api/v1/filters:
+    post:
+      tags:
+      - filters
+      description: '
+
+        ## Version history
+
+
+        - 2.4.3 - added
+
+        - 3.1.0 - added account context to filter in profile views
+
+        - 4.0.0 - deprecated. For compatibility purposes, now returns a V1::Filter
+        representing one FilterKeyword (with the keyword being presented in the phrase
+        attribute). This method will create a Filter that contains only one FilterKeyword.
+        The title of the Filter and the keyword of the FilterKeyword will be set equal
+        to the phrase provided.
+
+
+        [Create a filter deprecated](https://docs.joinmastodon.org/methods/filters/#create-v1)'
+      deprecated: true
+      parameters: []
+      responses:
+        200:
+          description: V1::Filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/V1Filter'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'If phrase is not provided properly:'
+      security:
+      - BearerAuth: []
     get:
       tags:
       - filters
@@ -1583,14 +1824,9 @@ paths:
         presented in the phrase attribute)
 
 
-        [Client-side (v1) methods](https://docs.joinmastodon.org/methods/filters/#v1)'
-      parameters:
-      - name: :id
-        in: path
-        description: required String. The ID of the FilterKeyword in the database.
-        required: true
-        schema:
-          type: string
+        [View your filters deprecated](https://docs.joinmastodon.org/methods/filters/#get-v1)'
+      deprecated: true
+      parameters: []
       responses:
         200:
           description: List of V1::Filter
@@ -1604,15 +1840,473 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
+  /api/v2/filters/statuses/{:id}:
+    delete:
+      tags:
+      - filters
+      summary: Remove a status filter from the current filter group.
+      description: 'Remove a status filter from the current filter group.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Remove a status from a filter group](https://docs.joinmastodon.org/methods/filters/#statuses-remove)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterStatus in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: FilterStatus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FilterStatus'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
         404:
           $ref: '#/components/responses/Error'
-          description: Filter does not exist or is not owned by you
+          description: FilterStatus is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - filters
+      summary: Obtain a single status filter.
+      description: 'Obtain a single status filter.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View a single status filter](https://docs.joinmastodon.org/methods/filters/#statuses-get-one)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterStatus in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: FilterStatus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FilterStatus'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: FilterStatus is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+  /api/v2/filters/{:filter_id}/statuses:
+    post:
+      tags:
+      - filters
+      summary: Add a status filter to the current filter group.
+      description: 'Add a status filter to the current filter group.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Add a status to a filter group](https://docs.joinmastodon.org/methods/filters/#statuses-add)'
+      parameters:
+      - name: :filter_id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: FilterStatus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FilterStatus'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - filters
+      summary: Obtain a list of all status filters within this filter group.
+      description: 'Obtain a list of all status filters within this filter group.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View all status filters](https://docs.joinmastodon.org/methods/filters/#statuses-get)'
+      parameters:
+      - name: :filter_id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Array of FilterStatus
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of FilterStatus
+                items:
+                  $ref: '#/components/responses/FilterStatus'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+  /api/v2/filters/keywords/{:id}:
+    delete:
+      tags:
+      - filters
+      summary: Deletes the given filter keyword.
+      description: 'Deletes the given filter keyword.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Remove keywords from a filter](https://docs.joinmastodon.org/methods/filters/#keywords-delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterKeyword in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: FilterKeyword is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - filters
+      summary: Update the given filter keyword.
+      description: 'Update the given filter keyword.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Edit a keyword within a filter](https://docs.joinmastodon.org/methods/filters/#keywords-update)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterKeyword in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: FilterKeyword
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FilterKeyword'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: FilterKeyword is not owned by you, or does not exist
         422:
           $ref: '#/components/responses/Error'
-          description: 'If phrase is not provided properly:'
+          description: No keyword was provided
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - filters
+      summary: Get one filter keyword by the given id.
+      description: 'Get one filter keyword by the given id.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View a single keyword](https://docs.joinmastodon.org/methods/filters/#keywords-get-one)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the FilterKeyword in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: FilterKeyword
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FilterKeyword'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you, or the filter or filter keyword
+            does not exist
+      security:
+      - BearerAuth: []
+  /api/v2/filters/{:filter_id}/keywords:
+    post:
+      tags:
+      - filters
+      summary: Add the given keyword to the specified filter group
+      description: 'Add the given keyword to the specified filter group
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Add a keyword to a filter](https://docs.joinmastodon.org/methods/filters/#keywords-create)'
+      parameters:
+      - name: :filter_id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: FilterKeyword
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FilterKeyword'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you, or does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: No keyword was provided
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - filters
+      summary: List all keywords attached to the current filter group.
+      description: 'List all keywords attached to the current filter group.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View keywords added to a filter](https://docs.joinmastodon.org/methods/filters/#keywords-get)'
+      parameters:
+      - name: :filter_id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Array of FilterKeyword
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of FilterKeyword
+                items:
+                  $ref: '#/components/responses/FilterKeyword'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you, or does not exist
+      security:
+      - BearerAuth: []
+  /api/v2/filters/{:id}:
+    delete:
+      tags:
+      - filters
+      summary: Delete a filter group with the given id.
+      description: 'Delete a filter group with the given id.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Delete a filter](https://docs.joinmastodon.org/methods/filters/#delete)'
+      parameters: []
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you or does not exist
+    put:
+      tags:
+      - filters
+      summary: Update a filter group with the given parameters.
+      description: 'Update a filter group with the given parameters.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Update a filter](https://docs.joinmastodon.org/methods/filters/#update)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Filter'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you or does not exist. Alternatively,
+            keywords_attributes[][id] was provided, there is no keyword with given
+            id within this Filter.
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - filters
+      summary: Obtain a single filter group owned by the current user.
+      description: 'Obtain a single filter group owned by the current user.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [View a specific filter](https://docs.joinmastodon.org/methods/filters/#get-one)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Filter'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v2/filters:
+    post:
+      tags:
+      - filters
+      summary: Create a filter group with the given parameters.
+      description: 'Create a filter group with the given parameters.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Create a filter](https://docs.joinmastodon.org/methods/filters/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Filter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Filter'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Filter keyword ID was specified
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
     get:
       tags:
       - filters
@@ -1625,14 +2319,8 @@ paths:
         - 4.0.0 - added
 
 
-        [Server-side (v2) methods](https://docs.joinmastodon.org/methods/filters/#v2)'
-      parameters:
-      - name: :id
-        in: path
-        description: required String. The ID of the Filter in the database.
-        required: true
-        schema:
-          type: string
+        [View all filters](https://docs.joinmastodon.org/methods/filters/#get)'
+      parameters: []
       responses:
         200:
           description: Array of Filter
@@ -1646,12 +2334,6 @@ paths:
         401:
           $ref: '#/components/responses/Error'
           description: Invalid or missing Authorization header.
-        404:
-          $ref: '#/components/responses/Error'
-          description: FilterStatus is not owned by you or does not exist
-        422:
-          $ref: '#/components/responses/Error'
-          description: No keyword was provided
       security:
       - BearerAuth: []
   /api/v1/reports:
@@ -1692,7 +2374,7 @@ paths:
           description: Token does not have an authorized user
       security:
       - BearerAuth: []
-  /api/v1/follow_requests/:account_id/reject:
+  /api/v1/follow_requests/{:account_id}/reject:
     post:
       tags:
       - follow_requests
@@ -1729,7 +2411,7 @@ paths:
           description: No pending follow request from that account ID
       security:
       - BearerAuth: []
-  /api/v1/follow_requests/:account_id/authorize:
+  /api/v1/follow_requests/{:account_id}/authorize:
     post:
       tags:
       - follow_requests
@@ -1887,7 +2569,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/featured_tags/:id:
+  /api/v1/featured_tags/{:id}:
     delete:
       tags:
       - featured_tags
@@ -1924,6 +2606,36 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/featured_tags:
+    post:
+      tags:
+      - featured_tags
+      summary: Promote a hashtag on your profile.
+      description: 'Promote a hashtag on your profile.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [Feature a tag](https://docs.joinmastodon.org/methods/featured_tags/#feature)'
+      parameters: []
+      responses:
+        200:
+          description: FeaturedTag
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/FeaturedTag'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: If name is not a valid hashtag, e.g. contains illegal characters
+            or only numbers
+      security:
+      - BearerAuth: []
     get:
       tags:
       - featured_tags
@@ -2074,7 +2786,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/suggestions/:account_id:
+  /api/v1/suggestions/{:account_id}:
     delete:
       tags:
       - suggestions
@@ -2145,7 +2857,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/tags/:id/unfollow:
+  /api/v1/tags/{:id}/unfollow:
     post:
       tags:
       - tags
@@ -2180,7 +2892,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/tags/:id/follow:
+  /api/v1/tags/{:id}/follow:
     post:
       tags:
       - tags
@@ -2220,7 +2932,7 @@ paths:
           description: 'Prior to 4.1.0: Tag was already followed'
       security:
       - BearerAuth: []
-  /api/v1/tags/:id:
+  /api/v1/tags/{:id}:
     get:
       tags:
       - tags
@@ -2296,7 +3008,7 @@ paths:
                 $ref: '#/components/responses/CredentialAccount'
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/card:
+  /api/v1/statuses/{:id}/card:
     get:
       tags:
       - statuses
@@ -2333,7 +3045,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/source:
+  /api/v1/statuses/{:id}/source:
     get:
       tags:
       - statuses
@@ -2369,7 +3081,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/history:
+  /api/v1/statuses/{:id}/history:
     get:
       tags:
       - statuses
@@ -2407,7 +3119,77 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id:
+  /api/v1/statuses/{:id}:
+    put:
+      tags:
+      - statuses
+      summary: "Edit a given status to change its text, sensitivity, media attachments,\
+        \ or poll. Note that editing a poll\u2019s options will reset the votes."
+      description: "Edit a given status to change its text, sensitivity, media attachments,\
+        \ or poll. Note that editing a poll\u2019s options will reset the votes.\n\
+        ## Version history\n\n- 3.5.0 - added\n- 4.0.0 - add language\n\n[Edit a status](https://docs.joinmastodon.org/methods/statuses/#edit)"
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status does not exist, is private, or is not owned by you.
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
+    delete:
+      tags:
+      - statuses
+      summary: Delete one of your own statuses.
+      description: 'Delete one of your own statuses.
+
+        ## Version history
+
+
+        - 0.0.0 - added
+
+        - 2.9.0 - return source properties, for use with delete and redraft
+
+
+        [Delete a status](https://docs.joinmastodon.org/methods/statuses/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Status in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Status with source text and poll or media_attachments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Status'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Status is not owned by you or does not exist
+      security:
+      - BearerAuth: []
     get:
       tags:
       - statuses
@@ -2445,7 +3227,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unpin:
+  /api/v1/statuses/{:id}/unpin:
     post:
       tags:
       - statuses
@@ -2481,7 +3263,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/pin:
+  /api/v1/statuses/{:id}/pin:
     post:
       tags:
       - statuses
@@ -2523,7 +3305,7 @@ paths:
           description: 'Status is not owned by you:'
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unmute:
+  /api/v1/statuses/{:id}/unmute:
     post:
       tags:
       - statuses
@@ -2561,7 +3343,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/mute:
+  /api/v1/statuses/{:id}/mute:
     post:
       tags:
       - statuses
@@ -2599,7 +3381,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unbookmark:
+  /api/v1/statuses/{:id}/unbookmark:
     post:
       tags:
       - statuses
@@ -2635,7 +3417,7 @@ paths:
           description: Status does not exist or is private.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/bookmark:
+  /api/v1/statuses/{:id}/bookmark:
     post:
       tags:
       - statuses
@@ -2668,7 +3450,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unreblog:
+  /api/v1/statuses/{:id}/unreblog:
     post:
       tags:
       - statuses
@@ -2704,7 +3486,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/reblog:
+  /api/v1/statuses/{:id}/reblog:
     post:
       tags:
       - statuses
@@ -2742,7 +3524,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/unfavourite:
+  /api/v1/statuses/{:id}/unfavourite:
     post:
       tags:
       - statuses
@@ -2778,7 +3560,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/favourite:
+  /api/v1/statuses/{:id}/favourite:
     post:
       tags:
       - statuses
@@ -2814,7 +3596,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/favourited_by:
+  /api/v1/statuses/{:id}/favourited_by:
     get:
       tags:
       - statuses
@@ -2866,7 +3648,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/reblogged_by:
+  /api/v1/statuses/{:id}/reblogged_by:
     get:
       tags:
       - statuses
@@ -2918,7 +3700,7 @@ paths:
           description: Status does not exist or is private
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/translate:
+  /api/v1/statuses/{:id}/translate:
     post:
       tags:
       - statuses
@@ -2954,7 +3736,7 @@ paths:
           description: The translation request failed
       security:
       - BearerAuth: []
-  /api/v1/statuses/:id/context:
+  /api/v1/statuses/{:id}/context:
     get:
       tags:
       - statuses
@@ -2990,6 +3772,40 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/statuses:
+    get:
+      tags:
+      - statuses
+      summary: Obtain information about multiple statuses.
+      description: 'Obtain information about multiple statuses.
+
+        ## Version history
+
+
+        - 4.3.0 - added
+
+
+        [View multiple statuses](https://docs.joinmastodon.org/methods/statuses/#index)'
+      parameters:
+      - name: id[]
+        in: query
+        description: Array of String. The IDs of the Statuses in the database.
+        schema:
+          type: string
+      responses:
+        200:
+          description: Array of Status
+          content:
+            application/json:
+              schema:
+                type: array
+                description: Array of Status
+                items:
+                  $ref: '#/components/responses/Status'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Instance is in authorized-fetch mode.
+      security:
+      - BearerAuth: []
     post:
       tags:
       - statuses
@@ -3075,7 +3891,40 @@ paths:
           description: File or file type is unsupported or invalid
       security:
       - BearerAuth: []
-  /api/v1/media/:id:
+  /api/v1/media/{:id}:
+    put:
+      tags:
+      - media
+      summary: "Update a MediaAttachment\u2019s parameters, before it is attached\
+        \ to a status and posted."
+      description: "Update a MediaAttachment\u2019s parameters, before it is attached\
+        \ to a status and posted.\n## Version history\n\n- 0.0.0 - added\n- 2.3.0\
+        \ - add focus parameter\n- 3.2.0 - added thumbnail\n\n[Update media attachment](https://docs.joinmastodon.org/methods/media/#update)"
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the MediaAttachment in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: MediaAttachment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/MediaAttachment'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Attachment is not owned by you or does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
     get:
       tags:
       - media
@@ -3169,7 +4018,7 @@ paths:
           description: Could not generate a thumbnail for the attachment
       security:
       - BearerAuth: []
-  /api/v1/polls/:id/votes:
+  /api/v1/polls/{:id}/votes:
     post:
       tags:
       - polls
@@ -3208,7 +4057,7 @@ paths:
           description: The poll has expired
       security:
       - BearerAuth: []
-  /api/v1/polls/:id:
+  /api/v1/polls/{:id}:
     get:
       tags:
       - polls
@@ -3241,7 +4090,71 @@ paths:
           description: "Poll does not exist, or poll\u2019s parent status is private"
       security:
       - BearerAuth: []
-  /api/v1/scheduled_statuses/:id:
+  /api/v1/scheduled_statuses/{:id}:
+    delete:
+      tags:
+      - scheduled_statuses
+      description: '
+
+        ## Version history
+
+
+        - 2.7.0 - added
+
+
+        [Cancel a scheduled status](https://docs.joinmastodon.org/methods/scheduled_statuses/#cancel)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the ScheduledStatus in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: ScheduledStatus is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - scheduled_statuses
+      description: "\n## Version history\n\n- 2.7.0 - added\n\n[Update a scheduled\
+        \ status\u2019s publishing date](https://docs.joinmastodon.org/methods/scheduled_statuses/#update)"
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the ScheduledStatus in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: ScheduledStatus
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/ScheduledStatus'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: ScheduledStatus is not owned by you or does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
     get:
       tags:
       - scheduled_statuses
@@ -3382,7 +4295,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/timelines/list/:list_id:
+  /api/v1/timelines/list/{:list_id}:
     get:
       tags:
       - timelines
@@ -3577,7 +4490,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/timelines/tag/:hashtag:
+  /api/v1/timelines/tag/{:hashtag}:
     get:
       tags:
       - timelines
@@ -3759,7 +4672,7 @@ paths:
                   $ref: '#/components/responses/Status'
       security:
       - BearerAuth: []
-  /api/v1/conversations/:id/read:
+  /api/v1/conversations/{:id}/read:
     post:
       tags:
       - conversations
@@ -3794,7 +4707,7 @@ paths:
           description: The conversation does not exist, or is not owned by you.
       security:
       - BearerAuth: []
-  /api/v1/conversations/:id:
+  /api/v1/conversations/{:id}:
     delete:
       tags:
       - conversations
@@ -3882,7 +4795,75 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/lists/:id/accounts:
+  /api/v1/lists/{:id}/accounts:
+    delete:
+      tags:
+      - lists
+      summary: Remove accounts from the given list.
+      description: 'Remove accounts from the given list.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+
+        [Remove accounts from list](https://docs.joinmastodon.org/methods/lists/#accounts-remove)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the List in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: List is not owned by you or does not exist
+      security:
+      - BearerAuth: []
+    post:
+      tags:
+      - lists
+      summary: Add accounts to the given list. Note that the user must be following
+        these accounts.
+      description: 'Add accounts to the given list. Note that the user must be following
+        these accounts.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+
+        [Add accounts to a list](https://docs.joinmastodon.org/methods/lists/#accounts-add)'
+      parameters: []
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: You are not following a given account ID, or you do not own
+            the list ID, or list/account ID does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: An Account with one of the provided IDs is already in the list
     get:
       tags:
       - lists
@@ -3943,7 +4924,78 @@ paths:
           description: List does not exist or is not owned by you.
       security:
       - BearerAuth: []
-  /api/v1/lists/:id:
+  /api/v1/lists/{:id}:
+    delete:
+      tags:
+      - lists
+      description: '
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+
+        [Delete a list](https://docs.joinmastodon.org/methods/lists/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the List in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: List does not exist or is not owned by you
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - lists
+      summary: Change the title of a list, or which replies to show.
+      description: 'Change the title of a list, or which replies to show.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+        - 3.3.0 - added replies_policy
+
+
+        [Update a list](https://docs.joinmastodon.org/methods/lists/#update)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the List in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/List'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'If the title is missing:'
+      security:
+      - BearerAuth: []
     get:
       tags:
       - lists
@@ -3982,6 +5034,39 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/lists:
+    post:
+      tags:
+      - lists
+      summary: Create a new list.
+      description: 'Create a new list.
+
+        ## Version history
+
+
+        - 2.1.0 - added
+
+        - 3.3.0 - added replies_policy
+
+        - 4.2.0 - added exclusive
+
+
+        [Create a list](https://docs.joinmastodon.org/methods/lists/#create)'
+      parameters: []
+      responses:
+        200:
+          description: List
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/List'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        422:
+          $ref: '#/components/responses/Error'
+          description: 'If the title is missing:'
+      security:
+      - BearerAuth: []
     get:
       tags:
       - lists
@@ -4012,6 +5097,32 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/markers:
+    post:
+      tags:
+      - markers
+      summary: Save current position in timeline.
+      description: 'Save current position in timeline.
+
+        ## Version history
+
+
+        - 3.0.0 - added
+
+
+        [Save your position in a timeline](https://docs.joinmastodon.org/methods/markers/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Marker
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Marker'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
     get:
       tags:
       - markers
@@ -4412,7 +5523,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v2/notifications/:group_key/accounts:
+  /api/v2/notifications/{:group_key}/accounts:
     get:
       tags:
       - grouped notifications
@@ -4443,7 +5554,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v2/notifications/:group_key/dismiss:
+  /api/v2/notifications/{:group_key}/dismiss:
     post:
       tags:
       - grouped notifications
@@ -4471,7 +5582,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v2/notifications/:group_key:
+  /api/v2/notifications/{:group_key}:
     get:
       tags:
       - grouped notifications
@@ -4700,7 +5811,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/requests/:id/dismiss:
+  /api/v1/notifications/requests/{:id}/dismiss:
     post:
       tags:
       - notifications
@@ -4735,7 +5846,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/requests/:id/accept:
+  /api/v1/notifications/requests/{:id}/accept:
     post:
       tags:
       - notifications
@@ -4772,7 +5883,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/requests/:id:
+  /api/v1/notifications/requests/{:id}:
     get:
       tags:
       - notifications
@@ -4856,6 +5967,25 @@ paths:
       security:
       - BearerAuth: []
   /api/v2/notifications/policy:
+    patch:
+      tags:
+      - notifications
+      summary: "Update the user\u2019s notifications filtering policy."
+      description: "Update the user\u2019s notifications filtering policy.\n## Version\
+        \ history\n\n- 4.3.0 - added\n\n[Update the filtering policy for notifications](https://docs.joinmastodon.org/methods/notifications/#update-the-filtering-policy-for-notifications)"
+      parameters: []
+      responses:
+        200:
+          description: NotificationPolicy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/NotificationPolicy'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
     get:
       tags:
       - notifications
@@ -4954,7 +6084,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/:id/dismiss:
+  /api/v1/notifications/{:id}/dismiss:
     post:
       tags:
       - notifications
@@ -5014,7 +6144,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/notifications/:id:
+  /api/v1/notifications/{:id}:
     get:
       tags:
       - notifications
@@ -5147,6 +6277,101 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/push/subscription:
+    delete:
+      tags:
+      - push
+      summary: Removes the current Web Push API subscription.
+      description: 'Removes the current Web Push API subscription.
+
+        ## Version history
+
+
+        - 2.4.0 - added
+
+
+        [Remove current subscription](https://docs.joinmastodon.org/methods/push/#delete)'
+      parameters: []
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - push
+      summary: Updates the current push subscription. Only the data part can be updated.
+        To change fundamentals, a new subscription must be created instead.
+      description: 'Updates the current push subscription. Only the data part can
+        be updated. To change fundamentals, a new subscription must be created instead.
+
+        ## Version history
+
+
+        - 2.4.0 - added
+
+        - 3.3.0 - added data[alerts][status]
+
+        - 3.4.0 - added policy
+
+        - 3.5.0 - added data[alerts][update] and data[alerts][admin.sign_up]
+
+        - 4.0.0 - added data[alerts][admin.report]
+
+
+        [Change types of notifications](https://docs.joinmastodon.org/methods/push/#update)'
+      parameters: []
+      responses:
+        200:
+          description: WebPushSubscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/WebPushSubscription'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: No existing PushSubscription for this token
+      security:
+      - BearerAuth: []
+    get:
+      tags:
+      - push
+      summary: View the PushSubscription currently associated with this access token.
+      description: 'View the PushSubscription currently associated with this access
+        token.
+
+        ## Version history
+
+
+        - 2.4.0 - added
+
+
+        [Get current subscription](https://docs.joinmastodon.org/methods/push/#get)'
+      parameters: []
+      responses:
+        200:
+          description: WebPushSubscription
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/WebPushSubscription'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: A PushSubscription does not exist for this token.
+      security:
+      - BearerAuth: []
     post:
       tags:
       - push
@@ -5452,9 +6677,17 @@ paths:
             application/json:
               schema:
                 type: array
-                description: Array of Hash
                 items:
-                  type: hash
+                  type: object
+                  properties:
+                    week:
+                      type: string
+                    statuses:
+                      type: string
+                    logins:
+                      type: string
+                    registrations:
+                      type: string
         401:
           $ref: '#/components/responses/Error'
           description: If the instance is in whitelist mode and the Authorization
@@ -5703,7 +6936,52 @@ paths:
                 description: Array of CustomEmoji
                 items:
                   $ref: '#/components/responses/CustomEmoji'
-  /api/v1/announcements/:id/reactions/:name:
+  /api/v1/announcements/{:id}/reactions/{:name}:
+    delete:
+      tags:
+      - announcements
+      summary: Undo a react emoji to an announcement.
+      description: 'Undo a react emoji to an announcement.
+
+        ## Version history
+
+
+        - 3.1.0 - added
+
+
+        [Remove a reaction from an announcement](https://docs.joinmastodon.org/methods/announcements/#delete-reactions)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Announcement in the database.
+        required: true
+        schema:
+          type: string
+      - name: :name
+        in: path
+        description: required String. Unicode emoji, or the shortcode of a custom
+          emoji.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Empty
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Empty'
+        401:
+          $ref: '#/components/responses/Error'
+          description: Invalid or missing Authorization header.
+        404:
+          $ref: '#/components/responses/Error'
+          description: Announcement with given ID does not exist
+        422:
+          $ref: '#/components/responses/Error'
+          description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
     put:
       tags:
       - announcements
@@ -5749,7 +7027,7 @@ paths:
           description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
-  /api/v1/announcements/:id/dismiss:
+  /api/v1/announcements/{:id}/dismiss:
     post:
       tags:
       - announcements
@@ -5815,7 +7093,7 @@ paths:
           description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/unsensitive:
+  /api/v1/admin/accounts/{:id}/unsensitive:
     post:
       tags:
       - accounts
@@ -5847,7 +7125,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/unsuspend:
+  /api/v1/admin/accounts/{:id}/unsuspend:
     post:
       tags:
       - accounts
@@ -5886,7 +7164,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/unsilence:
+  /api/v1/admin/accounts/{:id}/unsilence:
     post:
       tags:
       - accounts
@@ -5925,7 +7203,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/enable:
+  /api/v1/admin/accounts/{:id}/enable:
     post:
       tags:
       - accounts
@@ -5964,7 +7242,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/action:
+  /api/v1/admin/accounts/{:id}/action:
     post:
       tags:
       - accounts
@@ -6010,7 +7288,42 @@ paths:
           description: type is not provided or is not understood
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id:
+  /api/v1/admin/accounts/{:id}:
+    delete:
+      tags:
+      - accounts
+      summary: Permanently delete data for a suspended account.
+      description: 'Permanently delete data for a suspended account.
+
+        ## Version history
+
+
+        - 3.3.0 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Delete an account](https://docs.joinmastodon.org/methods/admin/accounts/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Account in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminAccount'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header, or account was already deleted.
+      security:
+      - BearerAuth: []
     get:
       tags:
       - accounts
@@ -6049,7 +7362,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/reject:
+  /api/v1/admin/accounts/{:id}/reject:
     post:
       tags:
       - accounts
@@ -6088,7 +7401,7 @@ paths:
           description: Account does not exist
       security:
       - BearerAuth: []
-  /api/v1/admin/accounts/:id/approve:
+  /api/v1/admin/accounts/{:id}/approve:
     post:
       tags:
       - accounts
@@ -6373,7 +7686,43 @@ paths:
             Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/canonical_email_blocks/:id:
+  /api/v1/admin/canonical_email_blocks/{:id}:
+    delete:
+      tags:
+      - canonical_email_blocks
+      description: '
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Delete a canonical email block](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Admin::CanonicalEmailBlock in
+          the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::CanonicalEmailBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminCanonicalEmailBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: Canonical email block does not exist or was already deleted
+      security:
+      - BearerAuth: []
     get:
       tags:
       - canonical_email_blocks
@@ -6411,6 +7760,35 @@ paths:
       security:
       - BearerAuth: []
   /api/v1/admin/canonical_email_blocks:
+    post:
+      tags:
+      - canonical_email_blocks
+      description: '
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Block a canonical email](https://docs.joinmastodon.org/methods/admin/canonical_email_blocks/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Admin::CanonicalEmailBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminCanonicalEmailBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is missing a permission, or invalid or missing
+            Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: Canonical email hash is already blocked
+      security:
+      - BearerAuth: []
     get:
       tags:
       - canonical_email_blocks
@@ -6530,7 +7908,43 @@ paths:
             Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/domain_allows/:id:
+  /api/v1/admin/domain_allows/{:id}:
+    delete:
+      tags:
+      - domain_allows
+      summary: Delete a domain from the allowed domains list.
+      description: 'Delete a domain from the allowed domains list.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Delete an allowed domain](https://docs.joinmastodon.org/methods/admin/domain_allows/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainAllow in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::DomainAllow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainAllow'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: DomainAllow with the given ID does not exist
+      security:
+      - BearerAuth: []
     get:
       tags:
       - domain_allows
@@ -6560,6 +7974,38 @@ paths:
           $ref: '#/components/responses/Error'
           description: DomainAllow with the given ID does not exist
   /api/v1/admin/domain_allows:
+    post:
+      tags:
+      - domain_allows
+      summary: Add a domain to the list of domains allowed to federate, to be used
+        when the instance is in allow-list federation mode.
+      description: 'Add a domain to the list of domains allowed to federate, to be
+        used when the instance is in allow-list federation mode.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Allow a domain to federate](https://docs.joinmastodon.org/methods/admin/domain_allows/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Admin::DomainAllow
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainAllow'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: The domain parameter was not provided or was invalid
+      security:
+      - BearerAuth: []
     get:
       tags:
       - domain_allows
@@ -6611,7 +8057,79 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/domain_blocks/:id:
+  /api/v1/admin/domain_blocks/{:id}:
+    delete:
+      tags:
+      - domain_blocks
+      summary: Lift a block against a domain.
+      description: 'Lift a block against a domain.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Remove a domain block](https://docs.joinmastodon.org/methods/admin/domain_blocks/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainAllow in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::DomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: DomainBlock with the given ID does not exist
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - domain_blocks
+      summary: Change parameters for an existing domain block.
+      description: 'Change parameters for an existing domain block.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Update a domain block](https://docs.joinmastodon.org/methods/admin/domain_blocks/#update)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainAllow in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::DomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        500:
+          $ref: '#/components/responses/Error'
+          description: Invalid severity
+      security:
+      - BearerAuth: []
     get:
       tags:
       - domain_blocks
@@ -6641,6 +8159,37 @@ paths:
           $ref: '#/components/responses/Error'
           description: DomainBlock with the given ID does not exist
   /api/v1/admin/domain_blocks:
+    post:
+      tags:
+      - domain_blocks
+      summary: Add a domain to the list of domains blocked from federating.
+      description: 'Add a domain to the list of domains blocked from federating.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Block a domain from federating](https://docs.joinmastodon.org/methods/admin/domain_blocks/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Admin::DomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminDomainBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: The domain parameter already is covered by an existing domain
+            block.
+      security:
+      - BearerAuth: []
     get:
       tags:
       - domain_blocks
@@ -6692,7 +8241,43 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/email_domain_blocks/:id:
+  /api/v1/admin/email_domain_blocks/{:id}:
+    delete:
+      tags:
+      - email_domain_blocks
+      summary: Lift a block against an email domain.
+      description: 'Lift a block against an email domain.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Delete an email domain block](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainAllow in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::EmailDomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminEmailDomainBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: EmailDomainBlock with the given ID does not exist
+      security:
+      - BearerAuth: []
     get:
       tags:
       - email_domain_blocks
@@ -6723,6 +8308,36 @@ paths:
           $ref: '#/components/responses/Error'
           description: EmailDomainBlock with the given ID does not exist
   /api/v1/admin/email_domain_blocks:
+    post:
+      tags:
+      - email_domain_blocks
+      summary: Add a domain to the list of email domains blocked from signups.
+      description: 'Add a domain to the list of email domains blocked from signups.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Block an email domain from signups](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Admin::EmailDomainBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminEmailDomainBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: The domain parameter was not provided
+      security:
+      - BearerAuth: []
     get:
       tags:
       - email_domain_blocks
@@ -6775,7 +8390,76 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/ip_blocks/:id:
+  /api/v1/admin/ip_blocks/{:id}:
+    delete:
+      tags:
+      - ip_blocks
+      summary: Lift a block against an IP range.
+      description: 'Lift a block against an IP range.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Delete an IP block](https://docs.joinmastodon.org/methods/admin/ip_blocks/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainAllow in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::IpBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminIpBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        404:
+          $ref: '#/components/responses/Error'
+          description: IpBlock with the given ID does not exist
+      security:
+      - BearerAuth: []
+    put:
+      tags:
+      - ip_blocks
+      summary: Change parameters for an existing IP block.
+      description: 'Change parameters for an existing IP block.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Update a domain block](https://docs.joinmastodon.org/methods/admin/ip_blocks/#update)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the IpBlock in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::IpBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminIpBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+      security:
+      - BearerAuth: []
     get:
       tags:
       - ip_blocks
@@ -6805,6 +8489,36 @@ paths:
           $ref: '#/components/responses/Error'
           description: IpBlock with the given ID does not exist
   /api/v1/admin/ip_blocks:
+    post:
+      tags:
+      - ip_blocks
+      summary: Add an IP address range to the list of IP blocks.
+      description: 'Add an IP address range to the list of IP blocks.
+
+        ## Version history
+
+
+        - 4.0.0 - added
+
+
+        [Block an IP address range from signing up](https://docs.joinmastodon.org/methods/admin/ip_blocks/#create)'
+      parameters: []
+      responses:
+        200:
+          description: Admin::IpBlock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminIpBlock'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+        422:
+          $ref: '#/components/responses/Error'
+          description: IP has already been blocked, and/or no severity was provided
+      security:
+      - BearerAuth: []
     get:
       tags:
       - ip_blocks
@@ -6889,7 +8603,7 @@ paths:
             Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/reopen:
+  /api/v1/admin/reports/{:id}/reopen:
     post:
       tags:
       - reports
@@ -6925,7 +8639,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/resolve:
+  /api/v1/admin/reports/{:id}/resolve:
     post:
       tags:
       - reports
@@ -6961,7 +8675,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/unassign:
+  /api/v1/admin/reports/{:id}/unassign:
     post:
       tags:
       - reports
@@ -6997,7 +8711,7 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id/assign_to_self:
+  /api/v1/admin/reports/{:id}/assign_to_self:
     post:
       tags:
       - reports
@@ -7033,7 +8747,42 @@ paths:
             or missing Authorization header
       security:
       - BearerAuth: []
-  /api/v1/admin/reports/:id:
+  /api/v1/admin/reports/{:id}:
+    put:
+      tags:
+      - reports
+      summary: Change metadata for a report.
+      description: 'Change metadata for a report.
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - support custom roles and permissions
+
+
+        [Update a report](https://docs.joinmastodon.org/methods/admin/reports/#update)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Report in the database.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Admin::Report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/AdminReport'
+        403:
+          $ref: '#/components/responses/Error'
+          description: Authorized user is not allowed to perform this action, or invalid
+            or missing Authorization header
+      security:
+      - BearerAuth: []
     get:
       tags:
       - reports
@@ -7337,16 +9086,17 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: "The key of a given field\u2019s key-value pair."
               value:
-                type: String
+                type: string
                 description: The value associated with the name key.
               verified_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: "Timestamp of when the server verified a URL value for\
                   \ a rel=\u201Cme\u201D link."
-                nullable: true
     MutedAccount:
       description: ''
       content:
@@ -7355,9 +9105,10 @@ components:
             type: object
             properties:
               mute_expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When a timed mute will expire, if applicable.
-                nullable: true
     CredentialAccount:
       description: ''
       content:
@@ -7366,11 +9117,11 @@ components:
             type: object
             properties:
               source:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: An extra attribute that contains source values to be
                   used with API methods that verify credentials and update credentials.
               role:
-                type: RoleVersion
+                $ref: '#/components/responses/RoleVersion'
                 description: The role assigned to the currently authorized user.
     Account:
       description: Represents a user of Mastodon and their associated profile.
@@ -7380,95 +9131,97 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account id.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the account, not including domain.
               acct:
-                type: StringVersion
+                type: string
                 description: The Webfinger account URI. Equal to username for local
                   users, or username@domain for remote users.
               url:
-                type: String
+                type: string
                 description: "The location of the user\u2019s profile page."
               display_name:
-                type: StringVersion
+                type: string
                 description: "The profile\u2019s display name."
               note:
-                type: String
+                type: string
                 description: "The profile\u2019s bio or description."
               avatar:
-                type: String
+                type: string
                 description: An image icon that is shown next to statuses and in the
                   profile.
               avatar_static:
-                type: String
+                type: string
                 description: A static version of the avatar. Equal to avatar if its
                   value is a static image; different if avatar is an animated GIF.
               header:
-                type: String
+                type: string
                 description: An image banner that is shown above the profile and in
                   profile cards.
               header_static:
-                type: String
+                type: string
                 description: A static version of the header. Equal to header if its
                   value is a static image; different if header is an animated GIF.
               locked:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the account manually approves follow requests.
               fields:
-                type: Array
+                type: array
                 description: Additional metadata attached to a profile as name-value
                   pairs.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji entities to be used when rendering the profile.
               bot:
-                type: BooleanVersion
+                type: boolean
                 description: Indicates that the account may perform automated actions,
                   may not be monitored, or identifies as a robot.
               group:
-                type: BooleanVersion
+                type: boolean
                 description: Indicates that the account represents a Group actor.
               discoverable:
-                type: BooleanVersion
+                type:
+                - boolean
+                - 'null'
                 description: Whether the account has opted into discovery features
                   such as the profile directory.
-                nullable: true
               noindex:
-                type: BooleanVersion
+                type:
+                - boolean
+                - 'null'
                 description: Whether the local user has opted out of being indexed
                   by search engines.
-                nullable: true
               moved:
-                type: Account,
+                $ref: '#/components/responses/Account,'
                 description: Indicates that the profile is currently inactive and
                   that its user has moved to a new account.
-                nullable: true
               suspended:
-                type: BooleanVersion
+                type: boolean
                 description: An extra attribute returned only when an account is suspended.
               limited:
-                type: BooleanVersion
+                type: boolean
                 description: An extra attribute returned only when an account is silenced.
                   If true, indicates that the account should be hidden behind a warning
                   screen.
               created_at:
-                type: String
+                type: string
                 description: When the account was created.
               last_status_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the most recent status was posted.
-                nullable: true
               statuses_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many statuses are attached to this account.
               followers_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: The reported followers of this profile.
               following_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: The reported follows of this profile.
     AccountWarning:
       description: Moderation warning against a particular account.
@@ -7478,29 +9231,28 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the account warning in the database.
               action:
-                type: String
+                type: string
                 description: Action taken against the account.
               text:
-                type: StringVersion
+                type: string
                 description: Message from the moderator to the target account.
               status_ids:
-                type: Array
+                type: array
                 description: List of status IDs that are relevant to the warning.
                   When action is mark_statuses_as_sensitive or delete_statuses, those
                   are the affected statuses.
               target_account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: Account against which a moderation decision has been
                   taken.
               appeal:
-                type: Appeal,
+                $ref: '#/components/responses/Appeal,'
                 description: Appeal submitted by the target account, if any.
-                nullable: true
               created_at:
-                type: String
+                type: string
                 description: When the event took place.
     AdminAccount:
       description: Admin-level information about a given account.
@@ -7510,64 +9262,66 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the account in the database.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the account.
               domain:
-                type: String,
+                $ref: '#/components/responses/String,'
                 description: The domain of the account, if it is remote.
-                nullable: true
               created_at:
-                type: String
+                type: string
                 description: When the account was first discovered.
               email:
-                type: StringVersion
+                type: string
                 description: The email address associated with the account.
               ip:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: The IP address last used to login to this account.
-                nullable: true
               ips:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: The IP address last used to login to this account.
-                nullable: true
               locale:
-                type: String
+                type: string
                 description: The locale of the account.
               invite_request:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: The reason given when requesting an invite (for instances
                   that require manual approval of registrations)
-                nullable: true
               role:
-                type: RoleVersion
+                $ref: '#/components/responses/RoleVersion'
                 description: The current role of the account.
               confirmed:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the account has confirmed their email address.
               approved:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the account is currently approved.
               disabled:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the account is currently disabled.
               silenced:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the account is currently silenced.
               suspended:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the account is currently suspended.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: User-level information about the account.
               created_by_application_id:
-                type: String
+                type: string
                 description: The ID of the Application that created this account,
                   if applicable.
               invited_by_account_id:
-                type: String
+                type: string
                 description: The ID of the Account that invited this user, if applicable.
     AdminCanonicalEmailBlock:
       description: Represents a canonical email block (hashed).
@@ -7577,10 +9331,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the email block in the database.
               canonical_email_hash:
-                type: String
+                type: string
                 description: The SHA256 hash of the canonical email address.
     CohortData:
       description: ''
@@ -7590,14 +9344,14 @@ components:
             type: object
             properties:
               date:
-                type: String
+                type: string
                 description: The timestamp for the start of the bucket, at midnight.
               rate:
-                type: NumberVersion
+                $ref: '#/components/responses/NumberVersion'
                 description: The percentage rate of users who registered in the specified
                   period and were active for the given date bucket.
               value:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many users registered in the specified period and
                   were active for the given date bucket.
     AdminCohort:
@@ -7608,13 +9362,13 @@ components:
             type: object
             properties:
               period:
-                type: String
+                type: string
                 description: The timestamp for the start of the period, at midnight.
               frequency:
-                type: String
+                type: string
                 description: The size of the bucket for the returned data.
               data:
-                type: Array
+                type: array
                 description: Retention data for users who registered during the given
                   period.
     Data:
@@ -7625,20 +9379,20 @@ components:
             type: object
             properties:
               key:
-                type: StringVersion
+                type: string
                 description: The unique keystring for this data item.
               human_key:
-                type: StringVersion
+                type: string
                 description: A human-readable key for this data item.
               value:
-                type: StringVersion
+                type: string
                 description: The value for this data item.
               unit:
-                type: StringVersion
+                type: string
                 description: "The units associated with this data item\u2019s value,\
                   \ if applicable."
               human_value:
-                type: StringVersion
+                type: string
                 description: A human-readable formatted value for this data item.
     AdminDimension:
       description: Represents qualitative data about the server.
@@ -7648,10 +9402,10 @@ components:
             type: object
             properties:
               key:
-                type: StringVersion
+                type: string
                 description: The unique keystring for the requested dimension.
               data:
-                type: Array
+                type: array
                 description: The data available for the requested dimension.
     AdminDomainAllow:
       description: Represents a domain allowed to federate.
@@ -7661,13 +9415,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the DomainAllow in the database.
               domain:
-                type: StringVersion
+                type: string
                 description: The domain that is allowed to federate.
               created_at:
-                type: String
+                type: string
                 description: When the domain was allowed to federate.
     AdminDomainBlock:
       description: Represents a domain limited from federating.
@@ -7677,37 +9431,39 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the DomainBlock in the database.
               domain:
-                type: StringVersion
+                type: string
                 description: The domain that is not allowed to federate.
               digest:
-                type: StringVersion
+                type: string
                 description: The sha256 hex digest of the domain that is not allowed
                   to federated.
               created_at:
-                type: String
+                type: string
                 description: When the domain was blocked from federating.
               severity:
-                type: String
+                type: string
                 description: The policy to be applied by this domain block.
               reject_media:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to reject media attachments from this domain
               reject_reports:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to reject reports from this domain
               private_comment:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: ''
-                nullable: true
               public_comment:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: ''
-                nullable: true
               obfuscate:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to obfuscate public displays of this domain block
     AdminEmailDomainBlock:
       description: Represents an email domain that cannot be used to sign up.
@@ -7717,16 +9473,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the EmailDomainBlock in the database.
               domain:
-                type: StringVersion
+                type: string
                 description: The email domain that is not allowed to be used for signups.
               created_at:
-                type: String
+                type: string
                 description: When the email domain was disallowed from signups.
               history:
-                type: Array
+                type: array
                 description: Usage statistics for given days (typically the past week).
     AdminIp:
       description: Represents an IP address associated with a user.
@@ -7736,10 +9492,10 @@ components:
             type: object
             properties:
               ip:
-                type: String
+                type: string
                 description: The IP address.
               used_at:
-                type: String
+                type: string
                 description: The timestamp of when the IP address was last used for
                   this account.
     AdminIpBlock:
@@ -7750,24 +9506,25 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the DomainBlock in the database.
               ip:
-                type: String
+                type: string
                 description: The IP address range that is not allowed to federate.
               severity:
-                type: String
+                type: string
                 description: The associated policy with this IP block.
               comment:
-                type: StringVersion
+                type: string
                 description: The recorded reason for this IP block.
               created_at:
-                type: String
+                type: string
                 description: When the IP block was created.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the IP block will expire.
-                nullable: true
     AdminMeasure:
       description: Represents quantitative data about the server.
       content:
@@ -7776,27 +9533,28 @@ components:
             type: object
             properties:
               key:
-                type: StringVersion
+                type: string
                 description: The unique keystring for the requested measure.
               unit:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: "The units associated with this data item\u2019s value,\
                   \ if applicable."
-                nullable: true
               total:
-                type: String
+                type: string
                 description: The numeric total associated with the requested measure.
               human_value:
-                type: StringVersion
+                type: string
                 description: A human-readable formatted value for this data item.
               previous_total:
-                type: String
+                type: string
                 description: The numeric total associated with the requested measure,
                   in the previous period. Previous period is calculated by subtracting
                   the start_at and end_at dates, then offsetting both start and end
                   dates backwards by the length of the time period.
               data:
-                type: Array
+                type: array
                 description: The data available for the requested measure, split into
                   daily buckets.
     AdminReport:
@@ -7807,50 +9565,49 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the report in the database.
               action_taken:
-                type: BooleanVersion
+                type: boolean
                 description: Whether an action was taken to resolve this report.
               action_taken_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When an action was taken, if this report is currently
                   resolved.
-                nullable: true
               category:
-                type: String
+                type: string
                 description: The category under which the report is classified.
               comment:
-                type: StringVersion
+                type: string
                 description: An optional reason for reporting.
               forwarded:
-                type: BooleanVersion
+                type: boolean
                 description: Whether a report was forwarded to a remote instance.
               created_at:
-                type: String
+                type: string
                 description: The time the report was filed.
               updated_at:
-                type: String
+                type: string
                 description: The time of last action on this report.
               account:
-                type: Admin::AccountVersion
+                $ref: '#/components/responses/AdminAccountVersion'
                 description: The account which filed the report.
               target_account:
-                type: Admin::AccountVersion
+                $ref: '#/components/responses/AdminAccountVersion'
                 description: The account being reported.
               assigned_account:
-                type: Admin::Account
+                $ref: '#/components/responses/AdminAccount'
                 description: The account of the moderator assigned to this report.
-                nullable: true
               action_taken_by_account:
-                type: Admin::Account
+                $ref: '#/components/responses/AdminAccount'
                 description: The account of the moderator who handled the report.
-                nullable: true
               statuses:
-                type: Array
+                type: array
                 description: Statuses attached to the report, for context.
               rules:
-                type: Array
+                type: array
                 description: Rules attached to the report, for context.
     AnnouncementStatus:
       description: ''
@@ -7860,10 +9617,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of an attached Status in the database.
               url:
-                type: String
+                type: string
                 description: The URL of an attached Status.
     AnnouncementAccount:
       description: ''
@@ -7873,16 +9630,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account ID of the mentioned user.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the mentioned user.
               url:
-                type: String
+                type: string
                 description: "The location of the mentioned user\u2019s profile."
               acct:
-                type: StringVersion
+                type: string
                 description: 'The webfinger acct: URI of the mentioned user. Equivalent
                   to username for local users, or username@domain for remote users.'
     Announcement:
@@ -7893,51 +9650,53 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the announcement in the database.
               content:
-                type: String
+                type: string
                 description: The text of the announcement.
               starts_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the announcement will start.
-                nullable: true
               ends_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the announcement will end.
-                nullable: true
               published:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the announcement is currently active.
               all_day:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the announcement should start and end on dates
                   only instead of datetimes. Will be false if there is no starts_at
                   or ends_at time.
               published_at:
-                type: String
+                type: string
                 description: When the announcement was published.
               updated_at:
-                type: String
+                type: string
                 description: When the announcement was last updated.
               read:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the announcement has been read by the current
                   user.
               mentions:
-                type: Array
+                type: array
                 description: Accounts mentioned in the announcement text.
               statuses:
-                type: Array
+                type: array
                 description: Statuses linked in the announcement text.
               tags:
-                type: Array
+                type: array
                 description: Tags linked in the announcement text.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji used in the announcement text.
               reactions:
-                type: Array
+                type: array
                 description: Emoji reactions attached to the announcement.
     Appeal:
       description: Appeal against a moderation action.
@@ -7947,11 +9706,11 @@ components:
             type: object
             properties:
               text:
-                type: StringVersion
+                type: string
                 description: Text of the appeal from the moderated account to the
                   moderators.
               state:
-                type: String
+                type: string
                 description: State of the appeal.
     CredentialApplication:
       description: ''
@@ -7961,13 +9720,13 @@ components:
             type: object
             properties:
               client_id:
-                type: StringVersion
+                type: string
                 description: Client ID key, to be used for obtaining OAuth tokens
               client_secret:
-                type: StringVersion
+                type: string
                 description: Client secret key, to be used for obtaining OAuth tokens
               client_secret_expires_at:
-                type: StringVersion
+                type: string
                 description: When the client secret key will expire at, presently
                   this always returns 0 indicating that OAuth Clients do not expire
     Application:
@@ -7979,25 +9738,26 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: The name of your application.
               website:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: The website associated with your application.
-                nullable: true
               scopes:
-                type: Array
+                type: array
                 description: The scopes for your application. This is the registered
                   scopes string split on whitespace.
               redirect_uris:
-                type: Array
+                type: array
                 description: The registered redirection URI(s) for your application.
               redirect_uri:
-                type: StringVersion
+                type: string
                 description: The registered redirection URI(s) for your application.May
                   contain \n characters when multiple redirect URIs are registered.
               vapid_key:
-                type: StringVersion
+                type: string
                 description: Used for Push Streaming API. Returned with POST /api/v1/apps.
                   Equivalent to WebPushSubscription#server_key and Instance#vapid_public_key
     Context:
@@ -8009,10 +9769,10 @@ components:
             type: object
             properties:
               ancestors:
-                type: Array
+                type: array
                 description: Parents in the thread.
               descendants:
-                type: Array
+                type: array
                 description: Children in the thread.
     Conversation:
       description: Represents a conversation with "direct message" visibility.
@@ -8022,18 +9782,17 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the conversation in the database.
               unread:
-                type: BooleanVersion
+                type: boolean
                 description: Is the conversation currently marked as unread?
               accounts:
-                type: Array
+                type: array
                 description: Participants in the conversation.
               last_status:
-                type: StatusVersion
+                $ref: '#/components/responses/StatusVersion'
                 description: The last status in the conversation.
-                nullable: true
     CustomEmoji:
       description: Represents a custom emoji.
       content:
@@ -8042,22 +9801,23 @@ components:
             type: object
             properties:
               shortcode:
-                type: StringVersion
+                type: string
                 description: The name of the custom emoji.
               url:
-                type: String
+                type: string
                 description: A link to the custom emoji.
               static_url:
-                type: String
+                type: string
                 description: A link to a static copy of the custom emoji.
               visible_in_picker:
-                type: BooleanVersion
+                type: boolean
                 description: Whether this Emoji should be visible in the picker or
                   unlisted.
               category:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: Used for sorting custom emoji in the picker.
-                nullable: true
     DomainBlock:
       description: Represents a domain that is blocked by the instance.
       content:
@@ -8066,17 +9826,17 @@ components:
             type: object
             properties:
               domain:
-                type: StringVersion
+                type: string
                 description: The domain which is blocked. This may be obfuscated or
                   partially censored.
               digest:
-                type: String
+                type: string
                 description: The SHA256 hash digest of the domain string.
               severity:
-                type: String
+                type: string
                 description: The level to which the domain is blocked.
               comment:
-                type: StringVersion
+                type: string
                 description: An optional reason for the domain block.
     Error:
       description: Represents an error message.
@@ -8086,10 +9846,10 @@ components:
             type: object
             properties:
               error:
-                type: StringVersion
+                type: string
                 description: The error message.
               error_description:
-                type: StringVersion
+                type: string
                 description: A longer description of the error, mainly provided with
                   the OAuth API.
     ExtendedDescription:
@@ -8101,11 +9861,11 @@ components:
             type: object
             properties:
               updated_at:
-                type: String
+                type: string
                 description: A timestamp of when the extended description was last
                   updated.
               content:
-                type: String
+                type: string
                 description: The rendered HTML content of the extended description.
     FamiliarFollowers:
       description: Represents a subset of your follows who also follow some other
@@ -8116,10 +9876,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Account in the database.
               accounts:
-                type: Array
+                type: array
                 description: Accounts you follow that also follow this account.
     FeaturedTag:
       description: Represents a hashtag that is featured on a profile.
@@ -8129,19 +9889,19 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The internal ID of the featured tag in the database.
               name:
-                type: StringVersion
+                type: string
                 description: The name of the hashtag being featured.
               url:
-                type: String
+                type: string
                 description: A link to all statuses by a user that contain this hashtag.
               statuses_count:
-                type: StringVersion
+                type: string
                 description: The number of authored statuses containing this hashtag.
               last_status_at:
-                type: String
+                type: string
                 description: The date of the last authored status containing this
                   hashtag.
     Filter:
@@ -8153,26 +9913,27 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Filter in the database.
               title:
-                type: StringVersion
+                type: string
                 description: A title given by the user to name the filter.
               context:
-                type: Array
+                type: array
                 description: The contexts in which the filter should be applied.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the filter should no longer be applied.
-                nullable: true
               filter_action:
-                type: String
+                type: string
                 description: The action to be taken when a status matches this filter.
               keywords:
-                type: Array
+                type: array
                 description: The keywords grouped under this filter.
               statuses:
-                type: Array
+                type: array
                 description: The statuses grouped under this filter.
     FilterKeyword:
       description: Represents a keyword that, if matched, should cause the filter
@@ -8183,13 +9944,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the FilterKeyword in the database.
               keyword:
-                type: StringVersion
+                type: string
                 description: The phrase to be matched against.
               whole_word:
-                type: BooleanVersion
+                type: boolean
                 description: Should the filter consider word boundaries? See implementation
                   guidelines for filters.
     FilterResult:
@@ -8200,16 +9961,18 @@ components:
             type: object
             properties:
               filter:
-                type: FilterVersion
+                $ref: '#/components/responses/FilterVersion'
                 description: The filter that was matched.
               keyword_matches:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: The keyword within the filter that was matched.
-                nullable: true
               status_matches:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: The status ID within the filter that was matched.
-                nullable: true
     FilterStatus:
       description: Represents a status ID that, if matched, should cause the filter
         action to be taken.
@@ -8219,10 +9982,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the FilterStatus in the database.
               status_id:
-                type: String
+                type: string
                 description: The ID of the Status that will be filtered.
     IdentityProof:
       description: Represents a proof from an external identity provider.
@@ -8232,21 +9995,21 @@ components:
             type: object
             properties:
               provider:
-                type: StringVersion
+                type: string
                 description: The name of the identity provider.
               provider_username:
-                type: StringVersion
+                type: string
                 description: "The account owner\u2019s username on the identity provider\u2019\
                   s service."
               updated_at:
-                type: String
+                type: string
                 description: When the identity proof was last updated.
               proof_url:
-                type: String
+                type: string
                 description: A link to a statement of identity proof, hosted by the
                   identity provider.
               profile_url:
-                type: String
+                type: string
                 description: "The account owner\u2019s profile URL on the identity\
                   \ provider."
     InstanceIcon:
@@ -8257,10 +10020,10 @@ components:
             type: object
             properties:
               src:
-                type: String4.3.0
+                $ref: '#/components/responses/String430'
                 description: The URL of this icon.
               size:
-                type: String
+                type: string
                 description: The size of this icon.
     Instance:
       description: Represents the software instance of Mastodon running on this domain.
@@ -8270,59 +10033,59 @@ components:
             type: object
             properties:
               domain:
-                type: StringVersion
+                type: string
                 description: The domain name of the instance.
               title:
-                type: StringVersion
+                type: string
                 description: The title of the website.
               version:
-                type: StringVersion
+                type: string
                 description: The version of Mastodon installed on the instance.
               source_url:
-                type: String
+                type: string
                 description: The URL for the source code of the software running on
                   this instance, in keeping with AGPL license requirements.
               description:
-                type: StringVersion
+                type: string
                 description: A short, plain-text description defined by the admin.
               usage:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Usage data for this instance.
               thumbnail:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: An image used to represent this instance.
               icon:
-                type: Array
+                type: array
                 description: The list of available size variants for this instance
                   configured icon.
               languages:
-                type: Array
+                type: array
                 description: Primary languages of the website and its staff.
               configuration:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Configured values and limits for this website.
               configuration[vapid][public_key]:
-                type: StringVersion
+                type: string
                 description: The instances VAPID public key, used for push notifications,
                   the same as WebPushSubscription#server_key.
               registrations:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Information about registering for this website.
               api_versions:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Information about which version of the API is implemented
                   by this server. It contains at least a mastodon attribute, and other
                   implementations may have their own additional attributes.
               api_versions[mastodon]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: API version number that this server implements. Starting
                   from Mastodon v4.3.0, API changes will come with a version number,
                   which clients can check against this value.
               contact:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Hints related to contacting a representative of the website.
               rules:
-                type: Array
+                type: array
                 description: An itemized list of rules for this website.
     List:
       description: Represents a list of some users that the authenticated user follows.
@@ -8332,13 +10095,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The internal database ID of the list.
               title:
-                type: StringVersion
+                type: string
                 description: The user-defined title of the list.
               replies_policy:
-                type: String
+                type: string
                 description: Which replies should be shown in the list.
     Marker:
       description: Represents the last read position within a user's timelines.
@@ -8348,14 +10111,14 @@ components:
             type: object
             properties:
               last_read_id:
-                type: String
+                type: string
                 description: The ID of the most recently viewed entity.
               version:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: An incrementing counter, used for locking to prevent
                   write conflicts.
               updated_at:
-                type: String
+                type: string
                 description: The timestamp of when the marker was set.
     MediaAttachment:
       description: Represents a file or media attachment that can be added to a status.
@@ -8365,39 +10128,41 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the attachment in the database.
               type:
-                type: String
+                type: string
                 description: The type of the attachment.
               url:
-                type: String
+                type: string
                 description: The location of the original full-size attachment.
               preview_url:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: The location of a scaled-down preview of the attachment.
-                nullable: true
               remote_url:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: The location of the full-size original attachment on
                   the remote website.
-                nullable: true
               meta:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Metadata returned by Paperclip.
               description:
-                type: String,
+                $ref: '#/components/responses/String,'
                 description: Alternate text that describes what is in the media attachment,
                   to be used for the visually impaired or when media attachments do
                   not load.
-                nullable: true
               blurhash:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: A hash computed by the BlurHash algorithm, for generating
                   colorful preview thumbnails when media has not been downloaded yet.
-                nullable: true
               text_url:
-                type: String
+                type: string
                 description: A shorter URL for the attachment.
     Notification:
       description: Represents a notification of an event relevant to the user.
@@ -8407,39 +10172,39 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The id of the notification in the database.
               type:
-                type: String
+                type: string
                 description: The type of event that resulted in the notification.
               group_key:
-                type: StringVersion
+                type: string
                 description: Group key shared by similar notifications, to be used
                   in the grouped notifications feature. Should be considered opaque,
                   but ungrouped notifications can be assumed to have a group_key of
                   the form ungrouped-{notification_id}.
               created_at:
-                type: String
+                type: string
                 description: The timestamp of the notification.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that performed the action that generated
                   the notification.
               status:
-                type: StatusVersion
+                $ref: '#/components/responses/StatusVersion'
                 description: Status that was the object of the notification. Attached
                   when type of the notification is favourite, reblog, status, mention,
                   poll, or update.
               report:
-                type: ReportVersion
+                $ref: '#/components/responses/ReportVersion'
                 description: Report that was the object of the notification. Attached
                   when type of the notification is admin.report.
               relationship_severance_event:
-                type: RelationshipSeveranceEventVersion
+                $ref: '#/components/responses/RelationshipSeveranceEventVersion'
                 description: Summary of the event that caused follow relationships
                   to be severed. Attached when type of the notification is severed_relationships.
               moderation_warning:
-                type: AccountWarningVersion
+                $ref: '#/components/responses/AccountWarningVersion'
                 description: Moderation warning that caused the notification. Attached
                   when type of the notification is moderation_warning.
     NotificationPolicy:
@@ -8450,28 +10215,28 @@ components:
             type: object
             properties:
               for_not_following:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts the user is not following. drop will prevent creation of
                   the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               for_not_followers:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts that are not following the user. drop will prevent creation
                   of the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               for_new_accounts:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts created in the past 30 days. drop will prevent creation
                   of the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               for_private_mentions:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   private mentions. drop will prevent creation of the notification
                   object altogether (without preventing the underlying activity),
@@ -8480,21 +10245,21 @@ components:
                   the user, as well as accounts the user follows, are always allowed,
                   regardless of this value.
               for_limited_accounts:
-                type: String
+                type: string
                 description: Whether to accept, filter or drop notifications from
                   accounts that were limited by a moderator. drop will prevent creation
                   of the notification object altogether (without preventing the underlying
                   activity), filter will cause it to be marked as filtered, and accept
                   will not affect its processing.
               summary:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Summary of the filtered notifications
               summary[pending_requests_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of different accounts from which the user has
                   non-dismissed filtered notifications. Capped at 100.
               summary[pending_notifications_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of total non-dismissed filtered notifications.
                   May be inaccurate.
     NotificationRequest:
@@ -8505,25 +10270,25 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The id of the notification request in the database.
               created_at:
-                type: String
+                type: string
                 description: The timestamp of the notification request, i.e. when
                   the first filtered notification from that user was created.
               updated_at:
-                type: String
+                type: string
                 description: The timestamp of when the notification request was last
                   updated.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that performed the action that generated
                   the filtered notifications.
               notifications_count:
-                type: StringVersion
+                type: string
                 description: "How many of this account\u2019s notifications were filtered."
               last_status:
-                type: StatusVersion
+                $ref: '#/components/responses/StatusVersion'
                 description: Most recent status associated with a filtered notification
                   from that account.
     PollOption:
@@ -8534,7 +10299,7 @@ components:
             type: object
             properties:
               title:
-                type: StringVersion
+                type: string
                 description: The text value of the poll option.
     Poll:
       description: Represents a poll attached to a status.
@@ -8544,38 +10309,38 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the poll in the database.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the poll ends.
-                nullable: true
               expired:
-                type: BooleanVersion
+                type: boolean
                 description: Is the poll currently expired?
               multiple:
-                type: BooleanVersion
+                type: boolean
                 description: Does the poll allow multiple-choice answers?
               votes_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many votes have been received.
               voters_count:
-                type: Integer,
+                $ref: '#/components/responses/Integer,'
                 description: How many unique accounts have voted on a multiple-choice
                   poll.
-                nullable: true
               options:
-                type: Array
+                type: array
                 description: Possible answers for the poll.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji to be used for rendering poll options.
               voted:
-                type: BooleanVersion
+                type: boolean
                 description: When called with a user token, has the authorized user
                   voted?
               own_votes:
-                type: Array
+                type: array
                 description: When called with a user token, which options has the
                   authorized user chosen? Contains an array of index values for options.
     Preferences:
@@ -8586,22 +10351,23 @@ components:
             type: object
             properties:
               posting:default:visibility:
-                type: String
+                type: string
                 description: Default visibility for new posts. Equivalent to CredentialAccount#source[privacy].
               posting:default:sensitive:
-                type: BooleanVersion
+                type: boolean
                 description: Default sensitivity flag for new posts. Equivalent to
                   CredentialAccount#source[sensitive].
               posting:default:language:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Default language for new posts. Equivalent to CredentialAccount#source[language]
-                nullable: true
               reading:expand:media:
-                type: String
+                type: string
                 description: Whether media attachments should be automatically displayed
                   or blurred/hidden.
               reading:expand:spoilers:
-                type: BooleanVersion
+                type: boolean
                 description: Whether CWs should be expanded by default.
     TrendsLink:
       description: ''
@@ -8611,7 +10377,7 @@ components:
             type: object
             properties:
               history:
-                type: Array
+                type: array
                 description: Usage statistics for given days (typically the past week).
     PreviewCard:
       description: Represents a rich preview card that is generated using OpenGraph
@@ -8622,55 +10388,57 @@ components:
             type: object
             properties:
               url:
-                type: String
+                type: string
                 description: Location of linked resource.
               title:
-                type: StringVersion
+                type: string
                 description: Title of linked resource.
               description:
-                type: StringVersion
+                type: string
                 description: Description of preview.
               type:
-                type: String
+                type: string
                 description: The type of the preview card.
               authors:
-                type: Array
+                type: array
                 description: Fediverse account of the authors of the original resource.
               author_name:
-                type: StringVersion
+                type: string
                 description: The author of the original resource. Deprecated since
                   4.3.0, clients should use authors instead.
               author_url:
-                type: String
+                type: string
                 description: A link to the author of the original resource. Deprecated
                   since 4.3.0, clients should use authors instead.
               provider_name:
-                type: StringVersion
+                type: string
                 description: The provider of the original resource.
               provider_url:
-                type: String
+                type: string
                 description: A link to the provider of the original resource.
               html:
-                type: String
+                type: string
                 description: HTML to be used for generating the preview card.
               width:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Width of preview, in pixels.
               height:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Width of preview, in pixels.
               image:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Preview thumbnail.
-                nullable: true
               embed_url:
-                type: String
+                type: string
                 description: Used for photo embeds, instead of custom html.
               blurhash:
-                type: StringVersion
+                type:
+                - string
+                - 'null'
                 description: A hash computed by the BlurHash algorithm, for generating
                   colorful preview thumbnails when media has not been downloaded yet.
-                nullable: true
     PreviewCardAuthor:
       description: Represents an author in a rich preview card.
       content:
@@ -8679,15 +10447,15 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: "The original resource author\u2019s name. Replaces the\
                   \ deprecated author_name attribute of the preview card."
               url:
-                type: String
+                type: string
                 description: A link to the author of the original resource. Replaces
                   the deprecated author_url attribute of the preview card.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The fediverse account of the author.
     Reaction:
       description: Represents an emoji reaction to an Announcement.
@@ -8697,22 +10465,22 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: "The emoji used for the reaction. Either a unicode emoji,\
                   \ or a custom emoji\u2019s shortcode."
               count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: The total number of users who have added this reaction.
               me:
-                type: BooleanVersion
+                type: boolean
                 description: 'If there is a currently authorized user: Have you added
                   this reaction?'
               url:
-                type: String
+                type: string
                 description: 'If the reaction is a custom emoji: A link to the custom
                   emoji.'
               static_url:
-                type: String
+                type: string
                 description: 'If the reaction is a custom emoji: A link to a non-animated
                   version of the custom emoji.'
     Relationship:
@@ -8724,50 +10492,50 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account ID.
               following:
-                type: BooleanVersion
+                type: boolean
                 description: Are you following this user?
               showing_reblogs:
-                type: BooleanVersion
+                type: boolean
                 description: "Are you receiving this user\u2019s boosts in your home\
                   \ timeline?"
               notifying:
-                type: BooleanVersion
+                type: boolean
                 description: Have you enabled notifications for this user?
               languages:
-                type: Array
+                type: array
                 description: Which languages are you following from this user?
               followed_by:
-                type: BooleanVersion
+                type: boolean
                 description: Are you followed by this user?
               blocking:
-                type: BooleanVersion
+                type: boolean
                 description: Are you blocking this user?
               blocked_by:
-                type: BooleanVersion
+                type: boolean
                 description: Is this user blocking you?
               muting:
-                type: BooleanVersion
+                type: boolean
                 description: Are you muting this user?
               muting_notifications:
-                type: BooleanVersion
+                type: boolean
                 description: Are you muting notifications from this user?
               requested:
-                type: BooleanVersion
+                type: boolean
                 description: Do you have a pending follow request for this user?
               requested_by:
-                type: BooleanVersion
+                type: boolean
                 description: Has this user requested to follow you?
               domain_blocking:
-                type: BooleanVersion
+                type: boolean
                 description: "Are you blocking this user\u2019s domain?"
               endorsed:
-                type: BooleanVersion
+                type: boolean
                 description: Are you featuring this user on your profile?
               note:
-                type: StringVersion
+                type: string
                 description: "This user\u2019s profile bio"
     RelationshipSeveranceEvent:
       description: Summary of a moderation or block event that caused follow relationships
@@ -8778,30 +10546,30 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the relationship severance event in the database.
               type:
-                type: String
+                type: string
                 description: Type of event.
               purged:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the list of severed relationships is unavailable
                   because the underlying issue has been purged.
               target_name:
-                type: StringVersion
+                type: string
                 description: Name of the target of the moderation/block event. This
                   is either a domain name or a user handle, depending on the event
                   type.
               followers_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of followers that were removed as result of the
                   event.
               following_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of accounts the user stopped following as result
                   of the event.
               created_at:
-                type: String
+                type: string
                 description: When the event took place.
     Report:
       description: Reports filed against users and/or statuses, to be taken action
@@ -8812,39 +10580,42 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the report in the database.
               action_taken:
-                type: BooleanVersion
+                type: boolean
                 description: Whether an action was taken yet.
               action_taken_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When an action was taken against the report.
-                nullable: true
               category:
-                type: String
+                type: string
                 description: The generic reason for the report.
               comment:
-                type: StringVersion
+                type: string
                 description: The reason for the report.
               forwarded:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the report was forwarded to a remote domain.
               created_at:
-                type: String
+                type: string
                 description: When the report was created.
               status_ids:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: IDs of statuses that have been attached to this report
                   for additional context.
-                nullable: true
               rule_ids:
-                type: Array
+                type:
+                - array
+                - 'null'
                 description: IDs of the rules that have been cited as a violation
                   by this report.
-                nullable: true
               target_account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that was reported.
     Role:
       description: Represents a custom user role that grants permissions.
@@ -8854,21 +10625,21 @@ components:
             type: object
             properties:
               id:
-                type: StringVersion
+                type: string
                 description: The ID of the Role in the database.
               name:
-                type: StringVersion
+                type: string
                 description: The name of the role.
               color:
-                type: StringVersion
+                type: string
                 description: The hex code assigned to this role. If no hex code is
                   assigned, the string will be empty.
               permissions:
-                type: StringVersion
+                type: string
                 description: A bitmask that represents the sum of all permissions
                   granted to the role.
               highlighted:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the role is publicly visible as a badge on user
                   profiles.
     Rule:
@@ -8879,13 +10650,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: An identifier for the rule.
               text:
-                type: StringVersion
+                type: string
                 description: The rule to be followed.
               hint:
-                type: StringVersion
+                type: string
                 description: Longer-form description of the rule.
     ScheduledStatus:
       description: Represents a status that will be published at a future scheduled
@@ -8896,17 +10667,17 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: ID of the scheduled status in the database.
               scheduled_at:
-                type: String
+                type: string
                 description: The timestamp for when the status will be posted.
               params:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: The parameters that were used when scheduling the status,
                   to be used when the status is posted.
               media_attachments:
-                type: Array
+                type: array
                 description: Media that will be attached when the status is posted.
     Search:
       description: Represents the results of a search.
@@ -8916,13 +10687,13 @@ components:
             type: object
             properties:
               accounts:
-                type: Array
+                type: array
                 description: Accounts which match the given query
               statuses:
-                type: Array
+                type: array
                 description: Statuses which match the given query
               hashtags:
-                type: Array
+                type: array
                 description: Hashtags which match the given query
     StatusTag:
       description: ''
@@ -8932,10 +10703,10 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: 'The value of the hashtag after the # sign.'
               url:
-                type: String
+                type: string
                 description: A link to the hashtag on the instance.
     StatusMention:
       description: ''
@@ -8945,16 +10716,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The account ID of the mentioned user.
               username:
-                type: StringVersion
+                type: string
                 description: The username of the mentioned user.
               url:
-                type: String
+                type: string
                 description: "The location of the mentioned user\u2019s profile."
               acct:
-                type: StringVersion
+                type: string
                 description: 'The webfinger acct: URI of the mentioned user. Equivalent
                   to username for local users, or username@domain for remote users.'
     Status:
@@ -8965,116 +10736,119 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: ID of the status in the database.
               uri:
-                type: StringVersion
+                type: string
                 description: URI of the status used for federation.
               created_at:
-                type: String
+                type: string
                 description: The date when this status was created.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that authored this status.
               content:
-                type: String
+                type: string
                 description: HTML-encoded status content.
               visibility:
-                type: String
+                type: string
                 description: Visibility of this status.
               sensitive:
-                type: BooleanVersion
+                type: boolean
                 description: Is this status marked as sensitive content?
               spoiler_text:
-                type: StringVersion
+                type: string
                 description: Subject or summary line, below which status content is
                   collapsed until expanded.
               media_attachments:
-                type: Array
+                type: array
                 description: Media that is attached to this status.
               application:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: The application used to post this status.
               mentions:
-                type: Array
+                type: array
                 description: Mentions of users within the status content.
               tags:
-                type: Array
+                type: array
                 description: Hashtags used within the status content.
               emojis:
-                type: Array
+                type: array
                 description: Custom emoji to be used when rendering status content.
               reblogs_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many boosts this status has received.
               favourites_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many favourites this status has received.
               replies_count:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: How many replies this status has received.
               url:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: "A link to the status\u2019s HTML representation."
-                nullable: true
               in_reply_to_id:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: ID of the status being replied to.
-                nullable: true
               in_reply_to_account_id:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: ID of the account that authored the status being replied
                   to.
-                nullable: true
               reblog:
-                type: Status
+                $ref: '#/components/responses/Status'
                 description: The status being reblogged.
-                nullable: true
               poll:
-                type: Poll
+                $ref: '#/components/responses/Poll'
                 description: The poll attached to the status.
-                nullable: true
               card:
-                type: PreviewCard
+                $ref: '#/components/responses/PreviewCard'
                 description: Preview card for links included within status content.
-                nullable: true
               language:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Primary language of this status.
-                nullable: true
               text:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Plain-text source of a status. Returned instead of content
                   when status is deleted, so the user may redraft from the source
                   text without the client having to reverse-engineer the original
                   text from the HTML content.
-                nullable: true
               edited_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Timestamp of when the status was last edited.
-                nullable: true
               favourited:
-                type: BooleanVersion
+                type: boolean
                 description: 'If the current token has an authorized user: Have you
                   favourited this status?'
               reblogged:
-                type: BooleanVersion
+                type: boolean
                 description: 'If the current token has an authorized user: Have you
                   boosted this status?'
               muted:
-                type: BooleanVersion
+                type: boolean
                 description: "If the current token has an authorized user: Have you\
                   \ muted notifications for this status\u2019s conversation?"
               bookmarked:
-                type: BooleanVersion
+                type: boolean
                 description: 'If the current token has an authorized user: Have you
                   bookmarked this status?'
               pinned:
-                type: BooleanVersion
+                type: boolean
                 description: 'If the current token has an authorized user: Have you
                   pinned this status? Only appears if the status is pinnable.'
               filtered:
-                type: Array
+                type: array
                 description: 'If the current token has an authorized user: The filter
                   and keywords that matched this status.'
     StatusEdit:
@@ -9085,31 +10859,31 @@ components:
             type: object
             properties:
               content:
-                type: String
+                type: string
                 description: The content of the status at this revision.
               spoiler_text:
-                type: String
+                type: string
                 description: The content of the subject or content warning at this
                   revision.
               sensitive:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the status was marked sensitive at this revision.
               created_at:
-                type: String
+                type: string
                 description: The timestamp of when the revision was published.
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account that published this revision.
               poll:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: The current state of the poll options at this revision.
                   Note that edits changing the poll options will be collapsed together
                   into one edit, since this action resets the poll.
               media_attachments:
-                type: Array
+                type: array
                 description: The current state of the media attachments at this revision.
               emojis:
-                type: Array
+                type: array
                 description: Any custom emoji that are used in the current revision.
     StatusSource:
       description: Represents a status's source as plain text.
@@ -9119,13 +10893,13 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: ID of the status in the database.
               text:
-                type: StringVersion
+                type: string
                 description: The plain text used to compose the status.
               spoiler_text:
-                type: StringVersion
+                type: string
                 description: "The plain text used to compose the status\u2019s subject\
                   \ or content warning."
     Suggestion:
@@ -9137,14 +10911,14 @@ components:
             type: object
             properties:
               source:
-                type: String
+                type: string
                 description: The reason this account is being suggested.
               sources:
-                type: Array
+                type: array
                 description: A list of reasons this account is being suggested. This
                   replaces source
               account:
-                type: AccountVersion
+                $ref: '#/components/responses/AccountVersion'
                 description: The account being recommended to follow.
     AdminTag:
       description: ''
@@ -9154,16 +10928,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Tag in the database.
               trendable:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the hashtag has been approved to trend.
               usable:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the hashtag has not been disabled from auto-linking.
               requires_review:
-                type: BooleanVersion
+                type: boolean
                 description: Whether the hashtag has not been reviewed yet to approve
                   or deny its trending.
     Tag:
@@ -9174,16 +10948,16 @@ components:
             type: object
             properties:
               name:
-                type: StringVersion
+                type: string
                 description: 'The value of the hashtag after the # sign.'
               url:
-                type: String
+                type: string
                 description: A link to the hashtag on the instance.
               history:
-                type: Array
+                type: array
                 description: Usage statistics for given days (typically the past week).
               following:
-                type: BooleanVersion
+                type: boolean
                 description: "Whether the current token\u2019s authorized user is\
                   \ following this tag."
     Token:
@@ -9195,16 +10969,16 @@ components:
             type: object
             properties:
               access_token:
-                type: StringVersion
+                type: string
                 description: An OAuth token to be used for authorization.
               token_type:
-                type: StringVersion
+                type: string
                 description: The OAuth token type. Mastodon uses Bearer tokens.
               scope:
-                type: StringVersion
+                type: string
                 description: The OAuth scopes granted by this token, space-separated.
               created_at:
-                type: Number
+                type: number
                 description: When the token was generated.
     TranslationAttachment:
       description: ''
@@ -9214,10 +10988,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The id of the attachment.
               description:
-                type: StringVersion
+                type: string
                 description: The translated description of the attachment.
     TranslationPollOption:
       description: ''
@@ -9227,7 +11001,7 @@ components:
             type: object
             properties:
               title:
-                type: StringVersion
+                type: string
                 description: The translated title of the poll option.
     TranslationPoll:
       description: ''
@@ -9237,10 +11011,10 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the poll.
               options:
-                type: Array
+                type: array
                 description: The translated poll options.
     Translation:
       description: Represents the result of machine translating some status content
@@ -9250,23 +11024,23 @@ components:
             type: object
             properties:
               content:
-                type: String
+                type: string
                 description: HTML-encoded translated content of the status.
               spoiler_text:
-                type: StringVersion
+                type: string
                 description: The translated spoiler warning of the status.
               poll:
-                type: Translation::PollVersion
+                $ref: '#/components/responses/TranslationPollVersion'
                 description: The translated poll of the status.
               media_attachments:
-                type: Array
+                type: array
                 description: The translated media descriptions of the status.
               detected_source_language:
-                type: String
+                type: string
                 description: The language of the source text, as auto-detected by
                   the machine translation provider.
               provider:
-                type: StringVersion
+                type: string
                 description: The service that provided the machine translation.
     V1Filter:
       description: Represents a user-defined filter for determining which statuses
@@ -9277,24 +11051,25 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the filter in the database.
               phrase:
-                type: StringVersion
+                type: string
                 description: The text to be filtered.
               context:
-                type: Array
+                type: array
                 description: The contexts in which the filter should be applied.
               expires_at:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: When the filter should no longer be applied.
-                nullable: true
               irreversible:
-                type: BooleanVersion
+                type: boolean
                 description: Should matching entities in home and notifications be
                   dropped by the server? See implementation guidelines for filters.
               whole_word:
-                type: BooleanVersion
+                type: boolean
                 description: Should the filter consider word boundaries? See implementation
                   guidelines for filters.
     V1Instance:
@@ -9305,54 +11080,54 @@ components:
             type: object
             properties:
               uri:
-                type: StringVersion
+                type: string
                 description: The domain name of the instance.
               title:
-                type: StringVersion
+                type: string
                 description: The title of the website.
               short_description:
-                type: StringVersion
+                type: string
                 description: A short, plain-text description defined by the admin.
               description:
-                type: StringVersion
+                type: string
                 description: An HTML-permitted description of the Mastodon site.
               email:
-                type: StringVersion
+                type: string
                 description: An email that may be contacted for any inquiries.
               version:
-                type: StringVersion
+                type: string
                 description: The version of Mastodon installed on the instance.
               urls:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: URLs of interest for clients apps.
               stats:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Statistics about how much information the instance contains.
               thumbnail:
-                type: String
+                type:
+                - string
+                - 'null'
                 description: Banner image for the website.
-                nullable: true
               languages:
-                type: Array
+                type: array
                 description: Primary languages of the website and its staff.
               registrations:
-                type: BooleanVersion
+                type: boolean
                 description: Whether registrations are enabled.
               approval_required:
-                type: BooleanVersion
+                type: boolean
                 description: Whether registrations require moderator approval.
               invites_enabled:
-                type: BooleanVersion
+                type: boolean
                 description: Whether invites are enabled.
               configuration:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Configured values and limits for this website.
               contact_account:
-                type: Account
+                $ref: '#/components/responses/Account'
                 description: A user that can be contacted, as an alternative to email.
-                nullable: true
               rules:
-                type: Array
+                type: array
                 description: An itemized list of rules for this website.
     V1NotificationPolicy:
       description: Represents the notification filtering policy of the user.
@@ -9362,31 +11137,31 @@ components:
             type: object
             properties:
               filter_not_following:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to filter notifications from accounts the user
                   is not following.
               filter_not_followers:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to filter notifications from accounts that are
                   not following the user.
               filter_new_accounts:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to filter notifications from accounts created
                   in the past 30 days.
               filter_private_mentions:
-                type: BooleanVersion
+                type: boolean
                 description: Whether to filter notifications from private mentions.
                   Replies to private mentions initiated by the user, as well as accounts
                   the user follows, are never filtered.
               summary:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Summary of the filtered notifications
               summary[pending_requests_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of different accounts from which the user has
                   non-dismissed filtered notifications. Capped at 100.
               summary[pending_notifications_count]:
-                type: IntegerVersion
+                $ref: '#/components/responses/IntegerVersion'
                 description: Number of total non-dismissed filtered notifications.
                   May be inaccurate.
     WebPushSubscription:
@@ -9397,16 +11172,16 @@ components:
             type: object
             properties:
               id:
-                type: String
+                type: string
                 description: The ID of the Web Push subscription in the database.
               endpoint:
-                type: String
+                type: string
                 description: Where push alerts will be sent to.
               server_key:
-                type: StringVersion
+                type: string
                 description: "The streaming server\u2019s VAPID key."
               alerts:
-                type: HashVersion
+                $ref: '#/components/responses/HashVersion'
                 description: Which alerts should be delivered to the endpoint.
   securitySchemes:
     BearerAuth:
