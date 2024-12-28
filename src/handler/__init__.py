@@ -22,7 +22,7 @@ def run(link: str) -> str:
         version="0.1.0",
         summary="The self-hosted Mastodon OpenAPI specifcation",
         description=description,
-        license=License(name="MIT"),
+        license=License(name="MIT", identifier="MIT"),
     )
 
     logger.info(f"starting to generate OpenAPI spec from {link=}")
