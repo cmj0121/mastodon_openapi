@@ -261,12 +261,17 @@ def handle_response(tag: Tag, response_object: ResponseObject | None) -> Respons
         if status_code == 200 and response_object:
             response[status_code] = response_object
         else:
-            response[status_code] = ReferenceObject.model_validate(
+            ref = ReferenceObject.model_validate(
                 {
                     "$ref": "#/components/schemas/Error",
                     "description": description,
                 }
             )
+            err_response_object = ResponseObject(
+                description=description,
+                content={"application/json": MediaTypeObject.model_validate({"schema": ref})},
+            )
+            response[status_code] = err_response_object
 
     return Responses(response)
 

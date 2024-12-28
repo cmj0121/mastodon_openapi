@@ -36,10 +36,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Application'
         401:
-          $ref: '#/components/schemas/Error'
           description: If the Authorization header contains an invalid token, is malformed,
             or is not present, an error will be returned indicating an authorization
             failure.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the Authorization header contains an invalid token,
+                  is malformed, or is not present, an error will be returned indicating
+                  an authorization failure.
       security:
       - BearerAuth: []
   /api/v1/apps:
@@ -78,9 +84,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/CredentialApplication'
         422:
-          $ref: '#/components/schemas/Error'
           description: If a required parameter is missing or improperly formatted,
             the request will fail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If a required parameter is missing or improperly formatted,
+                  the request will fail.
   /.well-known/oauth-authorization-server:
     get:
       tags:
@@ -104,9 +115,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/JSON'
         404:
-          $ref: '#/components/schemas/Error'
           description: On Mastodon versions before 4.3.0, requesting this endpoint
             will result in a 404 Not Found error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: On Mastodon versions before 4.3.0, requesting this endpoint
+                  will result in a 404 Not Found error.
   /oauth/revoke:
     post:
       tags:
@@ -130,9 +146,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         403:
-          $ref: '#/components/schemas/Error'
           description: If you provide a token you do not own, or no token at all,
             the API call will return a 403 error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If you provide a token you do not own, or no token at
+                  all, the API call will return a 403 error.
   /oauth/token:
     post:
       tags:
@@ -159,13 +180,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
         400:
-          $ref: '#/components/schemas/Error'
           description: If you try to request a scope that was not included when registering
             the app, the request will fail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If you try to request a scope that was not included when
+                  registering the app, the request will fail.
         401:
-          $ref: '#/components/schemas/Error'
           description: If client_id and client_secret do not match or are invalid,
             the request will fail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If client_id and client_secret do not match or are invalid,
+                  the request will fail.
   /oauth/authorize:
     get:
       tags:
@@ -260,9 +291,14 @@ paths:
                 type: string
                 description: String (URL) or HTML response
         400:
-          $ref: '#/components/schemas/Error'
           description: If the authorization code is incorrect or has been used already,
             the request will fail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the authorization code is incorrect or has been used
+                  already, the request will fail.
   /api/v1/emails/confirmations:
     post:
       tags:
@@ -281,9 +317,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         403:
-          $ref: '#/components/schemas/Error'
           description: The client associated with the token does not own the unconfirmed
             user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The client associated with the token does not own the
+                  unconfirmed user.
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/identity_proofs:
@@ -320,14 +361,26 @@ paths:
                 items:
                   $ref: '#/components/schemas/IdentityProof'
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
         410:
-          $ref: '#/components/schemas/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account is suspended (since 2.4.0 and until 3.3.0)
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
   /api/v1/accounts/lookup:
     get:
       tags:
@@ -359,8 +412,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account'
         404:
-          $ref: '#/components/schemas/Error'
           description: Username or address does not map to an account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Username or address does not map to an account
   /api/v1/accounts/search:
     get:
       tags:
@@ -418,9 +475,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         503:
-          $ref: '#/components/schemas/Error'
           description: resolve=true, but the domain part of the user@domain address
             is not a currently live website
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: resolve=true, but the domain part of the user@domain
+                  address is not a currently live website
       security:
       - BearerAuth: []
   /api/v1/accounts/familiar_followers:
@@ -457,11 +519,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/FamiliarFollowers'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/relationships:
@@ -505,11 +575,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/note:
@@ -541,11 +619,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/unpin:
@@ -570,11 +656,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/pin:
@@ -602,17 +696,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         403:
-          $ref: '#/components/schemas/Error'
           description: Token is missing a required scope
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token is missing a required scope
         422:
-          $ref: '#/components/schemas/Error'
           description: You are not following this account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: You are not following this account
         500:
-          $ref: '#/components/schemas/Error'
           description: Can sometimes be returned if the account already endorsed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Can sometimes be returned if the account already endorsed.
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/unmute:
@@ -646,11 +756,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/mute:
@@ -688,11 +806,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/unblock:
@@ -726,11 +852,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/block:
@@ -766,11 +900,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/remove_from_followers:
@@ -802,11 +944,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/unfollow:
@@ -840,11 +990,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/follow:
@@ -884,11 +1042,20 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         403:
-          $ref: '#/components/schemas/Error'
           description: Trying to follow someone that you block or that blocks you
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to follow someone that you block or that blocks
+                  you
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/lists:
@@ -923,18 +1090,35 @@ paths:
                 items:
                   $ref: '#/components/schemas/List'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header, or instance is in
             whitelist mode and your token is not authorized with a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header, or instance
+                  is in whitelist mode and your token is not authorized with a user
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
         410:
-          $ref: '#/components/schemas/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account is suspended (since 2.4.0 and until 3.3.0)
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/featured_tags:
@@ -1012,15 +1196,28 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header, or instance is in
             whitelist mode and your token is not authorized with a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header, or instance
+                  is in whitelist mode and your token is not authorized with a user
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
         410:
-          $ref: '#/components/schemas/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/followers:
@@ -1072,15 +1269,28 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header, or instance is in
             whitelist mode and your token is not authorized with a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header, or instance
+                  is in whitelist mode and your token is not authorized with a user
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
         410:
-          $ref: '#/components/schemas/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}/statuses:
@@ -1162,15 +1372,28 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the instance is in whitelist mode and the Authorization
+                  header is missing or invalid
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
         410:
-          $ref: '#/components/schemas/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
   /api/v1/accounts:
@@ -1209,9 +1432,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the instance is in whitelist mode and the Authorization
+                  header is missing or invalid
     post:
       tags:
       - accounts
@@ -1246,18 +1474,34 @@ paths:
               schema:
                 $ref: '#/components/schemas/Token'
         401:
-          $ref: '#/components/schemas/Error'
           description: The details parameter contains all detected errors. Its structure
             is a Hash with the key being the erroneous parameter, and its value being
             an array of all errors found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The details parameter contains all detected errors. Its
+                  structure is a Hash with the key being the erroneous parameter,
+                  and its value being an array of all errors found.
         422:
-          $ref: '#/components/schemas/Error'
           description: The details parameter contains all detected errors. Its structure
             is a Hash with the key being the erroneous parameter, and its value being
             an array of all errors found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The details parameter contains all detected errors. Its
+                  structure is a Hash with the key being the erroneous parameter,
+                  and its value being an array of all errors found.
         429:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
   /api/v1/accounts/{:id}:
@@ -1293,15 +1537,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the instance is in whitelist mode and the Authorization
+                  header is missing or invalid
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
         410:
-          $ref: '#/components/schemas/Error'
           description: Account is suspended (since 2.4.0 and until 3.3.0)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account is suspended (since 2.4.0 and until 3.3.0)
       security:
       - BearerAuth: []
   /api/v1/accounts/update_credentials:
@@ -1323,11 +1580,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/accounts/verify_credentials:
@@ -1355,16 +1620,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/CredentialAccount'
         401:
-          $ref: '#/components/schemas/Error'
           description: Your credential verification will fail if the token is invalid
             or incorrect.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Your credential verification will fail if the token is
+                  invalid or incorrect.
         403:
-          $ref: '#/components/schemas/Error'
           description: Your user account is currently disabled, missing a confirmed
             email address, or pending approval.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Your user account is currently disabled, missing a confirmed
+                  email address, or pending approval.
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/bookmarks:
@@ -1395,8 +1674,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
   /api/v1/favourites:
     get:
       tags:
@@ -1448,8 +1731,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/mutes:
@@ -1496,8 +1783,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/blocks:
@@ -1548,8 +1839,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/domain_blocks:
@@ -1569,11 +1864,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: If domain is not provided, the request will fail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If domain is not provided, the request will fail.
     post:
       tags:
       - domain_blocks
@@ -1596,11 +1899,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: If domain is not provided, the request will fail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If domain is not provided, the request will fail.
       security:
       - BearerAuth: []
     get:
@@ -1651,8 +1962,12 @@ paths:
                 items:
                   type: string
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/filters/{:id}:
@@ -1688,11 +2003,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter does not exist or is not owned by you
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter does not exist or is not owned by you
       security:
       - BearerAuth: []
     put:
@@ -1722,14 +2045,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/V1Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter does not exist or is not owned by you
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter does not exist or is not owned by you
         422:
-          $ref: '#/components/schemas/Error'
           description: 'If phrase is not provided properly:'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: 'If phrase is not provided properly:'
       security:
       - BearerAuth: []
     get:
@@ -1764,11 +2099,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/V1Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter ID does not exist, or is not owned by you
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter ID does not exist, or is not owned by you
       security:
       - BearerAuth: []
   /api/v1/filters:
@@ -1802,11 +2145,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/V1Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: 'If phrase is not provided properly:'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: 'If phrase is not provided properly:'
       security:
       - BearerAuth: []
     get:
@@ -1838,8 +2189,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/V1Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/filters/statuses/{:id}:
@@ -1871,11 +2226,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/FilterStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: FilterStatus is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: FilterStatus is not owned by you or does not exist
       security:
       - BearerAuth: []
     get:
@@ -1906,11 +2269,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/FilterStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: FilterStatus is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: FilterStatus is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v2/filters/{:filter_id}/statuses:
@@ -1942,11 +2313,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/FilterStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you or does not exist
       security:
       - BearerAuth: []
     get:
@@ -1980,11 +2359,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/FilterStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v2/filters/keywords/{:id}:
@@ -2016,11 +2403,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: FilterKeyword is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: FilterKeyword is not owned by you or does not exist
       security:
       - BearerAuth: []
     put:
@@ -2051,14 +2446,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/FilterKeyword'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: FilterKeyword is not owned by you, or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: FilterKeyword is not owned by you, or does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: No keyword was provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No keyword was provided
       security:
       - BearerAuth: []
     get:
@@ -2089,12 +2496,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/FilterKeyword'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you, or the filter or filter keyword
             does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you, or the filter or filter keyword
+                  does not exist
       security:
       - BearerAuth: []
   /api/v2/filters/{:filter_id}/keywords:
@@ -2126,14 +2542,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/FilterKeyword'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you, or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you, or does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: No keyword was provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No keyword was provided
       security:
       - BearerAuth: []
     get:
@@ -2167,11 +2595,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/FilterKeyword'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you, or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you, or does not exist
       security:
       - BearerAuth: []
   /api/v2/filters/{:id}:
@@ -2197,11 +2633,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you or does not exist
     put:
       tags:
       - filters
@@ -2230,13 +2674,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you or does not exist. Alternatively,
             keywords_attributes[][id] was provided, there is no keyword with given
             id within this Filter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you or does not exist. Alternatively,
+                  keywords_attributes[][id] was provided, there is no keyword with
+                  given id within this Filter.
       security:
       - BearerAuth: []
     get:
@@ -2267,11 +2721,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v2/filters:
@@ -2297,14 +2759,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Filter keyword ID was specified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Filter keyword ID was specified
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
     get:
@@ -2332,8 +2806,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Filter'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/reports:
@@ -2364,14 +2842,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Report'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Report not filed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Report not filed.
         422:
-          $ref: '#/components/schemas/Error'
           description: Token does not have an authorized user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
       security:
       - BearerAuth: []
   /api/v1/follow_requests/{:account_id}/reject:
@@ -2404,11 +2894,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: No pending follow request from that account ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No pending follow request from that account ID
       security:
       - BearerAuth: []
   /api/v1/follow_requests/{:account_id}/authorize:
@@ -2441,11 +2939,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Relationship'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: No pending follow request from that account ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No pending follow request from that account ID
       security:
       - BearerAuth: []
   /api/v1/follow_requests:
@@ -2489,8 +2995,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/endorsements:
@@ -2535,8 +3045,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/featured_tags/suggestions:
@@ -2565,8 +3079,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Tag'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/featured_tags/{:id}:
@@ -2598,11 +3116,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: FeaturedTag is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: FeaturedTag is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v1/featured_tags:
@@ -2628,12 +3154,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/FeaturedTag'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: If name is not a valid hashtag, e.g. contains illegal characters
             or only numbers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If name is not a valid hashtag, e.g. contains illegal
+                  characters or only numbers
       security:
       - BearerAuth: []
     get:
@@ -2661,8 +3196,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/FeaturedTag'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/preferences:
@@ -2688,8 +3227,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/JSON'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/followed_tags:
@@ -2741,8 +3284,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Tag'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/suggestions:
@@ -2782,8 +3329,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/suggestions/{:account_id}:
@@ -2815,8 +3366,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/suggestions:
@@ -2853,8 +3408,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Suggestion'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/tags/{:id}/unfollow:
@@ -2888,8 +3447,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tag'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/tags/{:id}/follow:
@@ -2925,11 +3488,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Tag'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: 'Prior to 4.1.0: Tag was already followed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: 'Prior to 4.1.0: Tag was already followed'
       security:
       - BearerAuth: []
   /api/v1/tags/{:id}:
@@ -3041,8 +3612,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/PreviewCard'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/source:
@@ -3074,11 +3649,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatusSource'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/history:
@@ -3115,8 +3698,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/StatusEdit'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}:
@@ -3143,14 +3730,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist, is private, or is not owned by you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist, is private, or is not owned by
+                  you.
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
     delete:
@@ -3183,11 +3783,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is not owned by you or does not exist
       security:
       - BearerAuth: []
     get:
@@ -3220,11 +3828,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Instance is in authorized-fetch mode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Instance is in authorized-fetch mode.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/unpin:
@@ -3256,11 +3872,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/pin:
@@ -3295,14 +3919,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
         422:
-          $ref: '#/components/schemas/Error'
           description: 'Status is not owned by you:'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: 'Status is not owned by you:'
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/unmute:
@@ -3336,11 +3972,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/mute:
@@ -3374,11 +4018,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/unbookmark:
@@ -3410,11 +4062,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/bookmark:
@@ -3446,8 +4106,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/unreblog:
@@ -3479,11 +4143,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/reblog:
@@ -3517,11 +4189,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/unfavourite:
@@ -3553,11 +4233,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/favourite:
@@ -3589,11 +4277,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/favourited_by:
@@ -3644,8 +4340,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/reblogged_by:
@@ -3696,8 +4396,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status does not exist or is private
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status does not exist or is private
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/translate:
@@ -3729,11 +4433,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Translation'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status is private or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is private or does not exist
         503:
-          $ref: '#/components/schemas/Error'
           description: The translation request failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The translation request failed
       security:
       - BearerAuth: []
   /api/v1/statuses/{:id}/context:
@@ -3767,8 +4479,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Context'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status is private or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is private or does not exist
       security:
       - BearerAuth: []
   /api/v1/statuses:
@@ -3802,8 +4518,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Instance is in authorized-fetch mode.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Instance is in authorized-fetch mode.
       security:
       - BearerAuth: []
     post:
@@ -3842,11 +4562,19 @@ paths:
                 - $ref: '#/components/schemas/Status'
                 - $ref: '#/components/schemas/ScheduledStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
   /api/v1/media:
@@ -3884,11 +4612,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaAttachment'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: File or file type is unsupported or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: File or file type is unsupported or invalid
       security:
       - BearerAuth: []
   /api/v1/media/{:id}:
@@ -3915,14 +4651,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaAttachment'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Attachment is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Attachment is not owned by you or does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
     get:
@@ -3957,17 +4705,33 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaAttachment'
         206:
-          $ref: '#/components/schemas/Error'
           description: The media attachment is still being processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The media attachment is still being processed
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: MediaAttachment is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: MediaAttachment is not owned by you or does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: There was an error processing the media attachment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: There was an error processing the media attachment
       security:
       - BearerAuth: []
   /api/v2/media:
@@ -4001,21 +4765,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/MediaAttachment'
         202:
-          $ref: '#/components/schemas/Error'
           description: "MediaAttachment was created successfully, but the full-size\
             \ file is still processing. Note that the MediaAttachment\u2019s url will\
             \ still be null, as the media is still being processed in the background.\
             \ However, the preview_url should be available. Use GET /api/v1/media/:id\
             \ to check the status of the media attachment."
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "MediaAttachment was created successfully, but the full-size\
+                  \ file is still processing. Note that the MediaAttachment\u2019\
+                  s url will still be null, as the media is still being processed\
+                  \ in the background. However, the preview_url should be available.\
+                  \ Use GET /api/v1/media/:id to check the status of the media attachment."
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: File or file type is unsupported or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: File or file type is unsupported or invalid
         500:
-          $ref: '#/components/schemas/Error'
           description: Could not generate a thumbnail for the attachment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Could not generate a thumbnail for the attachment
       security:
       - BearerAuth: []
   /api/v1/polls/{:id}/votes:
@@ -4047,14 +4831,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Poll'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: "Poll does not exist, or poll\u2019s parent status is private"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Poll does not exist, or poll\u2019s parent status is\
+                  \ private"
         422:
-          $ref: '#/components/schemas/Error'
           description: The poll has expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The poll has expired
       security:
       - BearerAuth: []
   /api/v1/polls/{:id}:
@@ -4086,8 +4883,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Poll'
         404:
-          $ref: '#/components/schemas/Error'
           description: "Poll does not exist, or poll\u2019s parent status is private"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Poll does not exist, or poll\u2019s parent status is\
+                  \ private"
       security:
       - BearerAuth: []
   /api/v1/scheduled_statuses/{:id}:
@@ -4118,11 +4920,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: ScheduledStatus is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: ScheduledStatus is not owned by you or does not exist
       security:
       - BearerAuth: []
     put:
@@ -4145,14 +4955,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/ScheduledStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: ScheduledStatus is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: ScheduledStatus is not owned by you or does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
     get:
@@ -4182,11 +5004,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/ScheduledStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: ScheduledStatus is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: ScheduledStatus is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v1/scheduled_statuses:
@@ -4240,8 +5070,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/ScheduledStatus'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/timelines/direct:
@@ -4291,8 +5125,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/timelines/list/{:list_id}:
@@ -4355,11 +5193,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: List is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: List is not owned by you or does not exist
       security:
       - BearerAuth: []
   /api/v1/timelines/link?url=:url:
@@ -4422,8 +5268,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         404:
-          $ref: '#/components/schemas/Error'
           description: The provided URL is not currently trending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The provided URL is not currently trending.
       security:
       - BearerAuth: []
   /api/v1/timelines/home:
@@ -4483,11 +5333,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         206:
-          $ref: '#/components/schemas/Error'
           description: Home feed is regenerating
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Home feed is regenerating
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/timelines/tag/{:hashtag}:
@@ -4591,8 +5449,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         404:
-          $ref: '#/components/schemas/Error'
           description: Hashtag does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Hashtag does not exist
       security:
       - BearerAuth: []
   /api/v1/timelines/public:
@@ -4700,11 +5562,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Conversation'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: The conversation does not exist, or is not owned by you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The conversation does not exist, or is not owned by you.
       security:
       - BearerAuth: []
   /api/v1/conversations/{:id}:
@@ -4736,11 +5606,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: The conversation does not exist, or is not owned by you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The conversation does not exist, or is not owned by you.
       security:
       - BearerAuth: []
   /api/v1/conversations:
@@ -4791,8 +5669,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Conversation'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/lists/{:id}/accounts:
@@ -4824,11 +5706,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: List is not owned by you or does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: List is not owned by you or does not exist
       security:
       - BearerAuth: []
     post:
@@ -4855,15 +5745,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: You are not following a given account ID, or you do not own
             the list ID, or list/account ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: You are not following a given account ID, or you do not
+                  own the list ID, or list/account ID does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: An Account with one of the provided IDs is already in the list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: An Account with one of the provided IDs is already in
+                  the list
     get:
       tags:
       - lists
@@ -4917,11 +5821,19 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: List does not exist or is not owned by you.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: List does not exist or is not owned by you.
       security:
       - BearerAuth: []
   /api/v1/lists/{:id}:
@@ -4952,11 +5864,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: List does not exist or is not owned by you
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: List does not exist or is not owned by you
       security:
       - BearerAuth: []
     put:
@@ -4989,11 +5909,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/List'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: 'If the title is missing:'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: 'If the title is missing:'
       security:
       - BearerAuth: []
     get:
@@ -5026,11 +5954,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/List'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: List does not exist or is not owned by you
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: List does not exist or is not owned by you
       security:
       - BearerAuth: []
   /api/v1/lists:
@@ -5060,11 +5996,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/List'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         422:
-          $ref: '#/components/schemas/Error'
           description: 'If the title is missing:'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: 'If the title is missing:'
       security:
       - BearerAuth: []
     get:
@@ -5092,8 +6036,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/List'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/markers:
@@ -5119,8 +6067,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Marker'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
     get:
@@ -5153,8 +6105,12 @@ paths:
                 type: object
                 description: Hash of timeline key and associated Marker
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/streaming/direct:
@@ -5519,8 +6475,12 @@ paths:
                   count:
                     type: integer
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/notifications/{:group_key}/accounts:
@@ -5550,8 +6510,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Account'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/notifications/{:group_key}/dismiss:
@@ -5578,8 +6542,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/notifications/{:group_key}:
@@ -5608,8 +6576,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/JSON'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/notifications:
@@ -5716,8 +6688,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/JSON'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/requests/merged:
@@ -5745,12 +6721,21 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/schemas/Error'
           description: A successful call returns whether the notifications have been
             merged and are ready for being loaded.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: A successful call returns whether the notifications have
+                  been merged and are ready for being loaded.
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
   /api/v1/notifications/requests/dismiss:
     post:
       tags:
@@ -5776,8 +6761,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/requests/accept:
@@ -5807,8 +6796,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/requests/{:id}/dismiss:
@@ -5842,8 +6835,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/requests/{:id}/accept:
@@ -5879,8 +6876,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/requests/{:id}:
@@ -5912,8 +6913,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationRequest'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/requests:
@@ -5962,8 +6967,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/NotificationRequest'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/notifications/policy:
@@ -5982,8 +6991,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationPolicy'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
     get:
@@ -6008,8 +7021,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationPolicy'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/unread_count:
@@ -6080,8 +7097,12 @@ paths:
                   count:
                     type: integer
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/{:id}/dismiss:
@@ -6113,8 +7134,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/clear:
@@ -6140,8 +7165,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications/{:id}:
@@ -6173,8 +7202,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notification'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/notifications:
@@ -6272,8 +7305,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Notification'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/push/subscription:
@@ -6299,8 +7336,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
     put:
@@ -6335,11 +7376,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebPushSubscription'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: No existing PushSubscription for this token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No existing PushSubscription for this token
       security:
       - BearerAuth: []
     get:
@@ -6365,11 +7414,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebPushSubscription'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: A PushSubscription does not exist for this token.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: A PushSubscription does not exist for this token.
       security:
       - BearerAuth: []
     post:
@@ -6410,8 +7467,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/WebPushSubscription'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v2/search:
@@ -6508,8 +7569,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/Search'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/instance:
@@ -6619,13 +7684,23 @@ paths:
                 items:
                   $ref: '#/components/schemas/DomainBlock'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header, if the admin has chosen
             to show domain blocks to users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header, if the admin
+                  has chosen to show domain blocks to users.
         404:
-          $ref: '#/components/schemas/Error'
           description: The admin has chosen to show domain blocks to no one. The response
             body is empty; only the HTTP 404 error code is relevant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The admin has chosen to show domain blocks to no one.
+                  The response body is empty; only the HTTP 404 error code is relevant.
       security:
       - BearerAuth: []
   /api/v1/instance/rules:
@@ -6689,9 +7764,14 @@ paths:
                     registrations:
                       type: string
         401:
-          $ref: '#/components/schemas/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the instance is in whitelist mode and the Authorization
+                  header is missing or invalid
       security:
       - BearerAuth: []
   /api/v1/instance/peers:
@@ -6722,9 +7802,14 @@ paths:
                 items:
                   type: string
         401:
-          $ref: '#/components/schemas/Error'
           description: If the instance is in whitelist mode and the Authorization
             header is missing or invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: If the instance is in whitelist mode and the Authorization
+                  header is missing or invalid
       security:
       - BearerAuth: []
   /api/v2/instance:
@@ -6972,14 +8057,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Announcement with given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Announcement with given ID does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
     put:
@@ -7017,14 +8114,26 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Announcement with given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Announcement with given ID does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: "Join Mastodon \xB7 Blog \xB7 "
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Join Mastodon \xB7 Blog \xB7 "
       security:
       - BearerAuth: []
   /api/v1/announcements/{:id}/dismiss:
@@ -7056,11 +8165,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
-          $ref: '#/components/schemas/Error'
           description: Announcement with given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Announcement with given ID does not exist
       security:
       - BearerAuth: []
   /api/v1/announcements:
@@ -7089,8 +8206,12 @@ paths:
                 items:
                   $ref: '#/components/schemas/Announcement'
         401:
-          $ref: '#/components/schemas/Error'
           description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/unsensitive:
@@ -7117,12 +8238,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/unsuspend:
@@ -7156,12 +8286,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header, or Account is not currently suspended
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header, or Account is not currently suspended
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/unsilence:
@@ -7195,12 +8334,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/enable:
@@ -7234,12 +8382,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/action:
@@ -7277,15 +8434,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Empty'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Account or Report with given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account or Report with given ID does not exist
         422:
-          $ref: '#/components/schemas/Error'
           description: type is not provided or is not understood
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: type is not provided or is not understood
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}:
@@ -7319,9 +8489,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header, or account was already deleted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header, or account was already deleted.
       security:
       - BearerAuth: []
     get:
@@ -7354,12 +8529,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/reject:
@@ -7393,12 +8577,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header, or the account is not currently pending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header, or the account is not currently pending.
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v1/admin/accounts/{:id}/approve:
@@ -7432,12 +8625,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header, or account is currently not pending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header, or account is currently not pending.
         404:
-          $ref: '#/components/schemas/Error'
           description: Account does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Account does not exist
       security:
       - BearerAuth: []
   /api/v2/admin/accounts:
@@ -7548,9 +8750,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/accounts:
@@ -7681,9 +8888,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminAccount'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/canonical_email_blocks/{:id}:
@@ -7715,12 +8927,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCanonicalEmailBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Canonical email block does not exist or was already deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Canonical email block does not exist or was already deleted
       security:
       - BearerAuth: []
     get:
@@ -7751,12 +8972,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCanonicalEmailBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: Canonical email block does not exist or was already deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Canonical email block does not exist or was already deleted
       security:
       - BearerAuth: []
   /api/v1/admin/canonical_email_blocks:
@@ -7781,12 +9011,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminCanonicalEmailBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: Canonical email hash is already blocked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Canonical email hash is already blocked
       security:
       - BearerAuth: []
     get:
@@ -7834,9 +9073,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminCanonicalEmailBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/canonical_email_blocks/test:
@@ -7865,12 +9109,21 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminCanonicalEmailBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
         500:
-          $ref: '#/components/schemas/Error'
           description: No email was provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No email was provided
       security:
       - BearerAuth: []
   /api/v1/admin/dimensions:
@@ -7903,9 +9156,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminDimension'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/domain_allows/{:id}:
@@ -7937,12 +9195,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainAllow'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: DomainAllow with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: DomainAllow with the given ID does not exist
       security:
       - BearerAuth: []
     get:
@@ -7967,12 +9234,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainAllow'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: DomainAllow with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: DomainAllow with the given ID does not exist
   /api/v1/admin/domain_allows:
     post:
       tags:
@@ -7998,12 +9274,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainAllow'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: The domain parameter was not provided or was invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The domain parameter was not provided or was invalid
       security:
       - BearerAuth: []
     get:
@@ -8052,9 +9337,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminDomainAllow'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/domain_blocks/{:id}:
@@ -8086,12 +9376,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: DomainBlock with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: DomainBlock with the given ID does not exist
       security:
       - BearerAuth: []
     put:
@@ -8122,12 +9421,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         500:
-          $ref: '#/components/schemas/Error'
           description: Invalid severity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid severity
       security:
       - BearerAuth: []
     get:
@@ -8152,12 +9460,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: DomainBlock with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: DomainBlock with the given ID does not exist
   /api/v1/admin/domain_blocks:
     post:
       tags:
@@ -8181,13 +9498,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: The domain parameter already is covered by an existing domain
             block.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The domain parameter already is covered by an existing
+                  domain block.
       security:
       - BearerAuth: []
     get:
@@ -8236,9 +9563,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/email_domain_blocks/{:id}:
@@ -8270,12 +9602,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminEmailDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: EmailDomainBlock with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: EmailDomainBlock with the given ID does not exist
       security:
       - BearerAuth: []
     get:
@@ -8301,12 +9642,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminEmailDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: EmailDomainBlock with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: EmailDomainBlock with the given ID does not exist
   /api/v1/admin/email_domain_blocks:
     post:
       tags:
@@ -8330,12 +9680,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminEmailDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: The domain parameter was not provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The domain parameter was not provided
       security:
       - BearerAuth: []
     get:
@@ -8385,9 +9744,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminEmailDomainBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/ip_blocks/{:id}:
@@ -8419,12 +9783,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminIpBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: IpBlock with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: IpBlock with the given ID does not exist
       security:
       - BearerAuth: []
     put:
@@ -8455,9 +9828,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminIpBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
     get:
@@ -8482,12 +9860,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminIpBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         404:
-          $ref: '#/components/schemas/Error'
           description: IpBlock with the given ID does not exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: IpBlock with the given ID does not exist
   /api/v1/admin/ip_blocks:
     post:
       tags:
@@ -8511,12 +9898,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminIpBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
         422:
-          $ref: '#/components/schemas/Error'
           description: IP has already been blocked, and/or no severity was provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: IP has already been blocked, and/or no severity was provided
       security:
       - BearerAuth: []
     get:
@@ -8565,9 +9961,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminIpBlock'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/measures:
@@ -8598,9 +9999,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminMeasure'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/reports/{:id}/reopen:
@@ -8634,9 +10040,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/reports/{:id}/resolve:
@@ -8670,9 +10081,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/reports/{:id}/unassign:
@@ -8706,9 +10122,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/reports/{:id}/assign_to_self:
@@ -8742,9 +10163,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/reports/{:id}:
@@ -8778,9 +10204,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
     get:
@@ -8812,9 +10243,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/reports:
@@ -8881,9 +10317,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminReport'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is not allowed to perform this action, or invalid
             or missing Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is not allowed to perform this action,
+                  or invalid or missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/retention:
@@ -8914,9 +10355,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminCohort'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/trends/tags:
@@ -8951,9 +10397,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/AdminTag'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/trends/statuses:
@@ -8984,9 +10435,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/Status'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/v1/admin/trends/links:
@@ -9017,9 +10473,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/TrendsLink'
         403:
-          $ref: '#/components/schemas/Error'
           description: Authorized user is missing a permission, or invalid or missing
             Authorization header
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Authorized user is missing a permission, or invalid or
+                  missing Authorization header
       security:
       - BearerAuth: []
   /api/oembed:
@@ -9060,8 +10521,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/JSON'
         404:
-          $ref: '#/components/schemas/Error'
           description: Status not found for given URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status not found for given URL
 components:
   responses:
     Empty:
@@ -9082,6 +10547,12 @@ components:
         text/event-stream:
           schema:
             $ref: '#/components/schemas/JSON'
+    Hash:
+      description: Represents an JSON/Hash object.
+      content:
+        text/event-stream:
+          schema:
+            $ref: '#/components/schemas/Hash'
     Field:
       description: ''
       content:
@@ -9560,6 +11031,8 @@ components:
       type: string
     JSON:
       type: object
+    Hash:
+      type: object
     Field:
       type: object
       properties:
@@ -9587,7 +11060,7 @@ components:
       type: object
       properties:
         source:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: An extra attribute that contains source values to be used with
             API methods that verify credentials and update credentials.
         role:
@@ -9659,7 +11132,7 @@ components:
           description: Whether the local user has opted out of being indexed by search
             engines.
         moved:
-          $ref: '#/components/schemas/Account,'
+          $ref: '#/components/schemas/Account'
           description: Indicates that the profile is currently inactive and that its
             user has moved to a new account.
         suspended:
@@ -9679,13 +11152,13 @@ components:
           - 'null'
           description: When the most recent status was posted.
         statuses_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: How many statuses are attached to this account.
         followers_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: The reported followers of this profile.
         following_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: The reported follows of this profile.
     AccountWarning:
       type: object
@@ -9708,7 +11181,7 @@ components:
           $ref: '#/components/schemas/Account'
           description: Account against which a moderation decision has been taken.
         appeal:
-          $ref: '#/components/schemas/Appeal,'
+          $ref: '#/components/schemas/Appeal'
           description: Appeal submitted by the target account, if any.
         created_at:
           type: string
@@ -9723,7 +11196,9 @@ components:
           type: string
           description: The username of the account.
         domain:
-          $ref: '#/components/schemas/String,'
+          type:
+          - string
+          - 'null'
           description: The domain of the account, if it is remote.
         created_at:
           type: string
@@ -9793,11 +11268,11 @@ components:
           type: string
           description: The timestamp for the start of the bucket, at midnight.
         rate:
-          $ref: '#/components/schemas/NumberVersion'
+          type: number
           description: The percentage rate of users who registered in the specified
             period and were active for the given date bucket.
         value:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: How many users registered in the specified period and were
             active for the given date bucket.
     AdminCohort:
@@ -9996,10 +11471,10 @@ components:
           type: string
           description: The time of last action on this report.
         account:
-          $ref: '#/components/schemas/AdminAccountVersion'
+          $ref: '#/components/schemas/AdminAccount'
           description: The account which filed the report.
         target_account:
-          $ref: '#/components/schemas/AdminAccountVersion'
+          $ref: '#/components/schemas/AdminAccount'
           description: The account being reported.
         assigned_account:
           $ref: '#/components/schemas/AdminAccount'
@@ -10159,7 +11634,7 @@ components:
           type: array
           description: Participants in the conversation.
         last_status:
-          $ref: '#/components/schemas/StatusVersion'
+          $ref: '#/components/schemas/Status'
           description: The last status in the conversation.
     CustomEmoji:
       type: object
@@ -10286,7 +11761,7 @@ components:
       type: object
       properties:
         filter:
-          $ref: '#/components/schemas/FilterVersion'
+          $ref: '#/components/schemas/Filter'
           description: The filter that was matched.
         keyword_matches:
           type:
@@ -10331,7 +11806,7 @@ components:
       type: object
       properties:
         src:
-          $ref: '#/components/schemas/String430'
+          type: string
           description: The URL of this icon.
         size:
           type: string
@@ -10356,10 +11831,10 @@ components:
           type: string
           description: A short, plain-text description defined by the admin.
         usage:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Usage data for this instance.
         thumbnail:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: An image used to represent this instance.
         icon:
           type: array
@@ -10369,27 +11844,27 @@ components:
           type: array
           description: Primary languages of the website and its staff.
         configuration:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Configured values and limits for this website.
         configuration[vapid][public_key]:
           type: string
           description: The instances VAPID public key, used for push notifications,
             the same as WebPushSubscription#server_key.
         registrations:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Information about registering for this website.
         api_versions:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Information about which version of the API is implemented by
             this server. It contains at least a mastodon attribute, and other implementations
             may have their own additional attributes.
         api_versions[mastodon]:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: API version number that this server implements. Starting from
             Mastodon v4.3.0, API changes will come with a version number, which clients
             can check against this value.
         contact:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Hints related to contacting a representative of the website.
         rules:
           type: array
@@ -10413,7 +11888,7 @@ components:
           type: string
           description: The ID of the most recently viewed entity.
         version:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: An incrementing counter, used for locking to prevent write
             conflicts.
         updated_at:
@@ -10443,10 +11918,12 @@ components:
           description: The location of the full-size original attachment on the remote
             website.
         meta:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Metadata returned by Paperclip.
         description:
-          $ref: '#/components/schemas/String,'
+          type:
+          - string
+          - 'null'
           description: Alternate text that describes what is in the media attachment,
             to be used for the visually impaired or when media attachments do not
             load.
@@ -10480,20 +11957,20 @@ components:
           $ref: '#/components/schemas/Account'
           description: The account that performed the action that generated the notification.
         status:
-          $ref: '#/components/schemas/StatusVersion'
+          $ref: '#/components/schemas/Status'
           description: Status that was the object of the notification. Attached when
             type of the notification is favourite, reblog, status, mention, poll,
             or update.
         report:
-          $ref: '#/components/schemas/ReportVersion'
+          $ref: '#/components/schemas/Report'
           description: Report that was the object of the notification. Attached when
             type of the notification is admin.report.
         relationship_severance_event:
-          $ref: '#/components/schemas/RelationshipSeveranceEventVersion'
+          $ref: '#/components/schemas/RelationshipSeveranceEvent'
           description: Summary of the event that caused follow relationships to be
             severed. Attached when type of the notification is severed_relationships.
         moderation_warning:
-          $ref: '#/components/schemas/AccountWarningVersion'
+          $ref: '#/components/schemas/AccountWarning'
           description: Moderation warning that caused the notification. Attached when
             type of the notification is moderation_warning.
     NotificationPolicy:
@@ -10536,14 +12013,14 @@ components:
             will cause it to be marked as filtered, and accept will not affect its
             processing.
         summary:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Summary of the filtered notifications
         summary[pending_requests_count]:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Number of different accounts from which the user has non-dismissed
             filtered notifications. Capped at 100.
         summary[pending_notifications_count]:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Number of total non-dismissed filtered notifications. May be
             inaccurate.
     NotificationRequest:
@@ -10567,7 +12044,7 @@ components:
           type: string
           description: "How many of this account\u2019s notifications were filtered."
         last_status:
-          $ref: '#/components/schemas/StatusVersion'
+          $ref: '#/components/schemas/Status'
           description: Most recent status associated with a filtered notification
             from that account.
     PollOption:
@@ -10594,10 +12071,12 @@ components:
           type: boolean
           description: Does the poll allow multiple-choice answers?
         votes_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: How many votes have been received.
         voters_count:
-          $ref: '#/components/schemas/Integer,'
+          type:
+          - integer
+          - 'null'
           description: How many unique accounts have voted on a multiple-choice poll.
         options:
           type: array
@@ -10675,10 +12154,10 @@ components:
           type: string
           description: HTML to be used for generating the preview card.
         width:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Width of preview, in pixels.
         height:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Width of preview, in pixels.
         image:
           type:
@@ -10716,7 +12195,7 @@ components:
           description: "The emoji used for the reaction. Either a unicode emoji, or\
             \ a custom emoji\u2019s shortcode."
         count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: The total number of users who have added this reaction.
         me:
           type: boolean
@@ -10795,10 +12274,10 @@ components:
           description: Name of the target of the moderation/block event. This is either
             a domain name or a user handle, depending on the event type.
         followers_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Number of followers that were removed as result of the event.
         following_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Number of accounts the user stopped following as result of
             the event.
         created_at:
@@ -10887,7 +12366,7 @@ components:
           type: string
           description: The timestamp for when the status will be posted.
         params:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: The parameters that were used when scheduling the status, to
             be used when the status is posted.
         media_attachments:
@@ -10962,7 +12441,7 @@ components:
           type: array
           description: Media that is attached to this status.
         application:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: The application used to post this status.
         mentions:
           type: array
@@ -10974,13 +12453,13 @@ components:
           type: array
           description: Custom emoji to be used when rendering status content.
         reblogs_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: How many boosts this status has received.
         favourites_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: How many favourites this status has received.
         replies_count:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: How many replies this status has received.
         url:
           type:
@@ -11067,7 +12546,7 @@ components:
           $ref: '#/components/schemas/Account'
           description: The account that published this revision.
         poll:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: The current state of the poll options at this revision. Note
             that edits changing the poll options will be collapsed together into one
             edit, since this action resets the poll.
@@ -11184,7 +12663,7 @@ components:
           type: string
           description: The translated spoiler warning of the status.
         poll:
-          $ref: '#/components/schemas/TranslationPollVersion'
+          $ref: '#/components/schemas/TranslationPoll'
           description: The translated poll of the status.
         media_attachments:
           type: array
@@ -11243,10 +12722,10 @@ components:
           type: string
           description: The version of Mastodon installed on the instance.
         urls:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: URLs of interest for clients apps.
         stats:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Statistics about how much information the instance contains.
         thumbnail:
           type:
@@ -11266,7 +12745,7 @@ components:
           type: boolean
           description: Whether invites are enabled.
         configuration:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Configured values and limits for this website.
         contact_account:
           $ref: '#/components/schemas/Account'
@@ -11295,14 +12774,14 @@ components:
             to private mentions initiated by the user, as well as accounts the user
             follows, are never filtered.
         summary:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Summary of the filtered notifications
         summary[pending_requests_count]:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Number of different accounts from which the user has non-dismissed
             filtered notifications. Capped at 100.
         summary[pending_notifications_count]:
-          $ref: '#/components/schemas/IntegerVersion'
+          type: integer
           description: Number of total non-dismissed filtered notifications. May be
             inaccurate.
     WebPushSubscription:
@@ -11318,7 +12797,7 @@ components:
           type: string
           description: "The streaming server\u2019s VAPID key."
         alerts:
-          $ref: '#/components/schemas/HashVersion'
+          $ref: '#/components/schemas/Hash'
           description: Which alerts should be delivered to the endpoint.
   securitySchemes:
     BearerAuth:

@@ -58,6 +58,18 @@ def handle_components(link: str, html: str) -> Component:
                 )
             },
         ),
+        "Hash": ResponseObject(
+            description="Represents an JSON/Hash object.",
+            content={
+                "text/event-stream": MediaTypeObject.model_validate(
+                    {
+                        "schema": SchemaObject(
+                            type="object",
+                        )
+                    }
+                )
+            },
+        ),
     }
     soup = BeautifulSoup(html, "html.parser")
 
@@ -102,21 +114,18 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
 
             text = soup.find("h3", {"id": attr_id}).find_next("p").text
             matched = re.search(
-                r"Description:([\s\S]*?)Type: (nullable )?(\S+)(?: .*?)?(?:Version history:)?(.+?)", text
+                r"Description:([\s\S]*?)Type: (nullable )?([\w:]+)(?: .*?)?(?:Version history:)?(.+?)", text
             )
             if not matched:
                 raise ValueError(f"failed to find the attribute {text=}")
 
             desc, nullable, typ, version = matched.groups()
+            if typ.endswith("Version"):
+                typ = typ[:-7]
+
             match typ:
-                case "StringVersion":
+                case "String4":
                     typ = "String"
-                case "BooleanVersion":
-                    typ = "Boolean"
-                case "RoleVersion":
-                    typ = "Role"
-                case "AccountVersion":
-                    typ = "Account"
 
             if typ.lower() in BuildInType:
                 prop = SchemaObject(
