@@ -116,17 +116,21 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
                 match tag:
                     case "streaming":
-                        streaming_response = Responses(
+                        ref = ReferenceObject.model_validate(
                             {
-                                200: ReferenceObject.model_validate(
-                                    {
-                                        "$ref": "#/components/schemas/Streaming",
-                                        "description": "The streaming response.",
-                                    }
-                                )
+                                "$ref": "#/components/schemas/Streaming",
+                                "description": "The streaming response.",
                             }
                         )
-                        operation.responses = streaming_response
+                        streaming_response = ResponseObject(
+                            description="The streaming response.",
+                            content={
+                                "text/event-stream": MediaTypeObject.model_validate(
+                                    {"schema": ref},
+                                ),
+                            },
+                        )
+                        operation.responses = Responses({200: streaming_response})
                     case _:
                         operation.responses = handle_response(method_dom, response_object)
 

@@ -16,6 +16,7 @@ info:
     '
   license:
     name: MIT
+    identifier: MIT
 paths:
   /api/v1/apps/verify_credentials:
     get:
@@ -6173,8 +6174,12 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/list:
@@ -6205,8 +6210,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/hashtag/local:
@@ -6237,8 +6246,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/hashtag:
@@ -6269,8 +6282,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/public/remote:
@@ -6300,8 +6317,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/public/local:
@@ -6333,8 +6354,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/public:
@@ -6366,8 +6391,12 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/user/notification:
@@ -6387,8 +6416,12 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/user:
@@ -6418,8 +6451,12 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
       security:
       - BearerAuth: []
   /api/v1/streaming/health:
@@ -6440,8 +6477,12 @@ paths:
       parameters: []
       responses:
         200:
-          $ref: '#/components/schemas/Streaming'
           description: The streaming response.
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/Streaming'
+                description: The streaming response.
   /api/v2/notifications/unread_count:
     get:
       tags:
