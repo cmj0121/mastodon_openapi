@@ -28,7 +28,12 @@ def handle_components(link: str, html: str) -> Component:
     Handle the base URL of the Mastodon API documentation and return the OpenAPI Components object.
     """
     spec = {
-        "Empty": ResponseObject(description="Empty content"),
+        "Empty": ResponseObject(
+            description="Empty content",
+            content={
+                "text/plain": MediaTypeObject.model_validate({"schema": SchemaObject(type="null")}),
+            },
+        ),
         "Streaming": ResponseObject(
             description="Represents an error message.",
             content={
@@ -61,7 +66,8 @@ def handle_components(link: str, html: str) -> Component:
         entity_link = f'{link}{entity["href"]}'
         spec.update(handle_component(entity_link))
 
-    return Component(responses=spec, securitySchemes=default_security_scheme())
+    component = Component(responses=spec, securitySchemes=default_security_scheme())
+    return post_handle_components(component)
 
 
 def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
@@ -107,6 +113,10 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
                     typ = "String"
                 case "BooleanVersion":
                     typ = "Boolean"
+                case "RoleVersion":
+                    typ = "Role"
+                case "AccountVersion":
+                    typ = "Account"
 
             if typ.lower() in BuildInType:
                 prop = SchemaObject(
@@ -116,7 +126,7 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
             else:
                 prop = ReferenceObject.model_validate(
                     {
-                        "$ref": f"#/components/responses/{canonicalize(typ)}",
+                        "$ref": f"#/components/schemas/{canonicalize(typ)}",
                         "description": desc.strip(),
                     }
                 )
@@ -144,3 +154,18 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
         )
 
     return spec
+
+
+def post_handle_components(component: Component) -> Component:
+    """copy the response object to the schema object and setup the reference object"""
+    component.schemas = {}
+    for key, resp in component.responses.items():
+        for mime in resp.content or []:
+            schema = resp.content[mime].schema_object
+            component.schemas[key] = schema
+
+            resp.content[mime].schema_object = ReferenceObject.model_validate(
+                {"$ref": f"#/components/schemas/{canonicalize(key)}"}
+            )
+
+    return component

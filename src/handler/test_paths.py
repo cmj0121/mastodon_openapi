@@ -56,7 +56,7 @@ class TestHandlePaths:
         assert schema_object.type == "array"
 
         items = schema_object.items
-        assert isinstance(items, ReferenceObject) and items.ref == "#/components/responses/Rule"
+        assert isinstance(items, ReferenceObject) and items.ref == "#/components/schemas/Rule"
 
     @responses.activate
     def test_handle_parameter(self, load_api_html_fn, app="accounts"):

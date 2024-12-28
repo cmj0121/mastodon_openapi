@@ -120,7 +120,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                             {
                                 200: ReferenceObject.model_validate(
                                     {
-                                        "$ref": "#/components/responses/Streaming",
+                                        "$ref": "#/components/schemas/Streaming",
                                         "description": "The streaming response.",
                                     }
                                 )
@@ -263,7 +263,7 @@ def handle_response(tag: Tag, response_object: ResponseObject | None) -> Respons
         else:
             response[status_code] = ReferenceObject.model_validate(
                 {
-                    "$ref": "#/components/responses/Error",
+                    "$ref": "#/components/schemas/Error",
                     "description": description,
                 }
             )
@@ -302,11 +302,11 @@ def parse_schema_object(text: str) -> SchemaObject:
     elif "String (URL) or HTML response" == text:
         schema_object = SchemaObject(type="string", description=text)
     elif "Preferences by key and value" == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/JSON"})
     elif "the user\u2019s own Account with source attribute" == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/Account"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Account"})
     elif "MediaAttachment, but without a URL" == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/MediaAttachment"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/MediaAttachment"})
     elif "Hash of timeline key and associated Marker" == text:
         schema_object = SchemaObject(
             description=text,
@@ -319,26 +319,26 @@ def parse_schema_object(text: str) -> SchemaObject:
             properties={"count": SchemaObject(type="integer")},
         )
     elif "JSON as per the above description" == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/JSON"})
     elif "OEmbed metadata" == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/JSON"})
     elif "Object with source language codes as keys and arrays of target language codes as values." == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/JSON"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/JSON"})
     elif "Search, but hashtags is an array of strings instead of an array of Tag." == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/Search"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Search"})
     elif "Status. When scheduled_at is present, ScheduledStatus is returned instead." == text:
         schema_object = OneOfObject(
             oneOf=[
-                ReferenceObject.model_validate({"$ref": "#/components/responses/Status"}),
-                ReferenceObject.model_validate({"$ref": "#/components/responses/ScheduledStatus"}),
+                ReferenceObject.model_validate({"$ref": "#/components/schemas/Status"}),
+                ReferenceObject.model_validate({"$ref": "#/components/schemas/ScheduledStatus"}),
             ]
         )
     elif "Status with source text and poll or media_attachments" == text:
-        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/Status"})
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Status"})
     elif text.lower() in BuildInType:
         schema_object = SchemaObject(type=canonicalize(text.lower()))
     else:
-        schema_object = ReferenceObject.model_validate({"$ref": f"#/components/responses/{canonicalize(text)}"})
+        schema_object = ReferenceObject.model_validate({"$ref": f"#/components/schemas/{canonicalize(text)}"})
 
     logger.info(f"parse {text=} as {schema_object}")
     return schema_object
