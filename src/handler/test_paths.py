@@ -9,7 +9,7 @@ from src.openapi_spec import SchemaObject
 
 class TestHandlePaths:
     @responses.activate
-    @pytest.mark.parametrize("app", ["apps", "bookmarks", "admin"])
+    @pytest.mark.parametrize("app", ["apps", "bookmarks", "admin", "filters"])
     def test_handle_path_item(self, load_api_html_fn, app):
         link = f"https://docs.joinmastodon.org/methods/{app}/"
         load_api_html_fn(app)
@@ -68,3 +68,31 @@ class TestHandlePaths:
 
         operation = resp["/api/v1/accounts/{:id}/unmute"].root["post"]
         assert operation.parameters is not None
+
+    @responses.activate
+    def test_handle_operation_filter(self, load_api_html_fn, app="filters"):
+        link = f"https://docs.joinmastodon.org/methods/{app}/"
+        load_api_html_fn(app)
+
+        resp = handle_path_item(app, link)
+        assert len(resp) == 8
+        assert "/api/v1/filters/{:id}" in resp
+
+    @responses.activate
+    def test_handle_operation_ip_blocks(self, load_api_html_fn, app="ip_blocks"):
+        link = f"https://docs.joinmastodon.org/methods/{app}/"
+        load_api_html_fn(app)
+
+        resp = handle_path_item(app, link)
+        assert len(resp) == 2
+        assert "/api/v1/admin/ip_blocks" in resp
+        assert "/api/v1/admin/ip_blocks/{:id}" in resp
+
+        path = resp["/api/v1/admin/ip_blocks/{:id}"].root
+        assert "get" in path
+        assert "put" in path
+        assert "delete" in path
+
+        path = resp["/api/v1/admin/ip_blocks"].root
+        assert "get" in path
+        assert "post" in path

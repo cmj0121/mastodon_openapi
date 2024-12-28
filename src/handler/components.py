@@ -102,9 +102,11 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
                 raise ValueError(f"failed to find the attribute {text=}")
 
             desc, nullable, typ, version = matched.groups()
-            if typ == "StringVersion":
-                # special case for the attribute type
-                typ = "String"
+            match typ:
+                case "StringVersion":
+                    typ = "String"
+                case "BooleanVersion":
+                    typ = "Boolean"
 
             if typ.lower() in BuildInType:
                 prop = SchemaObject(

@@ -13,7 +13,6 @@ class BuildInType(StrEnum):
     integer = auto()
     number = auto()
     string = auto()
-    hash = auto()
     array = auto()
 
 

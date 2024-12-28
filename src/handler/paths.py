@@ -62,7 +62,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
     content_id = [link["href"][1:] for link in table.find_all("a", href=True)]
 
     content = table.find_next("div", {"class": "e-content"})
-    methods = [content.find("h2", {"id": id}) for id in content_id]
+    methods = [content.find("h3" if tag == "filters" else "h2", {"id": id}) for id in content_id]
     methods = [method for method in methods if method]
 
     for method_dom in reversed(methods):
@@ -91,6 +91,29 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                 operation.tags = [tag]
                 operation.deprecated = True if deprecated else None
 
+                if endpoint == "/api/v1/instance/activity" and method == "GET":
+                    response_object = ResponseObject(
+                        description="Array of Hash",
+                        content={
+                            "application/json": MediaTypeObject.model_validate(
+                                {
+                                    "schema": SchemaObject(
+                                        type="array",
+                                        items=SchemaObject(
+                                            type="object",
+                                            properties={
+                                                "week": SchemaObject(type="string"),
+                                                "statuses": SchemaObject(type="string"),
+                                                "logins": SchemaObject(type="string"),
+                                                "registrations": SchemaObject(type="string"),
+                                            },
+                                        ),
+                                    )
+                                }
+                            ),
+                        },
+                    )
+
                 match tag:
                     case "streaming":
                         streaming_response = Responses(
@@ -107,7 +130,8 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                     case _:
                         operation.responses = handle_response(method_dom, response_object)
 
-                spec[endpoint] = PathItem({method.lower(): operation})
+                spec[endpoint] = spec[endpoint] if endpoint in spec else PathItem({})
+                spec[endpoint].root[method.lower()] = operation
 
         # extract the content of the method
         while len(content) > index + 1:
@@ -309,6 +333,8 @@ def parse_schema_object(text: str) -> SchemaObject:
                 ReferenceObject.model_validate({"$ref": "#/components/responses/ScheduledStatus"}),
             ]
         )
+    elif "Status with source text and poll or media_attachments" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/responses/Status"})
     elif text.lower() in BuildInType:
         schema_object = SchemaObject(type=canonicalize(text.lower()))
     else:
