@@ -76,7 +76,20 @@ class TestHandlePaths:
 
         resp = handle_path_item(app, link)
         assert len(resp) == 8
+
         assert "/api/v1/filters/{:id}" in resp
+
+        path = resp["/api/v1/filters/{:id}"].root
+        assert ":id" in [param.name for param in path["get"].parameters]
+        assert ":id" in [param.name for param in path["put"].parameters]
+        assert ":id" in [param.name for param in path["delete"].parameters]
+
+        assert "/api/v2/filters/{:id}" in resp
+
+        path = resp["/api/v2/filters/{:id}"].root
+        assert ":id" in [param.name for param in path["get"].parameters]
+        assert ":id" in [param.name for param in path["put"].parameters]
+        assert ":id" in [param.name for param in path["delete"].parameters]
 
     @responses.activate
     def test_handle_operation_ip_blocks(self, load_api_html_fn, app="ip_blocks"):

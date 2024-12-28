@@ -1662,7 +1662,28 @@ paths:
 
 
         [View bookmarked statuses](https://docs.joinmastodon.org/methods/bookmarks/#get)'
-      parameters: []
+      parameters:
+      - name: max_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: since_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: min_id
+        in: query
+        description: Internal parameter. Use HTTP Link header for pagination.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
+        schema:
+          type: string
       responses:
         200:
           description: Array of Status
@@ -1680,6 +1701,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
   /api/v1/favourites:
     get:
       tags:
@@ -1877,6 +1900,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: If domain is not provided, the request will fail.
+      security:
+      - BearerAuth: []
     post:
       tags:
       - domain_blocks
@@ -2624,7 +2649,13 @@ paths:
 
 
         [Delete a filter](https://docs.joinmastodon.org/methods/filters/#delete)'
-      parameters: []
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the Filter in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Empty
@@ -2646,6 +2677,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Filter is not owned by you or does not exist
+      security:
+      - BearerAuth: []
     put:
       tags:
       - filters
@@ -5736,7 +5769,13 @@ paths:
 
 
         [Add accounts to a list](https://docs.joinmastodon.org/methods/lists/#accounts-add)'
-      parameters: []
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the List in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Empty
@@ -5768,6 +5807,8 @@ paths:
                 $ref: '#/components/schemas/Error'
                 description: An Account with one of the provided IDs is already in
                   the list
+      security:
+      - BearerAuth: []
     get:
       tags:
       - lists
@@ -9225,7 +9266,13 @@ paths:
 
 
         [Get a single allowed domain](https://docs.joinmastodon.org/methods/admin/domain_allows/#get-one)'
-      parameters: []
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainAllow in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Admin::DomainAllow
@@ -9249,6 +9296,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: DomainAllow with the given ID does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/domain_allows:
     post:
       tags:
@@ -9451,7 +9500,13 @@ paths:
 
 
         [Get a single blocked domain](https://docs.joinmastodon.org/methods/admin/domain_blocks/#get-one)'
-      parameters: []
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainBlock in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Admin::DomainBlock
@@ -9475,6 +9530,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: DomainBlock with the given ID does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/domain_blocks:
     post:
       tags:
@@ -9633,7 +9690,13 @@ paths:
 
 
         [Get a single blocked email domain](https://docs.joinmastodon.org/methods/admin/email_domain_blocks/#get-one)'
-      parameters: []
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the DomainBlock in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Admin::EmailDomainBlock
@@ -9657,6 +9720,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: EmailDomainBlock with the given ID does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/email_domain_blocks:
     post:
       tags:
@@ -9851,7 +9916,13 @@ paths:
 
 
         [Get a single IP block](https://docs.joinmastodon.org/methods/admin/ip_blocks/#get-one)'
-      parameters: []
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the IpBlock in the database.
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: Admin::IpBlock
@@ -9875,6 +9946,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: IpBlock with the given ID does not exist
+      security:
+      - BearerAuth: []
   /api/v1/admin/ip_blocks:
     post:
       tags:

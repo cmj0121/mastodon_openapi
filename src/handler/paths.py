@@ -181,20 +181,21 @@ def handle_parameters(tag: Tag) -> tuple[list[ParameterObject | ReferenceObject]
         return [], None
 
     response_object = parse_response_object(tag)
-    request_dom = tag.find_next("h4", {"id": lambda x: x and x.startswith("request")})
-    if not request_dom:
-        return [], response_object
 
-    parameters = [param for param_type in ParameterIn for param in handle_parameter_by_type(request_dom, param_type)]
+    parameters = [param for param_type in ParameterIn for param in handle_parameter_by_type(tag, param_type)]
     return (parameters or []), response_object
 
 
 def handle_parameter_by_type(tag: Tag, param_type: ParameterIn) -> list[ParameterObject | ReferenceObject]:
     parameters = []
+    logger.debug(f"try to handle parameter by {param_type=}")
     if not (dom := tag.find_next("h5", {"id": lambda x: x and x.startswith(param_type)})):
+        logger.warning(f"no parameter found in {param_type=}")
         return parameters
 
+    logger.debug(f"handle parameter by type {param_type=} {dom.text=}")
     if not (param_based_dom := dom.find_next("dl")):
+        logger.warning(f"no parameter found in {param_type=}")
         return parameters
 
     for param_dom in param_based_dom.find_all("dt") if dom else []:
