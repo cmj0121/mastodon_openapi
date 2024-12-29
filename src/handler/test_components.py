@@ -2,6 +2,7 @@ import pytest
 import responses
 
 from src.handler.components import handle_component
+from src.openapi_spec import ReferenceObject
 from src.openapi_spec import ResponseObject
 from src.openapi_spec import SchemaObject
 
@@ -56,3 +57,22 @@ class TestHandleComponent:
             schema_object = resp["Field"].content["application/json"].schema_object
             assert schema_object.type == "object"
             assert attr in schema_object.properties
+
+    @responses.activate
+    def test_handle_parameter(self, load_component_html_fn, component="account"):
+        link = f"https://docs.joinmastodon.org/entities/{component}/"
+        load_component_html_fn(component)
+
+        resp = handle_component(link)
+
+        assert "Account" in resp
+
+        schema_object = resp["Account"].content["application/json"].schema_object
+        assert schema_object.type == "object"
+        assert "fields" in schema_object.properties
+
+        fields = schema_object.properties["fields"]
+        assert hasattr(fields, "type")
+        assert fields.type == "array"
+        assert isinstance(fields.items, ReferenceObject)
+        assert fields.items.ref == "#/components/schemas/Field"

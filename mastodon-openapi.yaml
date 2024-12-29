@@ -11223,9 +11223,15 @@ components:
         fields:
           type: array
           description: Additional metadata attached to a profile as name-value pairs.
+          items:
+            $ref: '#/components/schemas/Field'
+            description: ''
         emojis:
           type: array
           description: Custom emoji entities to be used when rendering the profile.
+          items:
+            $ref: '#/components/schemas/CustomEmoji'
+            description: ''
         bot:
           type: boolean
           description: Indicates that the account may perform automated actions, may
@@ -11291,6 +11297,9 @@ components:
           description: List of status IDs that are relevant to the warning. When action
             is mark_statuses_as_sensitive or delete_statuses, those are the affected
             statuses.
+          items:
+            type: string
+            description: ''
         target_account:
           $ref: '#/components/schemas/Account'
           description: Account against which a moderation decision has been taken.
@@ -11401,6 +11410,9 @@ components:
         data:
           type: array
           description: Retention data for users who registered during the given period.
+          items:
+            $ref: '#/components/schemas/CohortData'
+            description: ''
     Data:
       type: object
       properties:
@@ -11429,6 +11441,9 @@ components:
         data:
           type: array
           description: The data available for the requested dimension.
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
     AdminDomainAllow:
       type: object
       properties:
@@ -11494,6 +11509,9 @@ components:
         history:
           type: array
           description: Usage statistics for given days (typically the past week).
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
     AdminIp:
       type: object
       properties:
@@ -11555,6 +11573,9 @@ components:
           type: array
           description: The data available for the requested measure, split into daily
             buckets.
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
     AdminReport:
       type: object
       properties:
@@ -11599,9 +11620,15 @@ components:
         statuses:
           type: array
           description: Statuses attached to the report, for context.
+          items:
+            $ref: '#/components/schemas/Status'
+            description: ''
         rules:
           type: array
           description: Rules attached to the report, for context.
+          items:
+            $ref: '#/components/schemas/Rule'
+            description: ''
     AnnouncementStatus:
       type: object
       properties:
@@ -11666,18 +11693,33 @@ components:
         mentions:
           type: array
           description: Accounts mentioned in the announcement text.
+          items:
+            $ref: '#/components/schemas/AnnouncementAccount'
+            description: ''
         statuses:
           type: array
           description: Statuses linked in the announcement text.
+          items:
+            $ref: '#/components/schemas/AnnouncementStatus'
+            description: ''
         tags:
           type: array
           description: Tags linked in the announcement text.
+          items:
+            $ref: '#/components/schemas/StatusTag'
+            description: ''
         emojis:
           type: array
           description: Custom emoji used in the announcement text.
+          items:
+            $ref: '#/components/schemas/CustomEmoji'
+            description: ''
         reactions:
           type: array
           description: Emoji reactions attached to the announcement.
+          items:
+            $ref: '#/components/schemas/Reaction'
+            description: ''
     Appeal:
       type: object
       properties:
@@ -11715,9 +11757,15 @@ components:
           type: array
           description: The scopes for your application. This is the registered scopes
             string split on whitespace.
+          items:
+            type: string
+            description: ''
         redirect_uris:
           type: array
           description: The registered redirection URI(s) for your application.
+          items:
+            type: string
+            description: ''
         redirect_uri:
           type: string
           description: The registered redirection URI(s) for your application.May
@@ -11732,9 +11780,15 @@ components:
         ancestors:
           type: array
           description: Parents in the thread.
+          items:
+            $ref: '#/components/schemas/Status'
+            description: ''
         descendants:
           type: array
           description: Children in the thread.
+          items:
+            $ref: '#/components/schemas/Status'
+            description: ''
     Conversation:
       type: object
       properties:
@@ -11747,6 +11801,9 @@ components:
         accounts:
           type: array
           description: Participants in the conversation.
+          items:
+            $ref: '#/components/schemas/Account'
+            description: ''
         last_status:
           $ref: '#/components/schemas/Status'
           description: The last status in the conversation.
@@ -11814,6 +11871,9 @@ components:
         accounts:
           type: array
           description: Accounts you follow that also follow this account.
+          items:
+            $ref: '#/components/schemas/Account'
+            description: ''
     FeaturedTag:
       type: object
       properties:
@@ -11844,6 +11904,9 @@ components:
         context:
           type: array
           description: The contexts in which the filter should be applied.
+          items:
+            type: string
+            description: ''
         expires_at:
           type:
           - string
@@ -11855,9 +11918,15 @@ components:
         keywords:
           type: array
           description: The keywords grouped under this filter.
+          items:
+            $ref: '#/components/schemas/FilterKeyword'
+            description: ''
         statuses:
           type: array
           description: The statuses grouped under this filter.
+          items:
+            $ref: '#/components/schemas/FilterStatus'
+            description: ''
     FilterKeyword:
       type: object
       properties:
@@ -11954,9 +12023,15 @@ components:
           type: array
           description: The list of available size variants for this instance configured
             icon.
+          items:
+            $ref: '#/components/schemas/InstanceIcon'
+            description: ''
         languages:
           type: array
           description: Primary languages of the website and its staff.
+          items:
+            type: string
+            description: ''
         configuration:
           $ref: '#/components/schemas/Hash'
           description: Configured values and limits for this website.
@@ -11983,6 +12058,9 @@ components:
         rules:
           type: array
           description: An itemized list of rules for this website.
+          items:
+            $ref: '#/components/schemas/Rule'
+            description: ''
     List:
       type: object
       properties:
@@ -12195,9 +12273,15 @@ components:
         options:
           type: array
           description: Possible answers for the poll.
+          items:
+            $ref: '#/components/schemas/PollOption'
+            description: ''
         emojis:
           type: array
           description: Custom emoji to be used for rendering poll options.
+          items:
+            $ref: '#/components/schemas/CustomEmoji'
+            description: ''
         voted:
           type: boolean
           description: When called with a user token, has the authorized user voted?
@@ -12205,6 +12289,9 @@ components:
           type: array
           description: When called with a user token, which options has the authorized
             user chosen? Contains an array of index values for options.
+          items:
+            type: integer
+            description: ''
     Preferences:
       type: object
       properties:
@@ -12232,6 +12319,9 @@ components:
         history:
           type: array
           description: Usage statistics for given days (typically the past week).
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
     PreviewCard:
       type: object
       properties:
@@ -12250,6 +12340,9 @@ components:
         authors:
           type: array
           description: Fediverse account of the authors of the original resource.
+          items:
+            $ref: '#/components/schemas/PreviewCardAuthor'
+            description: ''
         author_name:
           type: string
           description: The author of the original resource. Deprecated since 4.3.0,
@@ -12340,6 +12433,9 @@ components:
         languages:
           type: array
           description: Which languages are you following from this user?
+          items:
+            type: string
+            description: ''
         followed_by:
           type: boolean
           description: Are you followed by this user?
@@ -12486,18 +12582,30 @@ components:
         media_attachments:
           type: array
           description: Media that will be attached when the status is posted.
+          items:
+            $ref: '#/components/schemas/MediaAttachment'
+            description: ''
     Search:
       type: object
       properties:
         accounts:
           type: array
           description: Accounts which match the given query
+          items:
+            $ref: '#/components/schemas/Account'
+            description: ''
         statuses:
           type: array
           description: Statuses which match the given query
+          items:
+            $ref: '#/components/schemas/Status'
+            description: ''
         hashtags:
           type: array
           description: Hashtags which match the given query
+          items:
+            $ref: '#/components/schemas/Tag'
+            description: ''
     StatusTag:
       type: object
       properties:
@@ -12554,18 +12662,30 @@ components:
         media_attachments:
           type: array
           description: Media that is attached to this status.
+          items:
+            $ref: '#/components/schemas/MediaAttachment'
+            description: ''
         application:
           $ref: '#/components/schemas/Hash'
           description: The application used to post this status.
         mentions:
           type: array
           description: Mentions of users within the status content.
+          items:
+            $ref: '#/components/schemas/StatusMention'
+            description: ''
         tags:
           type: array
           description: Hashtags used within the status content.
+          items:
+            $ref: '#/components/schemas/StatusTag'
+            description: ''
         emojis:
           type: array
           description: Custom emoji to be used when rendering status content.
+          items:
+            $ref: '#/components/schemas/CustomEmoji'
+            description: ''
         reblogs_count:
           type: integer
           description: How many boosts this status has received.
@@ -12641,6 +12761,9 @@ components:
           type: array
           description: 'If the current token has an authorized user: The filter and
             keywords that matched this status.'
+          items:
+            $ref: '#/components/schemas/FilterResult'
+            description: ''
     StatusEdit:
       type: object
       properties:
@@ -12667,9 +12790,15 @@ components:
         media_attachments:
           type: array
           description: The current state of the media attachments at this revision.
+          items:
+            $ref: '#/components/schemas/MediaAttachment'
+            description: ''
         emojis:
           type: array
           description: Any custom emoji that are used in the current revision.
+          items:
+            $ref: '#/components/schemas/CustomEmoji'
+            description: ''
     StatusSource:
       type: object
       properties:
@@ -12693,6 +12822,9 @@ components:
           type: array
           description: A list of reasons this account is being suggested. This replaces
             source
+          items:
+            type: string
+            description: ''
         account:
           $ref: '#/components/schemas/Account'
           description: The account being recommended to follow.
@@ -12724,6 +12856,9 @@ components:
         history:
           type: array
           description: Usage statistics for given days (typically the past week).
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
         following:
           type: boolean
           description: "Whether the current token\u2019s authorized user is following\
@@ -12767,6 +12902,9 @@ components:
         options:
           type: array
           description: The translated poll options.
+          items:
+            $ref: '#/components/schemas/TranslationPollOption'
+            description: ''
     Translation:
       type: object
       properties:
@@ -12782,6 +12920,9 @@ components:
         media_attachments:
           type: array
           description: The translated media descriptions of the status.
+          items:
+            $ref: '#/components/schemas/TranslationAttachment'
+            description: ''
         detected_source_language:
           type: string
           description: The language of the source text, as auto-detected by the machine
@@ -12801,6 +12942,9 @@ components:
         context:
           type: array
           description: The contexts in which the filter should be applied.
+          items:
+            type: string
+            description: ''
         expires_at:
           type:
           - string
@@ -12849,6 +12993,9 @@ components:
         languages:
           type: array
           description: Primary languages of the website and its staff.
+          items:
+            type: string
+            description: ''
         registrations:
           type: boolean
           description: Whether registrations are enabled.
@@ -12867,6 +13014,9 @@ components:
         rules:
           type: array
           description: An itemized list of rules for this website.
+          items:
+            $ref: '#/components/schemas/Rule'
+            description: ''
     V1NotificationPolicy:
       type: object
       properties:

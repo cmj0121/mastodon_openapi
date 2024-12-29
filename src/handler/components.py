@@ -2,6 +2,8 @@ import re
 
 import requests
 from bs4 import BeautifulSoup
+from bs4.element import NavigableString
+from bs4.element import Tag
 from loguru import logger
 
 from src.handler.utils import canonicalize
@@ -100,8 +102,10 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
     for attr in reversed(attrs):
         entity_dom = attr.find("a")
         if not (entity_dom.text == "Attributes" or entity_dom.text.endswith("attributes")):
-            logger.debug(f"skip the handle component {entity_dom.text=}")
+            logger.info(f"skip the handle component {entity_dom.text=}")
             continue
+
+        logger.info(f"processing component {entity_dom.text=}")
 
         schema_object = SchemaObject(type="object", properties={})
         attrs_dom = entity_dom.parent.find_all("li")
@@ -112,34 +116,7 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
             attr_id = attr_dom.find("a").get("href")[1:]
             attr_name = attr_dom.find("code").text
 
-            text = soup.find("h3", {"id": attr_id}).find_next("p").text
-            matched = re.search(
-                r"Description:([\s\S]*?)Type: (nullable )?([\w:]+)(?: .*?)?(?:Version history:)?(.+?)", text
-            )
-            if not matched:
-                raise ValueError(f"failed to find the attribute {text=}")
-
-            desc, nullable, typ, version = matched.groups()
-            if typ.endswith("Version"):
-                typ = typ[:-7]
-
-            match typ:
-                case "String4":
-                    typ = "String"
-
-            if typ.lower() in BuildInType:
-                prop = SchemaObject(
-                    type=[typ.lower(), "null"] if nullable else typ.lower(),
-                    description=desc.strip(),
-                )
-            else:
-                prop = ReferenceObject.model_validate(
-                    {
-                        "$ref": f"#/components/schemas/{canonicalize(typ)}",
-                        "description": desc.strip(),
-                    }
-                )
-
+            prop = handle_parameter(attr_name, soup.find("h3", {"id": attr_id}).find_next("p"))
             schema_object.properties[attr_name] = prop
 
         match entity_dom.text:
@@ -178,3 +155,76 @@ def post_handle_components(component: Component) -> Component:
             )
 
     return component
+
+
+def handle_parameter(name, tag: Tag) -> SchemaObject | ReferenceObject:
+    desc, nullable, typ, items, version = "", False, "", None, ""
+    for strong in tag.find_all("strong"):
+        match text := strong.text:
+            case "Description:":
+                desc = re.search(r"Description:([\s\S]*?)Type: ", tag.text).group(1)
+                desc = desc.strip()
+            case "Type:":
+                candidate = strong.next_sibling.strip()
+                candidate = strong.next_sibling
+                while True:
+                    if isinstance(candidate, NavigableString):
+                        text = candidate.strip()
+                        if text:
+                            typ = text
+                            if typ == "Array of":
+                                items = candidate.next_sibling.text
+
+                            break
+                    elif isinstance(candidate, Tag):
+                        if candidate.name == "a":
+                            typ = candidate.text
+                            break
+                        elif candidate.name == "span" and candidate["class"] == ["api-method-parameter-required"]:
+                            nullable = True
+
+                    candidate = candidate.next_sibling
+            case "Version history:":
+                version = strong.next_sibling.next_sibling.text.strip()
+            case _:
+                raise ValueError(f"unknown tag {text=}")
+
+    if typ == "Array of":
+        typ = "array"
+    if typ == "Array of Strings":
+        typ = "array"
+        items = "String"
+    elif typ.startswith("String"):
+        typ = "String"
+    elif typ.startswith("Integer"):
+        typ = "Integer"
+    elif typ.startswith("Number"):
+        typ = "Number"
+    elif typ.startswith("Array of"):
+        items = typ.split()[2]
+        typ = "array"
+
+    logger.info(f"handle parameter {name}: {nullable=} {typ=} {version=}")
+    return handle_schema(typ, desc, nullable, items)
+
+
+def handle_schema(
+    typ: str, desc: str, nullable: bool = False, items: str | None = None
+) -> ReferenceObject | SchemaObject:
+    if typ.lower() in BuildInType:
+        schema = SchemaObject(
+            type=[typ.lower(), "null"] if nullable else typ.lower(),
+            description=desc.strip(),
+        )
+
+        if schema.type == "array":
+            schema.items = handle_schema(items, "")
+
+        return schema
+    else:
+        return ReferenceObject.model_validate(
+            {
+                "$ref": f"#/components/schemas/{canonicalize(typ)}",
+                "description": desc.strip(),
+            }
+        )
