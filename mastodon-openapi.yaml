@@ -10667,6 +10667,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Hash'
+    History:
+      description: Usage statistics for given days
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/History'
     Field:
       description: ''
       content:
@@ -11149,6 +11155,15 @@ components:
     Hash:
       type: object
       additionalProperties: true
+    History:
+      type: object
+      properties:
+        key:
+          type: string
+        human_key:
+          type: string
+        value:
+          type: string
     Field:
       type: object
       properties:
@@ -11444,8 +11459,14 @@ components:
           type: array
           description: The data available for the requested dimension.
           items:
-            $ref: '#/components/schemas/Hash'
-            description: ''
+            type: object
+            properties:
+              key:
+                type: string
+              human_key:
+                type: string
+              value:
+                type: string
     AdminDomainAllow:
       type: object
       properties:
@@ -11512,7 +11533,7 @@ components:
           type: array
           description: Usage statistics for given days (typically the past week).
           items:
-            $ref: '#/components/schemas/Hash'
+            $ref: '#/components/schemas/History'
             description: ''
     AdminIp:
       type: object
@@ -11576,8 +11597,12 @@ components:
           description: The data available for the requested measure, split into daily
             buckets.
           items:
-            $ref: '#/components/schemas/Hash'
-            description: ''
+            type: object
+            properties:
+              date:
+                type: string
+              value:
+                type: string
     AdminReport:
       type: object
       properties:
@@ -11953,11 +11978,17 @@ components:
           - array
           - 'null'
           description: The keyword within the filter that was matched.
+          items:
+            type: string
+            description: ''
         status_matches:
           type:
           - array
           - 'null'
           description: The status ID within the filter that was matched.
+          items:
+            type: string
+            description: ''
     FilterStatus:
       type: object
       properties:
@@ -12322,7 +12353,7 @@ components:
           type: array
           description: Usage statistics for given days (typically the past week).
           items:
-            $ref: '#/components/schemas/Hash'
+            $ref: '#/components/schemas/History'
             description: ''
     PreviewCard:
       type: object
@@ -12527,12 +12558,18 @@ components:
           - 'null'
           description: IDs of statuses that have been attached to this report for
             additional context.
+          items:
+            type: string
+            description: ''
         rule_ids:
           type:
           - array
           - 'null'
           description: IDs of the rules that have been cited as a violation by this
             report.
+          items:
+            type: string
+            description: ''
         target_account:
           $ref: '#/components/schemas/Account'
           description: The account that was reported.
@@ -12859,7 +12896,7 @@ components:
           type: array
           description: Usage statistics for given days (typically the past week).
           items:
-            $ref: '#/components/schemas/Hash'
+            $ref: '#/components/schemas/History'
             description: ''
         following:
           type: boolean
