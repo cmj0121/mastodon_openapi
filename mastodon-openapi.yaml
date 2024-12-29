@@ -10658,13 +10658,13 @@ components:
     JSON:
       description: Represents an JSON object.
       content:
-        text/event-stream:
+        application/json:
           schema:
             $ref: '#/components/schemas/JSON'
     Hash:
       description: Represents an JSON/Hash object.
       content:
-        text/event-stream:
+        application/json:
           schema:
             $ref: '#/components/schemas/Hash'
     Field:
@@ -11145,8 +11145,10 @@ components:
       type: string
     JSON:
       type: object
+      additionalProperties: true
     Hash:
       type: object
+      additionalProperties: true
     Field:
       type: object
       properties:
