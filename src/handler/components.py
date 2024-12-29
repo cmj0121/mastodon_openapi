@@ -74,6 +74,23 @@ def handle_components(link: str, html: str) -> Component:
                 )
             },
         ),
+        "History": ResponseObject(
+            description="Usage statistics for given days",
+            content={
+                "application/json": MediaTypeObject.model_validate(
+                    {
+                        "schema": SchemaObject(
+                            type="object",
+                            properties={
+                                "key": SchemaObject(type="string"),
+                                "human_key": SchemaObject(type="string"),
+                                "value": SchemaObject(type="string"),
+                            },
+                        )
+                    }
+                ),
+            },
+        ),
     }
     soup = BeautifulSoup(html, "html.parser")
 
@@ -156,6 +173,30 @@ def post_handle_components(component: Component) -> Component:
                 {"$ref": f"#/components/schemas/{canonicalize(key)}"}
             )
 
+    # Case 1: convert the Array of Hash to History
+    for schema in {"AdminEmailDomainBlock", "Tag", "TrendsLink"}:
+        history_item = component.schemas[schema].properties["history"].items
+        history_item.ref = "#/components/schemas/History"
+
+    # Case 2: convert the Array of Hash in AdminDimension
+    component.schemas["AdminDimension"].properties["data"].items = SchemaObject(
+        type="object",
+        properties={
+            "key": SchemaObject(type="string"),
+            "human_key": SchemaObject(type="string"),
+            "value": SchemaObject(type="string"),
+        },
+    )
+
+    # Case 3: convert the Array of Hash in AdminMeasure
+    component.schemas["AdminMeasure"].properties["data"].items = SchemaObject(
+        type="object",
+        properties={
+            "date": SchemaObject(type="string"),
+            "value": SchemaObject(type="string"),
+        },
+    )
+
     return component
 
 
@@ -191,21 +232,7 @@ def handle_parameter(name, tag: Tag) -> SchemaObject | ReferenceObject:
             case _:
                 raise ValueError(f"unknown tag {text=}")
 
-    if typ == "Array of":
-        typ = "array"
-    if typ == "Array of Strings":
-        typ = "array"
-        items = "String"
-    elif typ.startswith("String"):
-        typ = "String"
-    elif typ.startswith("Integer"):
-        typ = "Integer"
-    elif typ.startswith("Number"):
-        typ = "Number"
-    elif typ.startswith("Array of"):
-        items = typ.split()[2]
-        typ = "array"
-
+    typ, items = handle_type_str(typ, items)
     logger.info(f"handle parameter {name}: {nullable=} {typ=} {version=}")
     return handle_schema(typ, desc, nullable, items)
 
@@ -219,7 +246,7 @@ def handle_schema(
             description=desc.strip(),
         )
 
-        if schema.type == "array":
+        if typ.lower() == "array":
             schema.items = handle_schema(items, "")
 
         return schema
@@ -230,3 +257,22 @@ def handle_schema(
                 "description": desc.strip(),
             }
         )
+
+
+def handle_type_str(text: str, item: str | None = None) -> tuple[str, str | None]:
+    if text == "Array of":
+        return "array", item
+    if text == "Array of Strings":
+        return "array", "String"
+    elif text.startswith("String"):
+        return "String", None
+    elif text.startswith("Integer"):
+        return "Integer", None
+    elif text.startswith("Number"):
+        return "Number", None
+    elif text.startswith("Array of"):
+        items = text.split()[2]
+        text = "array"
+        return "array", handle_type_str(items)[0]
+
+    return text, item
