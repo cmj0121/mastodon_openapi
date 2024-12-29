@@ -51,10 +51,11 @@ def handle_components(link: str, html: str) -> Component:
         "JSON": ResponseObject(
             description="Represents an JSON object.",
             content={
-                "text/event-stream": MediaTypeObject.model_validate(
+                "application/json": MediaTypeObject.model_validate(
                     {
                         "schema": SchemaObject(
                             type="object",
+                            additionalProperties=True,
                         )
                     }
                 )
@@ -63,10 +64,11 @@ def handle_components(link: str, html: str) -> Component:
         "Hash": ResponseObject(
             description="Represents an JSON/Hash object.",
             content={
-                "text/event-stream": MediaTypeObject.model_validate(
+                "application/json": MediaTypeObject.model_validate(
                     {
                         "schema": SchemaObject(
                             type="object",
+                            additionalProperties=True,
                         )
                     }
                 )

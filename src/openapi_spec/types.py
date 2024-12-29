@@ -34,6 +34,7 @@ class SchemaObject(BaseModel):
     description: str | None = None
     items: SchemaObject | ReferenceObject | None = None
     properties: dict[str, SchemaObject | ReferenceObject] | None = None
+    additionalProperties: bool | None = None
 
 
 class MediaTypeObject(BaseModel):
