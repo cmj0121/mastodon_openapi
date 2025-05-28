@@ -1464,6 +1464,8 @@ paths:
 
         - 3.4.0 - added details to failure response
 
+        - 4.4.0 - added date_of_birth parameter
+
 
         [Register an account](https://docs.joinmastodon.org/methods/accounts/#create)'
       parameters: []
@@ -1571,15 +1573,16 @@ paths:
         \n- 1.1.1 - added\n- 2.3.0 - added locked parameter\n- 2.4.0 - added source[privacy,sensitive]\
         \ parameters\n- 2.4.2 - added source[language] parameter\n- 2.7.0 - added\
         \ discoverable parameter\n- 4.1.0 - added hide_collections parameter\n- 4.2.0\
-        \ - added indexable parameter\n\n[Update account credentials](https://docs.joinmastodon.org/methods/accounts/#update_credentials)"
+        \ - added indexable parameter4.4.0 (mastodon API version 3) - added attribution_domains\
+        \ parameter\n\n[Update account credentials](https://docs.joinmastodon.org/methods/accounts/#update_credentials)"
       parameters: []
       responses:
         200:
-          description: "the user\u2019s own Account with source attribute"
+          description: CredentialAccount
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                $ref: '#/components/schemas/CredentialAccount'
         401:
           description: Token does not have an authorized user
           content:
@@ -2689,7 +2692,8 @@ paths:
         ## Version history
 
 
-        - 4.0.0 - added
+        - 4.0.0 - added4.4.0 (mastodon API version 5) - added blur value to filter_action
+        attribute
 
 
         [Update a filter](https://docs.joinmastodon.org/methods/filters/#update)'
@@ -2780,7 +2784,8 @@ paths:
         ## Version history
 
 
-        - 4.0.0 - added
+        - 4.0.0 - added4.4.0 (mastodon API version 5) - added blur value to filter_action
+        attribute
 
 
         [Create a filter](https://docs.joinmastodon.org/methods/filters/#create)'
@@ -3798,11 +3803,19 @@ paths:
 
         - 0.0.0 - added
 
-        - 2.9.0 - return source properties, for use with delete and redraft
+        - 2.9.0 - return source properties, for use with delete and redraft4.4.0 (mastodon
+        API version 4) - added delete_media optional parameter
 
 
         [Delete a status](https://docs.joinmastodon.org/methods/statuses/#delete)'
       parameters:
+      - name: delete_media
+        in: query
+        description: "Boolean. Whether to immediately delete the post\u2019s media\
+          \ attachments. If omitted or false, media attachments may be kept for approximately\
+          \ 24 hours so they can be re-used in a new post."
+        schema:
+          type: string
       - name: :id
         in: path
         description: required String. The ID of the Status in the database.
@@ -4705,6 +4718,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: "Join Mastodon \xB7 Blog \xB7 "
+      security:
+      - BearerAuth: []
+    delete:
+      tags:
+      - media
+      summary: Delete a media attachment that is not currently attached to a status.
+      description: 'Delete a media attachment that is not currently attached to a
+        status.
+
+
+        [Delete media attachment](https://docs.joinmastodon.org/methods/media/#delete)'
+      parameters:
+      - name: :id
+        in: path
+        description: required String. The ID of the MediaAttachment in the database.
+        required: true
+        schema:
+          type: string
+      responses: {}
       security:
       - BearerAuth: []
     get:
@@ -6677,14 +6709,20 @@ paths:
         Link headers containing links to the next/previous page. However, the links
         can also be constructed dynamically using query params and id values.
 
-        Notifications of type favourite, follow or reblog with the same type and the
-        same target made in a similar timeframe are given a same group_key by the
-        server, and querying this endpoint will return aggregated notifications, with
-        only one object per group_key. Other notification types may be grouped in
-        the future. The grouped_types parameter should be used by the client to explictely
-        list the types it supports showing grouped notifications for.
+        Notifications of type favourite, follow, reblog or admin.sign_up with the
+        same type and the same target made in a similar timeframe are given a same
+        group_key by the server, and querying this endpoint will return aggregated
+        notifications, with only one object per group_key. Other notification types
+        may be grouped in the future. The grouped_types parameter should be used by
+        the client to explictely list the types it supports showing grouped notifications
+        for.
 
         Types to filter include:
+
+        ## Version history
+
+
+        - 4.4.0 - added admin.sign_up to grouped notification types
 
 
         [Get all grouped notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#get-grouped)'
@@ -6744,13 +6782,13 @@ paths:
         description: "Array of String. Restrict which notification types can be grouped.\
           \ Use this if there are notification types for which your client does not\
           \ support grouping. If omitted, the server will group notifications of all\
-          \ types it supports (currently, favourite, follow and reblog). If you do\
-          \ not want any notification grouping, use GET /api/v1/notifications instead.\
-          \ Notifications that would be grouped if not for this parameter will instead\
-          \ be returned as individual single-notification groups with a unique group_key\
-          \ that can be assumed to be of the form ungrouped-{notification_id}. Please\
-          \ note that neither the streaming API nor the individual notification APIs\
-          \ are aware of this parameter and will always include a \u201Cproper\u201D\
+          \ types it supports (currently, favourite, follow, reblog and admin.sign_up).\
+          \ If you do not want any notification grouping, use GET /api/v1/notifications\
+          \ instead. Notifications that would be grouped if not for this parameter\
+          \ will instead be returned as individual single-notification groups with\
+          \ a unique group_key that can be assumed to be of the form ungrouped-{notification_id}.\
+          \ Please note that neither the streaming API nor the individual notification\
+          \ APIs are aware of this parameter and will always include a \u201Cproper\u201D\
           \ group_key that can be different from what is returned here, meaning that\
           \ you may have to ignore group_key for such notifications that you do not\
           \ want grouped and use ungrouped-{notification_id} instead for consistency."
@@ -7538,6 +7576,8 @@ paths:
         and subscription keys will now result in an error, previously these would
         be accepted, but silently fail.
 
+        - 4.4.0 - added subscription[standard]
+
 
         [Subscribe to push notifications](https://docs.joinmastodon.org/methods/push/#create)'
       parameters: []
@@ -7594,12 +7634,15 @@ paths:
           type: string
       - name: resolve
         in: query
-        description: Boolean. Only relevant if type includes accounts. If true and
-          (a) the search query is for a remote account (e.g., someaccount@someother.server)
-          and (b) the local server does not know about the account, WebFinger is used
-          to try and resolve the account at someother.server. This provides the best
-          recall at higher latency. If false only accounts the server knows about
-          are returned.
+        description: Boolean. Only relevant if type includes accounts or if query
+          is a HTTPS URL. In the first case, if true and (a) the search query is for
+          a remote account (e.g., someaccount@someother.server) and (b) the local
+          server does not know about the account, WebFinger is used to try and resolve
+          the account at someother.server. This provides the best recall at higher
+          latency. If false, only accounts the server knows about are returned. In
+          the second case, if true, resolving the URL and returning the matching status
+          is attempted. If false, this resolving logic is circumvented and a regular
+          search is performed instead.
         schema:
           type: string
       - name: following
@@ -7718,6 +7761,73 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/JSON'
+  /api/v1/instance/terms_of_service/{:date}:
+    get:
+      tags:
+      - instance
+      summary: "Obtain the contents of this server\u2019s terms of service, for a\
+        \ specified date, if configured."
+      description: "Obtain the contents of this server\u2019s terms of service, for\
+        \ a specified date, if configured.\n## Version history\n\n- 4.4.0 - added\n\
+        \n[View a specific version of the terms of service](https://docs.joinmastodon.org/methods/instance/#terms_of_service_date)"
+      parameters:
+      - name: :date
+        in: path
+        description: required String. The effective date of the terms of service.
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: TermsOfService
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermsOfService'
+        404:
+          description: No terms of service have been configured for this instance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No terms of service have been configured for this instance.
+  /api/v1/instance/terms_of_service:
+    get:
+      tags:
+      - instance
+      summary: "Obtain the contents of this server\u2019s terms of service, if configured."
+      description: "Obtain the contents of this server\u2019s terms of service, if\
+        \ configured.\n## Version history\n\n- 4.4.0 - added\n\n[View terms of service](https://docs.joinmastodon.org/methods/instance/#terms_of_service)"
+      parameters: []
+      responses:
+        200:
+          description: TermsOfService
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TermsOfService'
+        404:
+          description: No terms of service have been configured for this instance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: No terms of service have been configured for this instance.
+  /api/v1/instance/privacy_policy:
+    get:
+      tags:
+      - instance
+      summary: "Obtain the contents of this server\u2019s privacy policy."
+      description: "Obtain the contents of this server\u2019s privacy policy.\n##\
+        \ Version history\n\n- 4.0.0 - added\n\n[View privacy policy](https://docs.joinmastodon.org/methods/instance/#privacy_policy)"
+      parameters: []
+      responses:
+        200:
+          description: PrivacyPolicy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivacyPolicy'
   /api/v1/instance/extended_description:
     get:
       tags:
@@ -10987,6 +11097,19 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/PreviewCardAuthor'
+    PrivacyPolicy:
+      description: Represents the privacy policy of the instance.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PrivacyPolicy'
+    Quote:
+      description: Represents a quote or a quote placeholder, with the current authorization
+        status.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Quote'
     Reaction:
       description: Represents an emoji reaction to an Announcement.
       content:
@@ -11039,6 +11162,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Search'
+    ShallowQuote:
+      description: Represents a quote or a quote placeholder, with the current authorization
+        status.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ShallowQuote'
     StatusTag:
       description: ''
       content:
@@ -11088,6 +11218,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Tag'
+    TermsOfService:
+      description: Represents the terms of service of the instance.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TermsOfService'
     Token:
       description: Represents an OAuth token used for authenticating with the API
         and performing actions.
@@ -11194,6 +11330,12 @@ components:
           $ref: '#/components/schemas/Hash'
           description: An extra attribute that contains source values to be used with
             API methods that verify credentials and update credentials.
+        source[attribution_domains]:
+          type: array
+          description: Domains of websites allowed to credit the account.
+          items:
+            type: string
+            description: ''
         role:
           $ref: '#/components/schemas/Role'
           description: The role assigned to the currently authorized user.
@@ -11213,6 +11355,9 @@ components:
         url:
           type: string
           description: "The location of the user\u2019s profile page."
+        uri:
+          type: string
+          description: "The user\u2019s ActivityPub actor identifier."
         display_name:
           type: string
           description: "The profile\u2019s display name."
@@ -11297,6 +11442,10 @@ components:
         following_count:
           type: integer
           description: The reported follows of this profile.
+        hide_collections:
+          type: boolean
+          description: Whether the user hides the contents of their follows and followers
+            collections.
     AccountWarning:
       type: object
       properties:
@@ -11310,7 +11459,9 @@ components:
           type: string
           description: Message from the moderator to the target account.
         status_ids:
-          type: array
+          type:
+          - array
+          - 'null'
           description: List of status IDs that are relevant to the warning. When action
             is mark_statuses_as_sensitive or delete_statuses, those are the affected
             statuses.
@@ -11412,7 +11563,7 @@ components:
           description: The percentage rate of users who registered in the specified
             period and were active for the given date bucket.
         value:
-          type: integer
+          type: string
           description: How many users registered in the specified period and were
             active for the given date bucket.
     AdminCohort:
@@ -11944,13 +12095,15 @@ components:
           description: The action to be taken when a status matches this filter.
         keywords:
           type: array
-          description: The keywords grouped under this filter.
+          description: The keywords grouped under this filter. Omitted when part of
+            a FilterResult.
           items:
             $ref: '#/components/schemas/FilterKeyword'
             description: ''
         statuses:
           type: array
-          description: The statuses grouped under this filter.
+          description: The statuses grouped under this filter. Omitted when part of
+            a FilterResult.
           items:
             $ref: '#/components/schemas/FilterStatus'
             description: ''
@@ -12032,7 +12185,7 @@ components:
       properties:
         domain:
           type: string
-          description: The domain name of the instance.
+          description: The WebFinger domain name of the instance.
         title:
           type: string
           description: The title of the website.
@@ -12068,10 +12221,6 @@ components:
         configuration:
           $ref: '#/components/schemas/Hash'
           description: Configured values and limits for this website.
-        configuration[vapid][public_key]:
-          type: string
-          description: The instances VAPID public key, used for push notifications,
-            the same as WebPushSubscription#server_key.
         registrations:
           $ref: '#/components/schemas/Hash'
           description: Information about registering for this website.
@@ -12190,7 +12339,7 @@ components:
           $ref: '#/components/schemas/Report'
           description: Report that was the object of the notification. Attached when
             type of the notification is admin.report.
-        relationship_severance_event:
+        event:
           $ref: '#/components/schemas/RelationshipSeveranceEvent'
           description: Summary of the event that caused follow relationships to be
             severed. Attached when type of the notification is severed_relationships.
@@ -12427,6 +12576,25 @@ components:
         account:
           $ref: '#/components/schemas/Account'
           description: The fediverse account of the author.
+    PrivacyPolicy:
+      type: object
+      properties:
+        updated_at:
+          type: string
+          description: A timestamp of when the privacy policy was last updated.
+        content:
+          type: string
+          description: The rendered HTML content of the privacy policy.
+    Quote:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The state of the quote.
+        status:
+          $ref: '#/components/schemas/Status'
+          description: The status being quoted, if the quote has been accepted. This
+            will be null, unless the state attribute is accepted.
     Reaction:
       type: object
       properties:
@@ -12605,6 +12773,11 @@ components:
         hint:
           type: string
           description: Longer-form description of the rule.
+        translations:
+          $ref: '#/components/schemas/Hash'
+          description: "Available translations for this rule\u2019s text and hint,\
+            \ as a Hash where keys are locale codes and values are hashes with text\
+            \ and hint keys."
     ScheduledStatus:
       type: object
       properties:
@@ -12645,6 +12818,18 @@ components:
           items:
             $ref: '#/components/schemas/Tag'
             description: ''
+    ShallowQuote:
+      type: object
+      properties:
+        state:
+          type: string
+          description: The state of the quote.
+        status_id:
+          type:
+          - string
+          - 'null'
+          description: The identifier of the status being quoted, if the quote has
+            been accepted. This will be null, unless the state attribute is accepted.
     StatusTag:
       type: object
       properties:
@@ -12776,6 +12961,9 @@ components:
           - string
           - 'null'
           description: Timestamp of when the status was last edited.
+        quote:
+          $ref: '#/components/schemas/'
+          description: Information about the status being quoted, if any*
         favourited:
           type: boolean
           description: 'If the current token has an authorized user: Have you favourited
@@ -12838,6 +13026,9 @@ components:
           items:
             $ref: '#/components/schemas/CustomEmoji'
             description: ''
+        quote:
+          $ref: '#/components/schemas/'
+          description: Information about the status being quoted, if any*
     StatusSource:
       type: object
       properties:
@@ -12902,6 +13093,24 @@ components:
           type: boolean
           description: "Whether the current token\u2019s authorized user is following\
             \ this tag."
+    TermsOfService:
+      type: object
+      properties:
+        effective_date:
+          type: string
+          description: The date these terms of service are coming or have come in
+            effect.
+        effective:
+          type: boolean
+          description: Whether these terms of service are currently in effect.
+        content:
+          type: string
+          description: The rendered HTML content of the terms of service.
+        succeeded_by:
+          type:
+          - string
+          - 'null'
+          description: If there are newer terms of service, their effective date.
     Token:
       type: object
       properties:
@@ -13002,7 +13211,7 @@ components:
       properties:
         uri:
           type: string
-          description: The domain name of the instance.
+          description: The WebFinger domain name of the instance (not a URI/URL).
         title:
           type: string
           description: The title of the website.
@@ -13096,6 +13305,11 @@ components:
         endpoint:
           type: string
           description: Where push alerts will be sent to.
+        standard:
+          type: boolean
+          description: If the push messages follow the standardized specifications
+            (RFC8030+RFC8291+RFC8292). Else they follow a legacy version of the specifications
+            (4th draft of RFC8291 and 1st draft of RFC8292).
         server_key:
           type: string
           description: "The streaming server\u2019s VAPID key."
