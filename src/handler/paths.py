@@ -35,7 +35,7 @@ def handle_paths(link: str, html: str) -> Paths:
     soup = BeautifulSoup(html, "html.parser")
     methods = soup.find_all("a", href=lambda href: href and href.startswith("/methods/"))
     for method in methods:
-        method_link = f'{link}{method["href"]}'
+        method_link = f"{link}{method['href']}"
         for path, path_item in handle_path_item(method.text, method_link).items():
             spec[path] = path_item
 
@@ -67,7 +67,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
     for method_dom in reversed(methods):
         index = content.index(method_dom)
-        logger.debug(f"processing #{index=} methods")
+        logger.info(f"processing #{index=} methods")
 
         code = method_dom.find_next("code", class_="language-http", attrs={"data-lang": "http"})
         if code:
@@ -87,7 +87,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                 deprecated = method_dom.find("span", class_="api-method-parameter-deprecated", string="deprecated")
                 operation, response_object = handle_operation(code)
                 # add the method link to the operation description
-                operation.description += f'\n\n[{method_dom.text.strip()}]({link}#{method_dom["id"]})'
+                operation.description += f"\n\n[{method_dom.text.strip()}]({link}#{method_dom['id']})"
                 operation.tags = [tag]
                 operation.deprecated = True if deprecated else None
 
@@ -137,10 +137,11 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                 spec[endpoint] = spec[endpoint] if endpoint in spec else PathItem({})
                 spec[endpoint].root[method.lower()] = operation
 
-        # extract the content of the method
-        while len(content) > index + 1:
-            elm = content.contents[index + 1]
-            elm.extract()
+        # # extract the content of the method
+        # logger.info(f"removed #{index} ~ {len(content)} elements from the content")
+        # while len(content) > index + 1:
+        #     elm = content.contents[index + 1]
+        #     elm.extract()
 
     return spec
 
