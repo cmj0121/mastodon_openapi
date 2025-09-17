@@ -18,6 +18,18 @@ build: $(VENV)		# build the binary/library
 test: $(VENV)		# run the tests
 	poetry run pytest
 
+test-sync:			# download the test HTML
+	wget https://docs.joinmastodon.org/methods/accounts/              -O src/tests/html/api_accounts.html
+	wget https://docs.joinmastodon.org/methods/admin/                 -O src/tests/html/api_admin.html
+	wget https://docs.joinmastodon.org/methods/apps/                  -O src/tests/html/api_apps.html
+	wget https://docs.joinmastodon.org/methods/bookmarks/             -O src/tests/html/api_bookmarks.html
+	wget https://docs.joinmastodon.org/methods/filters/               -O src/tests/html/api_filters.html
+	wget https://docs.joinmastodon.org/methods/grouped_notifications/ -O src/tests/html/api_grouped_notifications.html
+	wget https://docs.joinmastodon.org/methods/instance/              -O src/tests/html/api_instance.html
+	wget https://docs.joinmastodon.org/methods/admin/ip_blocks/       -O src/tests/html/api_ip_blocks.html
+	wget https://docs.joinmastodon.org/entities/Account/              -O src/tests/html/component_account.html
+	wget https://docs.joinmastodon.org/entities/Admin_Account/		  -O src/tests/html/component_admin_account.html
+
 run: 				# run the Swagger UI
 	docker run \
 		-p 8080:8080 \
