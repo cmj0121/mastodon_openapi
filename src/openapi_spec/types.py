@@ -11,6 +11,7 @@ from pydantic import RootModel
 class BuildInType(StrEnum):
     boolean = auto()
     integer = auto()
+    float = auto()
     number = auto()
     string = auto()
     array = auto()

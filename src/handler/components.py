@@ -200,7 +200,7 @@ def post_handle_components(component: Component) -> Component:
 
 def handle_parameter(name, tag: Tag) -> SchemaObject | ReferenceObject:
     desc, nullable, typ, items, version = "", False, "", None, ""
-    for strong in tag.find_all("strong"):
+    for strong in tag.find_all(["strong", "em"]):
         match text := strong.text:
             case "Description:":
                 desc = re.search(r"Description:([\s\S]*?)Type: ", tag.text).group(1)
@@ -248,6 +248,11 @@ def handle_schema(
             schema.items = handle_schema(items, "")
 
         return schema
+    elif typ.lower() == "null":
+        return SchemaObject(type="null", description=desc.strip())
+    elif typ.lower().endswith("or null"):
+        typ = typ[: -len(" or null")]
+        return handle_schema(typ, desc, True, items)
     else:
         return ReferenceObject.model_validate(
             {

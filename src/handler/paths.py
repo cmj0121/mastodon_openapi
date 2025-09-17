@@ -339,6 +339,8 @@ def parse_schema_object(text: str) -> SchemaObject:
         )
     elif "Status with source text and poll or media_attachments" == text:
         schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Status"})
+    elif "Health status" == text:
+        schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Hash"})
     elif text.lower() in BuildInType:
         schema_object = SchemaObject(type=canonicalize(text.lower()))
     else:
