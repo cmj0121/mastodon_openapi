@@ -96,7 +96,7 @@ def handle_components(link: str, html: str) -> Component:
 
     entities = soup.find_all("a", href=lambda href: href and href.startswith("/entities/"))
     for entity in entities:
-        entity_link = f'{link}{entity["href"]}'
+        entity_link = f"{link}{entity['href']}"
         spec.update(handle_component(entity_link))
 
     component = Component(responses=spec, securitySchemes=default_security_scheme())
@@ -115,30 +115,28 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
     spec = {}
     soup = BeautifulSoup(response.text, "html.parser")
 
-    toc = soup.find("nav", {"id": "TableOfContents"})
-    attrs = toc.find_next("ul").find_next("li").find_next("ul").findChildren("li", recursive=False)
+    content = soup.find("div", class_="e-content")
+    parts = list(content.children)
+    index = [content.index(dom) for dom in content.find_all("h2", recursive=False)] + [len(parts) - 1]
+    attrs = [parts[pos : index[idx + 1]] for idx, pos in enumerate(index[:-1])]
 
-    for attr in reversed(attrs):
-        entity_dom = attr.find("a")
-        if not (entity_dom.text == "Attributes" or entity_dom.text.endswith("attributes")):
-            logger.info(f"skip the handle component {entity_dom.text=}")
+    for attr, *columns in reversed(attrs):
+        name = attr.find("span", class_="heading__text").text
+        if not (name == "Attributes" or name.endswith("attributes")):
+            logger.debug(f"skip the handle component {name=}")
             continue
 
-        logger.info(f"processing component {entity_dom.text=}")
-
+        logger.info(f"processing component {name=}")
         schema_object = SchemaObject(type="object", properties={})
-        attrs_dom = entity_dom.parent.find_all("li")
+        for column in columns:
+            if not isinstance(column, Tag) or not column.find("span", class_="heading__text"):
+                continue
 
-        for attr_dom in attrs_dom:
-            logger.debug(f"processing component {attr_dom.text=}")
-
-            attr_id = attr_dom.find("a").get("href")[1:]
-            attr_name = attr_dom.find("code").text
-
-            prop = handle_parameter(attr_name, soup.find("h3", {"id": attr_id}).find_next("p"))
+            attr_name = column.find("code").text
+            prop = handle_parameter(attr_name, column.find_next("p"))
             schema_object.properties[attr_name] = prop
 
-        match entity_dom.text:
+        match name:
             case "Attributes":
                 main_resp_dom = soup.find("h1")
                 main_desc_dom = main_resp_dom.find_next("p")
@@ -146,9 +144,9 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
                 name = main_resp_dom.text
                 desc = main_desc_dom.text
             case _:
-                matched = re.search(r"^([\w:]+?) (?:entity )?attributes", entity_dom.text)
+                matched = re.search(r"^([\w:]+?) (?:entity )?attributes", name)
                 if not matched:
-                    raise ValueError(f"cannot find the entity name {entity_dom.text=}")
+                    raise ValueError(f"cannot find the entity name {name=}")
 
                 (name,) = matched.groups()
                 desc = ""

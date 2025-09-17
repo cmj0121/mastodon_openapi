@@ -54,88 +54,81 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
     spec = {}
     soup = BeautifulSoup(response.text, "html.parser")
 
-    table = soup.find("nav", attrs={"id": "TableOfContents"})
-    if not table:
-        logger.info(f"no table of content found in {link=}")
+    content = soup.find("div", class_="e-content")
+    if not content:
+        logger.warning(f"no content found in {link=}")
         return spec
 
-    content_id = [link["href"][1:] for link in table.find_all("a", href=True)]
+    methods = content.find_all("code", class_="language-http", attrs={"data-lang": "http"})
 
-    content = table.find_next("div", {"class": "e-content"})
-    methods = [content.find("h3" if tag == "filters" else "h2", {"id": id}) for id in content_id]
-    methods = [method for method in methods if method]
+    for method_dom in methods:
+        subject = method_dom.find_previous("h3" if tag == "filters" else "h2", class_="heading")
+        matched = re.search(r"(\w+) (/\S+)(?: HTTP/1.1)?", method_dom.text)
+        if not matched:
+            logger.warning(f"no method found in {method_dom.text=}")
+            continue
 
-    for method_dom in reversed(methods):
-        index = content.index(method_dom)
-        logger.info(f"processing #{index=} methods")
+        method, endpoint = matched.groups()
+        endpoint = canonicalize_path(endpoint)
 
-        code = method_dom.find_next("code", class_="language-http", attrs={"data-lang": "http"})
-        if code:
-            logger.debug(f"processing {code.text=} on {method_dom.text=}")
-            matched = re.search(r"(\w+) (/\S+)(?: HTTP/1.1)?", code.text)
+        removed = subject.find("span", class_="api-method-parameter-removed", string="removed")
+        deprecated = subject.find("span", class_="api-method-parameter-deprecated", string="deprecated")
+        if removed:
+            continue
 
-            if matched:
-                method, endpoint = matched.groups()
-                endpoint = canonicalize_path(endpoint)
-                logger.info(f"processing [{method}] {endpoint=}")
+        logger.info(f"process {subject.text.strip()}: [{method}] {endpoint=} {removed=} {deprecated=}")
 
-                removed = method_dom.find("span", class_="api-method-parameter-removed", string="removed")
-                if removed:
-                    logger.info(f"[{method}] {endpoint} has been removed")
-                    continue
+        operation, response_object = handle_operation(method_dom)
+        # add the method link to the operation description
+        operation.description += f"\n\n[{subject.text.strip()}]({link}#{subject['id']})"
+        operation.tags = [tag]
+        operation.deprecated = True if deprecated else None
 
-                deprecated = method_dom.find("span", class_="api-method-parameter-deprecated", string="deprecated")
-                operation, response_object = handle_operation(code)
-                # add the method link to the operation description
-                operation.description += f"\n\n[{method_dom.text.strip()}]({link}#{method_dom['id']})"
-                operation.tags = [tag]
-                operation.deprecated = True if deprecated else None
-
-                if endpoint == "/api/v1/instance/activity" and method == "GET":
-                    response_object = ResponseObject(
-                        description="Array of Hash",
-                        content={
-                            "application/json": MediaTypeObject.model_validate(
-                                {
-                                    "schema": SchemaObject(
-                                        type="array",
-                                        items=SchemaObject(
-                                            type="object",
-                                            properties={
-                                                "week": SchemaObject(type="string"),
-                                                "statuses": SchemaObject(type="string"),
-                                                "logins": SchemaObject(type="string"),
-                                                "registrations": SchemaObject(type="string"),
-                                            },
-                                        ),
-                                    )
-                                }
-                            ),
-                        },
-                    )
-
-                match tag:
-                    case "streaming":
-                        ref = ReferenceObject.model_validate(
-                            {
-                                "$ref": "#/components/schemas/Streaming",
-                                "description": "The streaming response.",
-                            }
-                        )
-                        streaming_response = ResponseObject(
-                            description="The streaming response.",
-                            content={
-                                "text/event-stream": MediaTypeObject.model_validate(
-                                    {"schema": ref},
+        if endpoint == "/api/v1/instance/activity" and method == "GET":
+            response_object = ResponseObject(
+                description="Array of Hash",
+                content={
+                    "application/json": MediaTypeObject.model_validate(
+                        {
+                            "schema": SchemaObject(
+                                type="array",
+                                items=SchemaObject(
+                                    type="object",
+                                    properties={
+                                        "week": SchemaObject(type="string"),
+                                        "statuses": SchemaObject(type="string"),
+                                        "logins": SchemaObject(type="string"),
+                                        "registrations": SchemaObject(type="string"),
+                                    },
                                 ),
-                            },
-                        )
-                        operation.responses = Responses({200: streaming_response})
-                    case _:
-                        operation.responses = handle_response(method_dom, response_object)
+                            )
+                        }
+                    ),
+                },
+            )
 
-                spec[endpoint] = spec[endpoint] if endpoint in spec else PathItem({})
-                spec[endpoint].root[method.lower()] = operation
+        match tag:
+            case "streaming":
+                ref = ReferenceObject.model_validate(
+                    {
+                        "$ref": "#/components/schemas/Streaming",
+                        "description": "The streaming response.",
+                    }
+                )
+                streaming_response = ResponseObject(
+                    description="The streaming response.",
+                    content={
+                        "text/event-stream": MediaTypeObject.model_validate(
+                            {"schema": ref},
+                        ),
+                    },
+                )
+                operation.responses = Responses({200: streaming_response})
+            case _:
+                operation.responses = handle_response(method_dom, response_object)
+
+        spec[endpoint] = spec[endpoint] if endpoint in spec else PathItem({})
+        spec[endpoint].root[method.lower()] = operation
 
         # # extract the content of the method
         # logger.info(f"removed #{index} ~ {len(content)} elements from the content")
