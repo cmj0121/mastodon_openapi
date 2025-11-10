@@ -9,7 +9,7 @@ from src.openapi_spec import SchemaObject
 
 class TestHandlePaths:
     @responses.activate
-    @pytest.mark.parametrize("app", ["apps", "bookmarks", "admin", "filters"])
+    @pytest.mark.parametrize("app", ["apps", "bookmarks", "admin", "filters", "async_refreshes"])
     def test_handle_path_item(self, load_api_html_fn, app):
         link = f"https://docs.joinmastodon.org/methods/{app}/"
         load_api_html_fn(app)

@@ -2352,11 +2352,14 @@ paths:
           type: string
       responses:
         200:
-          description: Account
+          description: Array of Account
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
+                type: array
+                description: Array of Account
+                items:
+                  $ref: '#/components/schemas/Account'
         401:
           description: Invalid or missing Authorization header
           content:
@@ -5224,6 +5227,76 @@ paths:
                 description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
+  /api/v1_alpha/async_refreshes/{:id}:
+    get:
+      tags:
+      - async_refreshes
+      summary: Sometimes an API request might not return the expected results or not
+        all possible results as either a background job is already running to (re-)create
+        these results or the request triggers a background job to create or fetch
+        results.
+      description: 'Sometimes an API request might not return the expected results
+        or not all possible results as either a background job is already running
+        to (re-)create these results or the request triggers a background job to create
+        or fetch results.
+
+        Examples of this are timelines that need to be re-created (which takes some
+        time) and search or other requests that trigger fetching additional results
+        from remote servers in the background.
+
+        In all of these cases, the API response MAY include an additional header:
+
+        The retry key includes a number of second the client SHOULD at least wait
+        until retrying the same endpoint OR querying this one.
+
+        The key result_count is optional. If present it includes a number of results
+        that have already been fetched as part of this ongoing async refresh.
+
+        Using the id, the client can query this endpoint here to get the current status
+        of this async refresh.
+
+        The status of an async refresh is either running or finished. For some async
+        refreshes, like a timeline re-generation, this information is sufficient to
+        decide to either wait some more or refresh the timeline. Other kinds of async
+        refreshes may optionally include a key result_count that includes a number
+        of new results already generated or fetched. Depending on this number, the
+        client can decide to refetch the resource, wait some more, or do nothing.
+        I.e. a finished job with a result_count of 0 means that the job has finished
+        but yielded nothing new. Refreshing is not necessary in this case.
+
+        Please note that the asynchronous nature of background jobs can lead to race
+        conditions. Also the fact that some async refreshes might be user-agnostic
+        while the fetched data is not, might mean that while new data is fetched,
+        it will not be suitable for the current user. For example a background could
+        be triggered to fetch new replies to a post. New replies could exist but the
+        current usr might have blocked their authors.
+
+        For those reasons the AsyncRefresh can only ever serve as an indicator of
+        when it could be worthwile for a client to request new data. In the general
+        case there is no guarantee that new data will be served.
+
+        ## Version history
+
+
+        - 4.4.0 - added
+
+
+        [Get Status of Async Refresh](https://docs.joinmastodon.org/methods/async_refreshes/#show)'
+      parameters: []
+      responses:
+        200:
+          description: AsyncRefresh
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AsyncRefresh'
+        404:
+          description: "Last updated October 17, 2025 \xB7 Improve this page"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: "Last updated October 17, 2025 \xB7 Improve this page"
   /api/v1/profile/avatar:
     delete:
       tags:
@@ -5291,10 +5364,8 @@ paths:
 
         - 2.7.0 - scheduled_at added
 
-        - 2.8.0 - poll added
-
-        4.5.0 (mastodon API version 7) - quoted_status_id and quote_approval_policy
-        added
+        - 2.8.0 - poll added4.5.0 (mastodon API version 7) - quoted_status_id and
+        quote_approval_policy added
 
 
         [Post a new status](https://docs.joinmastodon.org/methods/statuses/#create)'
@@ -5647,12 +5718,19 @@ paths:
       summary: View statuses above and below this status in the thread.
       description: 'View statuses above and below this status in the thread.
 
+        Starting from Mastodon 4.5, when this endpoint is being queried, asynchronous
+        background jobs may be started to check for the existence of missing replies
+        and fetch those if possible. In this case a new, experimental header, Mastodon-Async-Refresh,
+        may be added to the response. See AsyncRefreshes for a detailed explanation.
+
         ## Version history
 
 
         - 0.0.0 - added
 
         - 4.0.0 - limit unauthenticated requests
+
+        - 4.5.0 - added experimental Mastodon-Async-Refresh header
 
 
         [Get parent and child statuses in context](https://docs.joinmastodon.org/methods/statuses/#context)'
@@ -5700,13 +5778,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: The translation request failed
-        403:
-          description: Status is not owned by the requesting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Status is not owned by the requesting user.
         401:
           description: Invalid or missing Authorization header.
           content:
@@ -5714,6 +5785,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Invalid or missing Authorization header.
+        403:
+          description: Status is not owned by the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is not owned by the requesting user.
         422:
           description: Edit a given status to change its interaction policies. Currently,
             this means changing its quote approval policy.
@@ -5783,13 +5861,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: The translation request failed
-        403:
-          description: Status is not owned by the requesting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Status is not owned by the requesting user.
         401:
           description: Invalid or missing Authorization header.
           content:
@@ -5797,6 +5868,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Invalid or missing Authorization header.
+        403:
+          description: Status is not owned by the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is not owned by the requesting user.
         422:
           description: Edit a given status to change its interaction policies. Currently,
             this means changing its quote approval policy.
@@ -5862,13 +5940,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Status does not exist or is private.
-        403:
-          description: Status is not owned by the requesting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Status is not owned by the requesting user.
         401:
           description: Invalid or missing Authorization header.
           content:
@@ -5876,6 +5947,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Invalid or missing Authorization header.
+        403:
+          description: Status is not owned by the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is not owned by the requesting user.
         422:
           description: Edit a given status to change its interaction policies. Currently,
             this means changing its quote approval policy.
@@ -5909,8 +5987,8 @@ paths:
           type: string
       - name: limit
         in: query
-        description: Integer. Maximum number of results to return. Defaults to 40
-          accounts. Max 80 accounts.
+        description: Integer. Maximum number of results to return. Defaults to 20
+          statuses. Max 40 statuses.
         schema:
           type: string
       - name: :id
@@ -5936,13 +6014,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Status does not exist or is private.
-        403:
-          description: Status is not owned by the requesting user.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Status is not owned by the requesting user.
         401:
           description: Invalid or missing Authorization header.
           content:
@@ -5950,6 +6021,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Invalid or missing Authorization header.
+        403:
+          description: Status is not owned by the requesting user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Status is not owned by the requesting user.
         422:
           description: Edit a given status to change its interaction policies. Currently,
             this means changing its quote approval policy.
@@ -7493,6 +7571,8 @@ paths:
 
         - 3.3.0 - both min_id and max_id can be used at the same time now
 
+        - 4.5.0 - add access control settings
+
 
         [View public timeline](https://docs.joinmastodon.org/methods/timelines/#public)'
       parameters:
@@ -7553,6 +7633,13 @@ paths:
                 description: Array of Status
                 items:
                   $ref: '#/components/schemas/Status'
+        401:
+          description: Invalid or missing Authorization header.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
         404:
           description: List is not owned by you or does not exist
           content:
@@ -7567,13 +7654,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Home feed is regenerating
-        401:
-          description: Invalid or missing Authorization header.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Invalid or missing Authorization header.
       security:
       - BearerAuth: []
   /api/v1/timelines/tag/{:hashtag}:
@@ -7597,6 +7677,8 @@ paths:
         - 3.0.0 - auth is required if public preview is disabled
 
         - 3.3.0 - both min_id and max_id can be used at the same time now. add remote
+
+        - 4.5.0 - add access control settings
 
 
         [View hashtag timeline](https://docs.joinmastodon.org/methods/timelines/#tag)'
@@ -7683,13 +7765,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: List is not owned by you or does not exist
-        206:
-          description: Home feed is regenerating
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Home feed is regenerating
         401:
           description: Invalid or missing Authorization header.
           content:
@@ -7697,6 +7772,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
                 description: Invalid or missing Authorization header.
+        206:
+          description: Home feed is regenerating
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Home feed is regenerating
       security:
       - BearerAuth: []
   /api/v1/timelines/home:
@@ -7799,6 +7881,8 @@ paths:
 
 
         - 4.3.0 - added
+
+        - 4.5.0 - add access control settings
 
 
         [View link timeline](https://docs.joinmastodon.org/methods/timelines/#link)'
@@ -14329,6 +14413,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Application'
+    AsyncRefresh:
+      description: Status of an asynchronous refresh.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AsyncRefresh'
     Context:
       description: Represents the tree around a given status. Used for reconstructing
         threads of statuses.
@@ -15460,6 +15550,21 @@ components:
           type: string
           description: Used for Push Streaming API. Returned with POST /api/v1/apps.
             Equivalent to WebPushSubscription#server_key and Instance#vapid_public_key
+    AsyncRefresh:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the async refresh
+        status:
+          type: string
+          description: Status of the async refresh.
+        result_count:
+          type:
+          - integer
+          - 'null'
+          description: Optional number of results already created/fetched as part
+            of this async refresh.
     Context:
       type: object
       properties:
@@ -15854,6 +15959,36 @@ components:
         configuration[translation][enabled]:
           type: boolean
           description: Whether the Translations API is available on this server.
+        configuration[timelines_access]:
+          $ref: '#/components/schemas/Hash'
+          description: Access restrictions on different timelines.
+        configuration[timelines_access][live_feeds]:
+          $ref: '#/components/schemas/Hash'
+          description: Access restrictions on public feeds.
+        configuration[timelines_access][live_feeds][local]:
+          type: string
+          description: Access restrictions for local posts in the public feed.
+        configuration[timelines_access][live_feeds][remote]:
+          type: string
+          description: Access restrictions for remote posts in the public feed.
+        configuration[timelines_access][hashtag_feeds]:
+          $ref: '#/components/schemas/Hash'
+          description: Access restrictions on hashtag feeds.
+        configuration[timelines_access][hashtag_feeds][local]:
+          type: string
+          description: Access restrictions for local posts in hashtag feeds.
+        configuration[timelines_access][hashtag_feeds][remote]:
+          type: string
+          description: Access restrictions for remote posts in hashtag feeds.
+        configuration[timelines_access][trending_link_feeds]:
+          $ref: '#/components/schemas/Hash'
+          description: Access restrictions on trending link feeds.
+        configuration[timelines_access][trending_link_feeds][local]:
+          type: string
+          description: Access restrictions for local posts in the trending link feeds.
+        configuration[timelines_access][trending_link_feeds][remote]:
+          type: string
+          description: Access restrictions for remote posts in trending link feeds.
         configuration[limited_federation]:
           type: boolean
           description: Whether federation is limited to explicitly allowed domains.
@@ -16299,7 +16434,8 @@ components:
       properties:
         state:
           type: string
-          description: The state of the quote.
+          description: The state of the quote. Unknown values should be treated as
+            unauthorized.
         quoted_status:
           $ref: '#/components/schemas/Status'
           description: The status being quoted, if the quote has been accepted. This
@@ -16631,13 +16767,15 @@ components:
       properties:
         state:
           type: string
-          description: The state of the quote.
+          description: The state of the quote. Unknown values should be treated as
+            unauthorized.
         quoted_status_id:
           type:
           - string
           - 'null'
-          description: The identifier of the status being quoted, if the quote has
-            been accepted. This will be null, unless the state attribute is accepted.
+          description: The identifier of the status being quoted. This will be null,
+            unless the state attribute is one of accepted, blocked_account, blocked_domain
+            or muted_account.
     StatusTag:
       type: object
       properties:
@@ -16789,7 +16927,7 @@ components:
           description: Timestamp of when the status was last edited.
         quote:
           $ref: '#/components/schemas/Quote'
-          description: Information about the status being quoted, if any*
+          description: Information about the status being quoted, if any
         quote_approval:
           $ref: '#/components/schemas/QuoteApproval'
           description: "Summary of the post quote\u2019s approval policy and how it\
@@ -16868,7 +17006,7 @@ components:
             description: ''
         quote:
           $ref: '#/components/schemas/Quote'
-          description: Information about the status being quoted, if any*
+          description: Information about the status being quoted, if any
     StatusSource:
       type: object
       properties:

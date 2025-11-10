@@ -73,10 +73,9 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
         removed = subject.find("span", class_="api-method-parameter-removed", string="removed")
         deprecated = subject.find("span", class_="api-method-parameter-deprecated", string="deprecated")
+        logger.info(f"process {subject.text.strip()}: [{method}] {endpoint=} {removed=} {deprecated=}")
         if removed:
             continue
-
-        logger.info(f"process {subject.text.strip()}: [{method}] {endpoint=} {removed=} {deprecated=}")
 
         operation, response_object = handle_operation(method_dom)
         # add the method link to the operation description
@@ -247,11 +246,12 @@ def handle_description(text: str) -> str:
 def handle_response(tag: Tag, response_object: ResponseObject | None) -> Responses:
     response = {}
 
-    for code in tag.find_all_next("h5", class_="heading"):
+    for code in tag.find_all_next(["h4", "h5"], class_="heading"):
         logger.debug(f"handle response {code.text=}")
 
         matched = re.search(r"(\d+): \w+", code.text)
         if not matched:
+            logger.warning(f"no status code found in {code.text=}")
             continue
 
         status_code = int(matched.groups()[0])
