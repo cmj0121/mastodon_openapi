@@ -38,4 +38,4 @@ def run(link: str) -> str:
 
 def to_openapi_spec_text(spec: OpenAPI) -> str:
     spec_dict = spec.model_dump(exclude_none=True, by_alias=True)
-    return yaml.dump(spec_dict, default_flow_style=False, sort_keys=False)
+    return yaml.dump(spec_dict, default_flow_style=False, sort_keys=True)
