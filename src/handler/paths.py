@@ -1,13 +1,16 @@
 import re
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import as_completed
 
-import requests
 from bs4 import BeautifulSoup
 from bs4 import Tag
 from loguru import logger
 
 from src.handler.utils import canonicalize
+from src.handler.utils import fetch_soup
+from src.handler.utils import handle_type_str
+from src.handler.utils import make_media_type
 from src.openapi_spec import BuildInType
-from src.openapi_spec import MediaTypeObject
 from src.openapi_spec import OneOfObject
 from src.openapi_spec import Operation
 from src.openapi_spec import ParameterIn
@@ -26,18 +29,20 @@ def canonicalize_path(path: str) -> str:
     return re.sub(r"/(:\w+)", r"/{\1}", path)
 
 
-def handle_paths(link: str, html: str) -> Paths:
+def handle_paths(link: str, soup: BeautifulSoup) -> Paths:
     """
     Handle the base URL of the Mastodon API documentation and return the OpenAPI Paths object.
     """
     spec = {}
-
-    soup = BeautifulSoup(html, "html.parser")
     methods = soup.find_all("a", href=lambda href: href and href.startswith("/methods/"))
-    for method in methods:
-        method_link = f"{link}{method['href']}"
-        for path, path_item in handle_path_item(method.text, method_link).items():
-            spec[path] = path_item
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {
+            executor.submit(handle_path_item, method.text, f"{link}{method['href']}"): method for method in methods
+        }
+        for future in as_completed(futures):
+            for path, path_item in future.result().items():
+                spec[path] = path_item
 
     return Paths(spec)
 
@@ -48,12 +53,9 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
     """
     logger.info(f"handle API method {tag=} {link=}")
 
-    response = requests.get(link)
-    response.raise_for_status()
+    soup = fetch_soup(link)
 
     spec = {}
-    soup = BeautifulSoup(response.text, "html.parser")
-
     content = soup.find("div", class_="e-content")
     if not content:
         logger.warning(f"no content found in {link=}")
@@ -78,7 +80,6 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
             continue
 
         operation, response_object = handle_operation(method_dom)
-        # add the method link to the operation description
         operation.description += f"\n\n[{subject.text.strip()}]({link}#{subject['id']})"
         operation.tags = [tag]
         operation.deprecated = True if deprecated else None
@@ -87,21 +88,19 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
             response_object = ResponseObject(
                 description="Array of Hash",
                 content={
-                    "application/json": MediaTypeObject.model_validate(
-                        {
-                            "schema": SchemaObject(
-                                type="array",
-                                items=SchemaObject(
-                                    type="object",
-                                    properties={
-                                        "week": SchemaObject(type="string"),
-                                        "statuses": SchemaObject(type="string"),
-                                        "logins": SchemaObject(type="string"),
-                                        "registrations": SchemaObject(type="string"),
-                                    },
-                                ),
-                            )
-                        }
+                    "application/json": make_media_type(
+                        SchemaObject(
+                            type="array",
+                            items=SchemaObject(
+                                type="object",
+                                properties={
+                                    "week": SchemaObject(type="string"),
+                                    "statuses": SchemaObject(type="string"),
+                                    "logins": SchemaObject(type="string"),
+                                    "registrations": SchemaObject(type="string"),
+                                },
+                            ),
+                        )
                     ),
                 },
             )
@@ -117,9 +116,7 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
                 streaming_response = ResponseObject(
                     description="The streaming response.",
                     content={
-                        "text/event-stream": MediaTypeObject.model_validate(
-                            {"schema": ref},
-                        ),
+                        "text/event-stream": make_media_type(ref),
                     },
                 )
                 operation.responses = Responses({200: streaming_response})
@@ -128,12 +125,6 @@ def handle_path_item(tag: str, link: str) -> dict[str, PathItem]:
 
         spec[endpoint] = spec[endpoint] if endpoint in spec else PathItem({})
         spec[endpoint].root[method.lower()] = operation
-
-        # # extract the content of the method
-        # logger.info(f"removed #{index} ~ {len(content)} elements from the content")
-        # while len(content) > index + 1:
-        #     elm = content.contents[index + 1]
-        #     elm.extract()
 
     return spec
 
@@ -159,7 +150,6 @@ def handle_operation(tag: Tag) -> tuple[Operation, ResponseObject | None]:
     if parameters:
         for idx, param in enumerate(parameters):
             if isinstance(param, ParameterObject) and param.name == "Authorization":
-                # remove the Authorization header from the parameters and add the security only
                 parameters.pop(idx)
                 security = [SecurityRequirementObject({"BearerAuth": []})]
                 break
@@ -206,9 +196,10 @@ def handle_parameter_by_type(tag: Tag, param_type: ParameterIn) -> list[Paramete
             case ParameterIn.header:
                 vtype = "string"
             case _:
-                vtype = desc.find("strong")
-                vtype = canonicalize(vtype.text if vtype else "string")
-                vtype = vtype if vtype in BuildInType else "string"
+                raw_type = desc.find("strong")
+                raw_type = raw_type.text if raw_type else "string"
+                vtype, _ = handle_type_str(raw_type)
+                vtype = canonicalize(vtype) if vtype.lower() in BuildInType else "string"
 
         param = ParameterObject.model_validate(
             {
@@ -255,7 +246,8 @@ def handle_response(tag: Tag, response_object: ResponseObject | None) -> Respons
             continue
 
         status_code = int(matched.groups()[0])
-        description = code.find_next("p").text if code.find_next("p") else ""
+        next_p = code.find_next("p")
+        description = next_p.text if next_p else ""
 
         if status_code == 200 and response_object:
             response[status_code] = response_object
@@ -268,7 +260,7 @@ def handle_response(tag: Tag, response_object: ResponseObject | None) -> Respons
             )
             err_response_object = ResponseObject(
                 description=description,
-                content={"application/json": MediaTypeObject.model_validate({"schema": ref})},
+                content={"application/json": make_media_type(ref)},
             )
             response[status_code] = err_response_object
 
@@ -287,7 +279,7 @@ def parse_response_object(tag: Tag) -> ResponseObject | None:
     schema_object = parse_schema_object(rvalue)
     return ResponseObject(
         description=rvalue,
-        content={"application/json": MediaTypeObject.model_validate({"schema": schema_object})},
+        content={"application/json": make_media_type(schema_object)},
     )
 
 
@@ -342,7 +334,7 @@ def parse_schema_object(text: str) -> SchemaObject:
     elif "Health status" == text:
         schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Hash"})
     elif text.lower() in BuildInType:
-        schema_object = SchemaObject(type=canonicalize(text.lower()))
+        schema_object = SchemaObject(type=text.lower())
     else:
         schema_object = ReferenceObject.model_validate({"$ref": f"#/components/schemas/{canonicalize(text)}"})
 

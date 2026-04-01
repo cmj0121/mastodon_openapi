@@ -1,15 +1,18 @@
 import re
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import as_completed
 
-import requests
 from bs4 import BeautifulSoup
 from bs4.element import NavigableString
 from bs4.element import Tag
 from loguru import logger
 
 from src.handler.utils import canonicalize
+from src.handler.utils import fetch_soup
+from src.handler.utils import handle_type_str
+from src.handler.utils import make_media_type
 from src.openapi_spec import BuildInType
 from src.openapi_spec import Component
-from src.openapi_spec import MediaTypeObject
 from src.openapi_spec import ReferenceObject
 from src.openapi_spec import ResponseObject
 from src.openapi_spec import SchemaObject
@@ -25,79 +28,60 @@ def default_security_scheme() -> dict[str, SecuritySchemeObject]:
     return {"BearerAuth": spec}
 
 
-def handle_components(link: str, html: str) -> Component:
+def handle_components(link: str, soup: BeautifulSoup) -> Component:
     """
     Handle the base URL of the Mastodon API documentation and return the OpenAPI Components object.
     """
+    json_response = ResponseObject(
+        description="Represents a JSON object.",
+        content={"application/json": make_media_type(SchemaObject(type="object", additionalProperties=True))},
+    )
     spec = {
         "Empty": ResponseObject(
             description="Empty content",
             content={
-                "text/plain": MediaTypeObject.model_validate({"schema": SchemaObject(type="null")}),
+                "text/plain": make_media_type(SchemaObject(type="null")),
             },
         ),
         "Streaming": ResponseObject(
             description="Represents an error message.",
-            content={
-                "text/event-stream": MediaTypeObject.model_validate(
-                    {
-                        "schema": SchemaObject(
-                            type="string",
-                        )
-                    }
-                )
-            },
+            content={"text/event-stream": make_media_type(SchemaObject(type="string"))},
         ),
-        "JSON": ResponseObject(
-            description="Represents an JSON object.",
-            content={
-                "application/json": MediaTypeObject.model_validate(
-                    {
-                        "schema": SchemaObject(
-                            type="object",
-                            additionalProperties=True,
-                        )
-                    }
-                )
-            },
-        ),
+        "JSON": json_response,
         "Hash": ResponseObject(
-            description="Represents an JSON/Hash object.",
-            content={
-                "application/json": MediaTypeObject.model_validate(
-                    {
-                        "schema": SchemaObject(
-                            type="object",
-                            additionalProperties=True,
-                        )
-                    }
-                )
-            },
+            description="Represents a JSON/Hash object.",
+            content={"application/json": make_media_type(SchemaObject(type="object", additionalProperties=True))},
         ),
         "History": ResponseObject(
             description="Usage statistics for given days",
             content={
-                "application/json": MediaTypeObject.model_validate(
-                    {
-                        "schema": SchemaObject(
-                            type="object",
-                            properties={
-                                "key": SchemaObject(type="string"),
-                                "human_key": SchemaObject(type="string"),
-                                "value": SchemaObject(type="string"),
-                            },
-                        )
-                    }
+                "application/json": make_media_type(
+                    SchemaObject(
+                        type="object",
+                        properties={
+                            "key": SchemaObject(type="string"),
+                            "human_key": SchemaObject(type="string"),
+                            "value": SchemaObject(type="string"),
+                        },
+                    )
                 ),
             },
         ),
     }
-    soup = BeautifulSoup(html, "html.parser")
-
     entities = soup.find_all("a", href=lambda href: href and href.startswith("/entities/"))
+    seen_hrefs = set()
+    entity_links = []
     for entity in entities:
-        entity_link = f"{link}{entity['href']}"
-        spec.update(handle_component(entity_link))
+        href = entity["href"]
+        if href in seen_hrefs:
+            continue
+        seen_hrefs.add(href)
+        entity_links.append(f"{link}{href}")
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(handle_component, el): el for el in entity_links}
+        for future in as_completed(futures):
+            spec.update(future.result())
 
     component = Component(responses=spec, securitySchemes=default_security_scheme())
     return post_handle_components(component)
@@ -109,12 +93,9 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
     """
     logger.info(f"handle entity {link=}")
 
-    response = requests.get(link)
-    response.raise_for_status()
+    soup = fetch_soup(link)
 
     spec = {}
-    soup = BeautifulSoup(response.text, "html.parser")
-
     content = soup.find("div", class_="e-content")
     parts = list(content.children)
     index = [content.index(dom) for dom in content.find_all("h2", recursive=False)] + [len(parts) - 1]
@@ -153,14 +134,13 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
 
         spec[canonicalize(name)] = ResponseObject(
             description=desc,
-            content={"application/json": MediaTypeObject.model_validate({"schema": schema_object})},
+            content={"application/json": make_media_type(schema_object)},
         )
 
     return spec
 
 
 def post_handle_components(component: Component) -> Component:
-    """copy the response object to the schema object and setup the reference object"""
     component.schemas = {}
     for key, resp in component.responses.items():
         for mime in resp.content or []:
@@ -199,14 +179,14 @@ def post_handle_components(component: Component) -> Component:
 
 
 def handle_parameter(name, tag: Tag) -> SchemaObject | ReferenceObject:
-    desc, nullable, typ, items, version = "", False, "", None, ""
+    desc, nullable, typ, items = "", False, "", None
+    tag_text = tag.text
     for strong in tag.find_all(["strong", "em"]):
         match text := strong.text:
             case "Description:":
-                desc = re.search(r"Description:([\s\S]*?)Type: ", tag.text).group(1)
+                desc = re.search(r"Description:([\s\S]*?)Type: ", tag_text).group(1)
                 desc = desc.strip()
             case "Type:":
-                candidate = strong.next_sibling.strip()
                 candidate = strong.next_sibling
                 while True:
                     if isinstance(candidate, NavigableString):
@@ -226,12 +206,12 @@ def handle_parameter(name, tag: Tag) -> SchemaObject | ReferenceObject:
 
                     candidate = candidate.next_sibling
             case "Version history:":
-                version = strong.next_sibling.next_sibling.text.strip()
+                pass
             case _:
                 raise ValueError(f"unknown tag {text=}")
 
     typ, items = handle_type_str(typ, items)
-    logger.info(f"handle parameter {name}: {nullable=} {typ=} {version=}")
+    logger.info(f"handle parameter {name}: {nullable=} {typ=}")
     return handle_schema(typ, desc, nullable, items)
 
 
@@ -260,22 +240,3 @@ def handle_schema(
                 "description": desc.strip(),
             }
         )
-
-
-def handle_type_str(text: str, item: str | None = None) -> tuple[str, str | None]:
-    if text == "Array of":
-        return "array", item
-    if text == "Array of Strings":
-        return "array", "String"
-    elif text.startswith("String"):
-        return "String", None
-    elif text.startswith("Integer"):
-        return "Integer", None
-    elif text.startswith("Number"):
-        return "Number", None
-    elif text.startswith("Array of"):
-        items = text.split()[2]
-        text = "array"
-        return "array", handle_type_str(items)[0]
-
-    return text, item

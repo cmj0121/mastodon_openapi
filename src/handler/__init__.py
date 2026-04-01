@@ -1,7 +1,9 @@
-import requests
+from concurrent.futures import ThreadPoolExecutor
+
 import yaml
 from loguru import logger
 
+from src.handler.utils import fetch_soup
 from src.openapi_spec import Info
 from src.openapi_spec import License
 from src.openapi_spec import OpenAPI
@@ -27,12 +29,16 @@ def run(link: str) -> str:
 
     logger.info(f"starting to generate OpenAPI spec from {link=}")
 
-    response = requests.get(link)
-    response.raise_for_status()
+    soup = fetch_soup(link)
 
     spec = OpenAPI(info=info)
-    spec.paths = handle_paths(link, response.text)
-    spec.components = handle_components(link, response.text)
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        paths_future = executor.submit(handle_paths, link, soup)
+        components_future = executor.submit(handle_components, link, soup)
+        spec.paths = paths_future.result()
+        spec.components = components_future.result()
+
     return to_openapi_spec_text(spec)
 
 
