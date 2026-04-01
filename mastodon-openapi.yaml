@@ -246,7 +246,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Hash'
-      description: Represents an JSON/Hash object.
+      description: Represents a JSON/Hash object.
     History:
       content:
         application/json:
@@ -276,7 +276,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/JSON'
-      description: Represents an JSON object.
+      description: Represents a JSON object.
     List:
       content:
         application/json:
@@ -550,7 +550,7 @@ components:
     Account:
       properties:
         acct:
-          description: The Webfinger account URI. Equal to username for local users,
+          description: The WebFinger account URI. Equal to username for local users,
             or username@domain for remote users.
           type: string
         avatar:
@@ -653,11 +653,25 @@ components:
         roles:
           description: An array of roles assigned to the user that are publicly visible
             (highlighted roles only), if the account is local. Will be an empty array
-            if no roles are highlighted or if the account is remote.
+            if no roles are highlighted or null if the account is remote.
           items:
             $ref: '#/components/schemas/AccountRole'
             description: ''
-          type: array
+          type:
+          - array
+          - 'null'
+        show_featured:
+          description: "Whether the account wishes to have a \u201CFeatured\u201D\
+            \ tab on their profile."
+          type: boolean
+        show_media:
+          description: "Whether the account wishes to have a \u201CMedia\u201D tab\
+            \ with media attachments on their profile."
+          type: boolean
+        show_media_replies:
+          description: "Whether the account wishes to have replies in the \u201CMedia\u201D\
+            \ tab on their profile."
+          type: boolean
         statuses_count:
           description: How many statuses are attached to this account.
           type: integer
@@ -782,6 +796,9 @@ components:
         role:
           $ref: '#/components/schemas/Role'
           description: The current role of the account.
+        sensitized:
+          description: Whether the account is currently marked sensitive.
+          type: boolean
         silenced:
           description: Whether the account is currently silenced.
           type: boolean
@@ -1413,7 +1430,9 @@ components:
           type: string
         last_status_at:
           description: The date of the last authored status containing this hashtag.
-          type: string
+          type:
+          - string
+          - 'null'
         name:
           description: The name of the hashtag being featured.
           type: string
@@ -1575,11 +1594,26 @@ components:
         configuration[accounts]:
           $ref: '#/components/schemas/Hash'
           description: Limits related to accounts.
+        configuration[accounts][max_display_name_length]:
+          description: "The maximum length allowed for an account\u2019s display name."
+          type: integer
         configuration[accounts][max_featured_tags]:
           description: The maximum number of featured tags allowed for each account.
           type: integer
+        configuration[accounts][max_note_length]:
+          description: "The maximum length allowed for an account\u2019s bio."
+          type: integer
         configuration[accounts][max_pinned_statuses]:
           description: The maximum number of pinned statuses for each account.
+          type: integer
+        configuration[accounts][max_profile_fields]:
+          description: The maximum number of custom profile fields allowed to be set.
+          type: integer
+        configuration[accounts][profile_field_name_limit]:
+          description: The maximum size of a profile field name, in characters.
+          type: integer
+        configuration[accounts][profile_field_value_limit]:
+          description: The maximum size of a profile field value, in characters.
           type: integer
         configuration[limited_federation]:
           description: Whether federation is limited to explicitly allowed domains.
@@ -1885,10 +1919,14 @@ components:
             \ \u2013 see Focal points for cropped media thumbnails for more."
         meta[focus][x]:
           description: Horizontal focal point
-          type: float
+          type:
+          - float
+          - 'null'
         meta[focus][y]:
           description: Vertical focal point
-          type: float
+          type:
+          - float
+          - 'null'
         preview_url:
           description: The location of a scaled-down preview of the attachment.
           type:
@@ -1907,8 +1945,11 @@ components:
           description: The type of the attachment.
           type: string
         url:
-          description: The location of the original full-size attachment.
-          type: string
+          description: The location of the original full-size attachment. Url may
+            be null if the file is still being processed. See POST /api/v2/media.
+          type:
+          - string
+          - 'null'
       type: object
     MutedAccount:
       properties:
@@ -2148,6 +2189,13 @@ components:
           type:
           - string
           - 'null'
+        missing_attribution:
+          description: "True if the linked article claims to be written by the current\
+            \ user without the user having the article\u2019s domain in their attribution_domains).\
+            \ This is used to prompt them to review and add the domain."
+          type:
+          - boolean
+          - 'null'
         provider_name:
           description: The provider of the original resource.
           type: string
@@ -2195,7 +2243,9 @@ components:
         quoted_status:
           $ref: '#/components/schemas/Status'
           description: The status being quoted, if the quote has been accepted. This
-            will be null, unless the state attribute is accepted.
+            will be null, unless the state attribute is accepted, blocked_account,
+            blocked_domain, or muted_account, or the wrapping Status entity has been
+            obtained by calling DELETE /api/v1/statuses/:id..
         state:
           description: The state of the quote. Unknown values should be treated as
             unauthorized.
@@ -2275,15 +2325,23 @@ components:
           items:
             description: ''
             type: string
-          type: array
+          type:
+          - array
+          - 'null'
         muting:
           description: Are you muting this user?
           type: boolean
+        muting_expires_at:
+          description: Date at which the mute expires, if there is any.
+          type:
+          - string
+          - 'null'
         muting_notifications:
           description: Are you muting notifications from this user?
           type: boolean
         note:
-          description: "This user\u2019s profile bio"
+          description: "The authenticated user\u2019s personal comment about this\
+            \ account"
           type: string
         notifying:
           description: Have you enabled notifications for this user?
@@ -2338,6 +2396,15 @@ components:
         category:
           description: The generic reason for the report.
           type: string
+        collection_ids:
+          description: IDs of Featured Collections that have been attached to this
+            report for additional context.
+          items:
+            description: ''
+            type: string
+          type:
+          - array
+          - 'null'
         comment:
           description: The reason for the report.
           type: string
@@ -2389,7 +2456,8 @@ components:
           type: string
         permissions:
           description: A bitmask that represents the sum of all permissions granted
-            to the role.
+            to the role. This is a potentially large integer in decimal representation.
+            The absence of special permissions is denoted by '0'.
           type: string
       type: object
     Rule:
@@ -2528,7 +2596,8 @@ components:
         quoted_status_id:
           description: The identifier of the status being quoted. This will be null,
             unless the state attribute is one of accepted, blocked_account, blocked_domain
-            or muted_account.
+            or muted_account, or the wrapping Status entity has been obtained by calling
+            DELETE /api/v1/statuses/:id.
           type:
           - string
           - 'null'
@@ -2876,6 +2945,9 @@ components:
         detected_source_language:
           description: The language of the source text, as auto-detected by the machine
             translation provider.
+          type: string
+        language:
+          description: The resulting language the text was translated into.
           type: string
         media_attachments:
           description: The translated media descriptions of the status.
@@ -3574,9 +3646,9 @@ paths:
         - 3.4.0 - added
 
 
-        [Lookup account ID from Webfinger address](https://docs.joinmastodon.org/methods/accounts/#lookup)'
+        [Lookup account ID from WebFinger address](https://docs.joinmastodon.org/methods/accounts/#lookup)'
       parameters:
-      - description: required String. The username or Webfinger address to lookup.
+      - description: required String. The username or WebFinger address to lookup.
         in: query
         name: acct
         required: true
@@ -3631,6 +3703,8 @@ paths:
         - 0.0.0 - added
 
         - 4.3.0 - added with_suspended parameter
+
+        - 4.6.0 - added muting_expires_at
 
 
         [Check relationships to other accounts](https://docs.joinmastodon.org/methods/accounts/#relationships)'
@@ -9121,15 +9195,8 @@ paths:
       tags:
       - domain_blocks
     post:
-      description: 'Block a domain to:
-
-        ## Version history
-
-
-        - 1.4.0 - added
-
-
-        [Block a domain](https://docs.joinmastodon.org/methods/domain_blocks/#block)'
+      description: "Block a domain to change interactions with that domain\u2019s\
+        \ server:\n## Version history\n\n- 1.4.0 - added\n\n[Block a domain](https://docs.joinmastodon.org/methods/domain_blocks/#block)"
       parameters: []
       responses:
         200:
@@ -9154,7 +9221,7 @@ paths:
           description: If domain is not provided, the request will fail.
       security:
       - BearerAuth: []
-      summary: 'Block a domain to:'
+      summary: "Block a domain to change interactions with that domain\u2019s server:"
       tags:
       - domain_blocks
   /api/v1/emails/confirmations:
@@ -11522,7 +11589,7 @@ paths:
         \ single boolean attribute mergedOAuth: User token + read:notificationsVersion\
         \ history:4.3.0 - added\nA successful call returns whether the notifications\
         \ have been merged and are ready for being loaded.\nInvalid or missing Authorization\
-        \ header.\nLast updated June 25, 2025 \xB7 Improve this page\nJoin Mastodon\
+        \ header.\nLast updated November 21, 2025 \xB7 Improve this page\nJoin Mastodon\
         \ \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7 Imprint\n\n[Check if\
         \ accepted notification requests have been merged](https://docs.joinmastodon.org/methods/notifications/#requests-merged)"
       parameters: []
@@ -11677,7 +11744,7 @@ paths:
         A notification is considered unread if it is more recent than the notifications
         read marker.
 
-        Because the count is dependant on the parameters, it is computed every time
+        Because the count is dependent on the parameters, it is computed every time
         and is thus a relatively slow operation (although faster than getting the
         full corresponding notifications), therefore the number of returned notifications
         is capped.
@@ -11745,7 +11812,7 @@ paths:
         A notification is considered unread if it is more recent than the notifications
         read marker.
 
-        Because the count is dependant on the parameters, it is computed every time
+        Because the count is dependent on the parameters, it is computed every time
         and is thus a relatively slow operation (although faster than getting the
         full corresponding notifications), therefore the number of returned notifications
         is capped.'
@@ -12815,11 +12882,18 @@ paths:
       tags:
       - statuses
     put:
-      description: "Edit a given status to change its text, sensitivity, media attachments,\
-        \ or poll. Note that editing a poll\u2019s options or changing whether it\
-        \ is multiple choice will reset the votes.\n## Version history\n\n- 3.5.0\
-        \ - added\n- 4.0.0 - add language4.5.0 (mastodon API version 7) - add quote_approval_policy\n\
-        \n[Edit a status](https://docs.joinmastodon.org/methods/statuses/#edit)"
+      description: 'Edit a given status to change its text, sensitivity, media attachments,
+        or poll. Notes:
+
+        ## Version history
+
+
+        - 3.5.0 - added
+
+        - 4.0.0 - add language4.5.0 (mastodon API version 7) - add quote_approval_policy
+
+
+        [Edit a status](https://docs.joinmastodon.org/methods/statuses/#edit)'
       parameters:
       - description: required String. The ID of the Status in the database.
         in: path
@@ -12859,9 +12933,8 @@ paths:
             this means changing its quote approval policy.
       security:
       - BearerAuth: []
-      summary: "Edit a given status to change its text, sensitivity, media attachments,\
-        \ or poll. Note that editing a poll\u2019s options or changing whether it\
-        \ is multiple choice will reset the votes."
+      summary: 'Edit a given status to change its text, sensitivity, media attachments,
+        or poll. Notes:'
       tags:
       - statuses
   /api/v1/statuses/{:id}/bookmark:
@@ -12922,47 +12995,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Privately bookmark a status.
-      tags:
-      - statuses
-  /api/v1/statuses/{:id}/card:
-    get:
-      deprecated: true
-      description: '
-
-        ## Version history
-
-
-        - 0.0.0 - added
-
-        - 2.6.0 - deprecated in favor of card property inlined on Status entity
-
-        - 3.0.0 - removed
-
-
-        [Fetch preview card deprecated](https://docs.joinmastodon.org/methods/statuses/#card)'
-      parameters:
-      - description: required String. The local ID of the Status in the database.
-        in: path
-        name: :id
-        required: true
-        schema:
-          type: string
-      responses:
-        200:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PreviewCard'
-          description: PreviewCard
-        404:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Status does not exist or is private.
-          description: Status does not exist or is private.
-      security:
-      - BearerAuth: []
       tags:
       - statuses
   /api/v1/statuses/{:id}/context:
@@ -13397,7 +13429,7 @@ paths:
       - statuses
   /api/v1/statuses/{:id}/quotes:
     get:
-      description: 'View quotes of a status you have posted.
+      description: 'View quotes of a status.
 
 
         [See quotes of a status](https://docs.joinmastodon.org/methods/statuses/#quotes)'
@@ -13466,7 +13498,7 @@ paths:
             this means changing its quote approval policy.
       security:
       - BearerAuth: []
-      summary: View quotes of a status you have posted.
+      summary: View quotes of a status.
       tags:
       - statuses
   /api/v1/statuses/{:id}/quotes/{:quoting_status_id}/revoke:
@@ -15408,7 +15440,7 @@ paths:
         current usr might have blocked their authors.
 
         For those reasons the AsyncRefresh can only ever serve as an indicator of
-        when it could be worthwile for a client to request new data. In the general
+        when it could be worthwhile for a client to request new data. In the general
         case there is no guarantee that new data will be served.
 
         ## Version history
@@ -15431,8 +15463,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: "Last updated October 17, 2025 \xB7 Improve this page"
-          description: "Last updated October 17, 2025 \xB7 Improve this page"
+                description: "Last updated November 27, 2025 \xB7 Improve this page"
+          description: "Last updated November 27, 2025 \xB7 Improve this page"
       summary: Sometimes an API request might not return the expected results or not
         all possible results as either a background job is already running to (re-)create
         these results or the request triggers a background job to create or fetch
@@ -16450,7 +16482,7 @@ paths:
         group_key by the server, and querying this endpoint will return aggregated
         notifications, with only one object per group_key. Other notification types
         may be grouped in the future. The grouped_types parameter should be used by
-        the client to explictely list the types it supports showing grouped notifications
+        the client to explicitly list the types it supports showing grouped notifications
         for.
 
         Types to filter include:
@@ -16685,7 +16717,7 @@ paths:
         A notification is considered unread if it is more recent than the notifications
         read marker.
 
-        Because the count is dependant on the parameters, it is computed every time
+        Because the count is dependent on the parameters, it is computed every time
         and is thus a relatively slow operation (although faster than getting the
         full corresponding notifications), therefore the number of returned notifications
         is capped.
@@ -16753,7 +16785,7 @@ paths:
         A notification is considered unread if it is more recent than the notifications
         read marker.
 
-        Because the count is dependant on the parameters, it is computed every time
+        Because the count is dependent on the parameters, it is computed every time
         and is thus a relatively slow operation (although faster than getting the
         full corresponding notifications), therefore the number of returned notifications
         is capped.'
@@ -16965,7 +16997,11 @@ paths:
   /api/v2/search:
     get:
       description: 'Perform a search for content in accounts, statuses and hashtags
-        with the given parameters.
+        with the given parameters. Note that the availability of results depends on
+        the specific backend search configuration of the server being queried. By
+        default, accounts and hashtags are always searchable, while statuses depend
+        on an ElasticSearch backend being present and the API request being authenticated
+        (full text search is not available to unauthenticated users).
 
         ## Version history
 
@@ -17045,7 +17081,8 @@ paths:
         name: limit
         schema:
           type: string
-      - description: Integer. Skip the first n results.
+      - description: Integer. Skip the first n results. Only applies when type is
+          also present (ignored otherwise).
         in: query
         name: offset
         schema:
@@ -17067,7 +17104,11 @@ paths:
       security:
       - BearerAuth: []
       summary: Perform a search for content in accounts, statuses and hashtags with
-        the given parameters.
+        the given parameters. Note that the availability of results depends on the
+        specific backend search configuration of the server being queried. By default,
+        accounts and hashtags are always searchable, while statuses depend on an ElasticSearch
+        backend being present and the API request being authenticated (full text search
+        is not available to unauthenticated users).
       tags:
       - search
   /api/v2/suggestions:
@@ -17188,7 +17229,7 @@ paths:
         name: scope
         schema:
           type: string
-      - description: String. Arbitrary value to passthrough to your server when the
+      - description: String. Arbitrary value to pass through to your server when the
           user authorizes or rejects the authorization request.
         in: query
         name: state
