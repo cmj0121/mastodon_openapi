@@ -333,6 +333,67 @@ def parse_schema_object(text: str) -> SchemaObject:
         schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Status"})
     elif "Health status" == text:
         schema_object = ReferenceObject.model_validate({"$ref": "#/components/schemas/Hash"})
+    elif "WrappedAnnualReports" == text:
+        # Inline wrapper documented only on the annual_reports method page (no
+        # entity page exists for it): an object with a single `annual_reports`
+        # key holding an array of AnnualReport.
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={
+                "annual_reports": SchemaObject(
+                    type="array",
+                    items=ReferenceObject.model_validate({"$ref": "#/components/schemas/AnnualReport"}),
+                ),
+            },
+        )
+    elif "Collections" == text:
+        # Inline wrapper: { "collections": [Collection, ...] }.
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={
+                "collections": SchemaObject(
+                    type="array",
+                    items=ReferenceObject.model_validate({"$ref": "#/components/schemas/Collection"}),
+                ),
+            },
+        )
+    elif "WrappedCollection" == text:
+        # Inline wrapper: { "collection": Collection }.
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={
+                "collection": ReferenceObject.model_validate({"$ref": "#/components/schemas/Collection"}),
+            },
+        )
+    elif "WrappedCollectionItem" == text:
+        # Inline wrapper: { "collection_item": CollectionItem }.
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={
+                "collection_item": ReferenceObject.model_validate({"$ref": "#/components/schemas/CollectionItem"}),
+            },
+        )
+    elif "Hash with a single key of async_refresh with value of AsyncRefresh" == text:
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={
+                "async_refresh": ReferenceObject.model_validate({"$ref": "#/components/schemas/AsyncRefresh"}),
+            },
+        )
+    elif text.startswith("Hash with a single state key"):
+        schema_object = SchemaObject(
+            description=text,
+            type="object",
+            properties={"state": SchemaObject(type="string")},
+        )
+    elif text.startswith("Hash of String") and text.endswith("associated Marker value"):
+        # { "<timeline>": Marker, ... } keyed by timeline name.
+        schema_object = SchemaObject(description=text, type="object")
     elif text.lower() in BuildInType:
         schema_object = SchemaObject(type=text.lower())
     else:

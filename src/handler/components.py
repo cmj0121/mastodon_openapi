@@ -113,7 +113,15 @@ def handle_component(link: str) -> dict[str, ResponseObject | ReferenceObject]:
             if not isinstance(column, Tag) or not column.find("span", class_="heading__text"):
                 continue
 
-            attr_name = column.find("code").text
+            code = column.find("code")
+            if code is not None:
+                attr_name = code.text
+            else:
+                # Some Mastodon docs headings (e.g. AnnualReport's data[*] fields)
+                # have malformed markdown that renders the name as a literal
+                # backtick string instead of a <code> element. Fall back to the
+                # heading text and strip the stray backticks.
+                attr_name = column.find("span", class_="heading__text").text.strip().strip("`")
             prop = handle_parameter(attr_name, column.find_next("p"))
             schema_object.properties[attr_name] = prop
 
