@@ -108,6 +108,12 @@ components:
           schema:
             $ref: '#/components/schemas/AnnouncementStatus'
       description: ''
+    AnnualReport:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AnnualReport'
+      description: Represents a summary of a user's activity during a given year.
     Appeal:
       content:
         application/json:
@@ -133,6 +139,26 @@ components:
           schema:
             $ref: '#/components/schemas/CohortData'
       description: ''
+    Collection:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Collection'
+      description: Represents a curated collection of accounts that a user recommends
+        others to follow.
+    CollectionItem:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionItem'
+      description: Represents a single item in a Collection.
+    CollectionWithAccounts:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CollectionWithAccounts'
+      description: A curated Collection of accounts that a user recommends others
+        to follow plus the full account data
     Context:
       content:
         application/json:
@@ -202,6 +228,13 @@ components:
             $ref: '#/components/schemas/FamiliarFollowers'
       description: Represents a subset of your follows who also follow some other
         user.
+    FeatureApproval:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FeatureApproval'
+      description: Summary of an account's policy with regards to being featured in
+        a Collection and how it applies to the requesting user.
     FeaturedTag:
       content:
         application/json:
@@ -307,6 +340,12 @@ components:
           schema:
             $ref: '#/components/schemas/Notification'
       description: Represents a notification of an event relevant to the user.
+    NotificationFallback:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NotificationFallback'
+      description: Represents a notification of an event relevant to the user.
     NotificationPolicy:
       content:
         application/json:
@@ -356,6 +395,13 @@ components:
           schema:
             $ref: '#/components/schemas/PrivacyPolicy'
       description: Represents the privacy policy of the instance.
+    Profile:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Profile'
+      description: Represents the current user's profile, with source values for all
+        the editable fields.
     Quote:
       content:
         application/json:
@@ -429,6 +475,12 @@ components:
             $ref: '#/components/schemas/ShallowQuote'
       description: Represents a quote or a quote placeholder, with the current authorization
         status.
+    ShallowTag:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ShallowTag'
+      description: Minimal representation of a hashtag.
     Status:
       content:
         application/json:
@@ -556,6 +608,9 @@ components:
         avatar:
           description: An image icon that is shown next to statuses and in the profile.
           type: string
+        avatar_description:
+          description: A textual description of the avatar image.
+          type: string
         avatar_static:
           description: A static version of the avatar. Equal to avatar if its value
             is a static image; different if avatar is an animated GIF.
@@ -584,6 +639,10 @@ components:
             $ref: '#/components/schemas/CustomEmoji'
             description: ''
           type: array
+        feature_approval:
+          $ref: '#/components/schemas/FeatureApproval'
+          description: "Summary of the account\u2019s policy with regards to being\
+            \ featured in a Collection and how it applies to the user making the request."
         fields:
           description: Additional metadata attached to a profile as name-value pairs.
           items:
@@ -603,6 +662,9 @@ components:
           description: An image banner that is shown above the profile and in profile
             cards. Will end /headers/original/missing.png if the user has not set
             a header image.
+          type: string
+        header_description:
+          description: A textual description of the header image.
           type: string
         header_static:
           description: A static version of the header. Equal to header if its value
@@ -1159,6 +1221,81 @@ components:
           description: The URL of an attached Status.
           type: string
       type: object
+    AnnualReport:
+      properties:
+        account_id:
+          description: The account ID the report is about.
+          type: string
+        data:
+          $ref: '#/components/schemas/Hash'
+          description: The raw data contained in the report. The schema of that data
+            is dependent on the value of schema_version.
+        data[archetype]:
+          description: "Archetype the user corresponds to. This is meant to represent\
+            \ a playful and very coarse overview of the user\u2019s posting habits\
+            \ over the year."
+          type: string
+        data[commonly_interacted_with_accounts]:
+          description: Provides a breakdown of the accounts the user have the most
+            frequently replied to over the year. Only available in schema version
+            1.
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
+          type: array
+        data[most_reblogged_accounts]:
+          description: Provides a breakdown of the accounts the user has reblogged
+            the most over the year. Only available in schema version 1.
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
+          type: array
+        data[most_used_apps]:
+          description: Provides a breakdown of the apps the user used the most for
+            posting statuses over the year. Only available in schema version 1.
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
+          type: array
+        data[percentiles]:
+          description: Which percentile of the most prolific posters on the same server
+            the user is in. Only available in schema version 1.
+          type: float
+        data[time_series]:
+          description: Provides a breakdown of new statuses, follows and followers
+            per month.
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
+          type: array
+        data[top_hashtags]:
+          description: "Provides a breakdown of the user\u2019s most frequently used\
+            \ hashtags over the year."
+          items:
+            $ref: '#/components/schemas/Hash'
+            description: ''
+          type: array
+        data[top_statuses]:
+          $ref: '#/components/schemas/Hash'
+          description: "Provides a breakdown of the user\u2019s most-interacted statuses\
+            \ by type of interaction (reblogs, favourites, replies) over the year."
+        data[type_distribution]:
+          $ref: '#/components/schemas/Hash'
+          description: "Provides a breakdown of the user\u2019s posts statistics over\
+            \ the year. Only available in schema version 1."
+        schema_version:
+          description: The schema version of the report, defines how to interpret
+            data.
+          type: integer
+        share_url:
+          description: An optional link to a shareable version of the report.
+          type:
+          - string
+          - 'null'
+        year:
+          description: The year this report is from.
+          type: integer
+      type: object
     Appeal:
       properties:
         state:
@@ -1232,6 +1369,95 @@ components:
           description: How many users registered in the specified period and were
             active for the given date bucket.
           type: string
+      type: object
+    Collection:
+      properties:
+        account_id:
+          description: The id of the account that curates this Collection.
+          type: string
+        created_at:
+          description: When the Collection was created.
+          type: string
+        description:
+          description: An optional description of the Collection.
+          type: string
+        discoverable:
+          description: "Whether the Collection should show up on the owner\u2019s\
+            \ profile, in search results and recommendations."
+          type: boolean
+        id:
+          description: The collection id.
+          type: string
+        item_count:
+          description: The number of items in this Collection.
+          type: integer
+        items:
+          description: The items in this Collection.
+          items:
+            $ref: '#/components/schemas/CollectionItem'
+            description: ''
+          type: array
+        language:
+          description: Primary language of this Collection.
+          type:
+          - string
+          - 'null'
+        local:
+          description: Whether the Collection was created on this server or resides
+            on a remote server.
+          type: boolean
+        name:
+          description: The name of the Collection.
+          type: string
+        sensitive:
+          description: Whether the Collection has been marked as including sensitive
+            content.
+          type: boolean
+        tag:
+          $ref: '#/components/schemas/ShallowTag'
+          description: A single hashtag that describes this Collection.
+        updated_at:
+          description: When the Collection was last updated.
+          type: string
+        uri:
+          description: "The Collection\u2019s ActivityPub identifier (used for federation)."
+          type: string
+        url:
+          description: "The url of the Collection\u2019s HTML page (web interface\
+            \ URL)."
+          type:
+          - string
+          - 'null'
+      type: object
+    CollectionItem:
+      properties:
+        account_id:
+          description: The id of the account this item represents.
+          type:
+          - string
+          - 'null'
+        created_at:
+          description: When the item was added to the collection.
+          type: string
+        id:
+          description: The item id.
+          type: string
+        state:
+          description: The current state of the item.
+          type: string
+      type: object
+    CollectionWithAccounts:
+      properties:
+        accounts:
+          description: Full account entities for the owner of the Collection and every
+            account within the Collection.
+          items:
+            $ref: '#/components/schemas/Account'
+            description: ''
+          type: array
+        collection:
+          $ref: '#/components/schemas/Collection'
+          description: The actual Collection.
       type: object
     Context:
       properties:
@@ -1423,6 +1649,33 @@ components:
           description: The ID of the Account in the database.
           type: string
       type: object
+    FeatureApproval:
+      properties:
+        automatic:
+          description: Describes who is expected to be able to feature the account
+            in a Collection and have this authorized automatically. An empty list
+            means that nobody is expected to be able to feature this account with
+            automatic approval. Other values may be added in the future, so unknown
+            values should be treated as unsupported_policy.
+          items:
+            description: ''
+            type: string
+          type: array
+        current_user:
+          description: "Describes how this account\u2019s feature approval policy\
+            \ applies to the current user."
+          type: string
+        manual:
+          description: Describes who is expected to have attempts of featuring this
+            account in a Collection be manually reviewed by the account owner before
+            being accepted. An empty list means that nobody is expected to be able
+            to feature this account with manual approval. Other values may be added
+            in the future, so unknown values should be treated as unsupported_policy.
+          items:
+            description: ''
+            type: string
+          type: array
+      type: object
     FeaturedTag:
       properties:
         id:
@@ -1446,10 +1699,12 @@ components:
     Field:
       properties:
         name:
-          description: "The key of a given field\u2019s key-value pair."
+          description: "The key of a given field\u2019s key-value pair. This is the\
+            \ raw string before processing, not HTML."
           type: string
         value:
-          description: The value associated with the name key.
+          description: The value associated with the name key. This is the raw string
+            before processing, not HTML.
           type: string
         verified_at:
           description: "Timestamp of when the server verified a URL value for a rel=\u201C\
@@ -1594,11 +1849,18 @@ components:
         configuration[accounts]:
           $ref: '#/components/schemas/Hash'
           description: Limits related to accounts.
+        configuration[accounts][max_avatar_description_length]:
+          description: "The maximum length allowed for an account\u2019s avatar description."
+          type: integer
         configuration[accounts][max_display_name_length]:
           description: "The maximum length allowed for an account\u2019s display name."
           type: integer
         configuration[accounts][max_featured_tags]:
           description: The maximum number of featured tags allowed for each account.
+          type: integer
+        configuration[accounts][max_header_description_length]:
+          description: "The maximum length allowed for an account\u2019s profile header\
+            \ description."
           type: integer
         configuration[accounts][max_note_length]:
           description: "The maximum length allowed for an account\u2019s bio."
@@ -1822,6 +2084,10 @@ components:
           description: A hash computed by the BlurHash algorithm, for generating colorful
             preview thumbnails when media has not been downloaded yet.
           type: string
+        thumbnail[description]:
+          description: "The thumbnail\u2019s alt text (a description of the image\
+            \ to help people with visual impairments understand its content)."
+          type: string
         thumbnail[url]:
           description: The URL for the thumbnail image.
           type: string
@@ -1850,6 +2116,12 @@ components:
         version:
           description: The version of Mastodon installed on the server.
           type: string
+        wrapstodon:
+          description: The current Wrapstodon (Annual report campaign identifier (year),
+            if any.
+          type:
+          - string
+          - 'null'
       type: object
     InstanceIcon:
       properties:
@@ -1964,6 +2236,10 @@ components:
         account:
           $ref: '#/components/schemas/Account'
           description: The account that performed the action that generated the notification.
+        collection:
+          $ref: '#/components/schemas/Collection'
+          description: Collection that was the object of the notification. Attached
+            when type of the notification is added_to_collection or collection_update.
         created_at:
           description: The timestamp of the notification.
           type: string
@@ -1971,6 +2247,11 @@ components:
           $ref: '#/components/schemas/RelationshipSeveranceEvent'
           description: Summary of the event that caused follow relationships to be
             severed. Attached when type of the notification is severed_relationships.
+        fallback:
+          $ref: '#/components/schemas/NotificationFallback'
+          description: Fallback information available for some notification types
+            that clients may not support. Only available for some notification types,
+            and only if the supported_types parameter is used when querying.
         group_key:
           description: Group key shared by similar notifications, to be used in the
             grouped notifications feature. Should be considered opaque, but ungrouped
@@ -1995,6 +2276,26 @@ components:
             of the edited status is attached, not the status that was edited.
         type:
           description: The type of event that resulted in the notification.
+          type: string
+      type: object
+    NotificationFallback:
+      properties:
+        details:
+          description: Localized details for the notifications, to be displayed when
+            clicking the notification, for instance.
+          type:
+          - string
+          - 'null'
+        summary:
+          description: "Localized fallback summary for the notification, for instance\
+            \ \u201CYou\u2019re on an app that does not support the most recent version\
+            \ of Mastodon. Sign in to the Mastodon web app for full functionality.\u201D"
+          type:
+          - string
+          - 'null'
+        title:
+          description: "Localized fallback title for the notification, for instance\
+            \ \u201CAlice added you to a collection\u201D."
           type: string
       type: object
     NotificationPolicy:
@@ -2238,6 +2539,102 @@ components:
           description: A timestamp of when the privacy policy was last updated.
           type: string
       type: object
+    Profile:
+      properties:
+        attribution_domains:
+          description: Domains of websites allowed to credit the account.
+          items:
+            description: ''
+            type: string
+          type: array
+        avatar:
+          description: An image icon that is shown next to statuses and in the profile.
+            Unlike for Account, this is nullable and will be null if the avatar is
+            unset.
+          type:
+          - string
+          - 'null'
+        avatar_description:
+          description: A textual description of the avatar, to be used for the visually
+            impaired or when avatars do not load.
+          type: string
+        avatar_static:
+          description: A static version of the avatar. Unlike for Account, this is
+            nullable and will be null if the avatar is unset.
+          type:
+          - string
+          - 'null'
+        bot:
+          description: "Indicates that the account may perform automated actions,\
+            \ may not be monitored, or identifies as a robot. This is determined by\
+            \ the account\u2019s actor_type being set to \u2018Application\u2019 or\
+            \ \u2018Service\u2019."
+          type: boolean
+        discoverable:
+          description: Whether the account has opted into discovery features such
+            as the profile directory.
+          type:
+          - boolean
+          - 'null'
+        display_name:
+          description: "The profile\u2019s display name."
+          type: string
+        fields:
+          description: Metadata about the account. Those contain the raw unprocessed
+            names and values.
+          items:
+            $ref: '#/components/schemas/Field'
+            description: ''
+          type: array
+        header:
+          description: An image banner that is shown above the profile and in profile
+            cards. Unlike for Account, this is nullable and will be null if the header
+            is unset.
+          type:
+          - string
+          - 'null'
+        header_description:
+          description: A textual description of the profile header, to be used for
+            the visually impaired or when avatars do not load.
+          type: string
+        header_static:
+          description: A static version of the header. Unlike for Account, this is
+            nullable and will be null if the header is unset.
+          type:
+          - string
+          - 'null'
+        hide_collections:
+          description: Whether the user hides the contents of their follows and followers
+            collections.
+          type:
+          - boolean
+          - 'null'
+        id:
+          description: The account id.
+          type: string
+        indexable:
+          description: Whether the account allows indexing by search engines.
+          type: boolean
+        locked:
+          description: Whether the account manually approves follow requests.
+          type: boolean
+        note:
+          description: "The profile\u2019s bio or description. Unlike for Account,\
+            \ this is the raw unprocessed text, not the rendered HTML."
+          type: string
+        show_featured:
+          description: "Whether the account wishes to have a \u201CFeatured\u201D\
+            \ tab on their profile."
+          type: boolean
+        show_media:
+          description: "Whether the account wishes to have a \u201CMedia\u201D tab\
+            \ with media attachments on their profile."
+          type: boolean
+        show_media_replies:
+          description: "Whether the account wishes to have replies in the \u201CMedia\u201D\
+            \ tab on their profile."
+          type: boolean
+      type: object
     Quote:
       properties:
         quoted_status:
@@ -2441,6 +2838,10 @@ components:
       type: object
     Role:
       properties:
+        collection_limit:
+          description: Maximum number of Collections that users with this role are
+            allowed to create.
+          type: integer
         color:
           description: The hex code assigned to this role. If no hex code is assigned,
             the string will be empty.
@@ -2606,6 +3007,15 @@ components:
             unauthorized.
           type: string
       type: object
+    ShallowTag:
+      properties:
+        name:
+          description: 'The value of the hashtag after the # sign.'
+          type: string
+        url:
+          description: A link to the hashtag on the local server.
+          type: string
+      type: object
     Status:
       properties:
         account:
@@ -2739,6 +3149,13 @@ components:
           description: Subject or summary line, below which status content is collapsed
             until expanded.
           type: string
+        tagged_collections:
+          description: If content includes links to Collections that the server recognized,
+            this includes the actual Collections.
+          items:
+            $ref: '#/components/schemas/Collection'
+            description: ''
+          type: array
         tags:
           description: Hashtags used within the status content.
           items:
@@ -7205,17 +7622,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: The domain parameter already is covered by an existing
-                  domain block.
-          description: The domain parameter already is covered by an existing domain
-            block.
-        500:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Invalid severity
-          description: Invalid severity
+                description: The request will fail if the severity parameter is provided
+                  but is not one of the allowed values.
+          description: The request will fail if the severity parameter is provided
+            but is not one of the allowed values.
       security:
       - BearerAuth: []
       summary: Show information about all blocked domains.
@@ -7266,17 +7676,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: The domain parameter already is covered by an existing
-                  domain block.
-          description: The domain parameter already is covered by an existing domain
-            block.
-        500:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Invalid severity
-          description: Invalid severity
+                description: The request will fail if the severity parameter is provided
+                  but is not one of the allowed values.
+          description: The request will fail if the severity parameter is provided
+            but is not one of the allowed values.
       security:
       - BearerAuth: []
       summary: Add a domain to the list of domains blocked from federating.
@@ -7373,17 +7776,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: The domain parameter already is covered by an existing
-                  domain block.
-          description: The domain parameter already is covered by an existing domain
-            block.
-        500:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-                description: Invalid severity
-          description: Invalid severity
+                description: The request will fail if the severity parameter is provided
+                  but is not one of the allowed values.
+          description: The request will fail if the severity parameter is provided
+            but is not one of the allowed values.
       security:
       - BearerAuth: []
       summary: Show information about a single blocked domain.
@@ -7429,13 +7825,15 @@ paths:
                 $ref: '#/components/schemas/Error'
                 description: DomainBlock with the given ID does not exist
           description: DomainBlock with the given ID does not exist
-        500:
+        422:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: Invalid severity
-          description: Invalid severity
+                description: The request will fail if the severity parameter is provided
+                  but is not one of the allowed values.
+          description: The request will fail if the severity parameter is provided
+            but is not one of the allowed values.
       security:
       - BearerAuth: []
       summary: Change parameters for an existing domain block.
@@ -8507,8 +8905,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: "Last updated October 10, 2024 \xB7 Improve this page"
-          description: "Last updated October 10, 2024 \xB7 Improve this page"
+                description: "Last updated May 1, 2026 \xB7 Improve this page"
+          description: "Last updated May 1, 2026 \xB7 Improve this page"
       security:
       - BearerAuth: []
       summary: See all currently active announcements set by admins.
@@ -8558,8 +8956,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: "Last updated October 10, 2024 \xB7 Improve this page"
-          description: "Last updated October 10, 2024 \xB7 Improve this page"
+                description: "Last updated May 1, 2026 \xB7 Improve this page"
+          description: "Last updated May 1, 2026 \xB7 Improve this page"
       security:
       - BearerAuth: []
       summary: Allows a user to mark the announcement as read.
@@ -8616,8 +9014,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: "Last updated October 10, 2024 \xB7 Improve this page"
-          description: "Last updated October 10, 2024 \xB7 Improve this page"
+                description: "Last updated May 1, 2026 \xB7 Improve this page"
+          description: "Last updated May 1, 2026 \xB7 Improve this page"
       security:
       - BearerAuth: []
       summary: Undo a react emoji to an announcement.
@@ -8673,13 +9071,261 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: "Last updated October 10, 2024 \xB7 Improve this page"
-          description: "Last updated October 10, 2024 \xB7 Improve this page"
+                description: "Last updated May 1, 2026 \xB7 Improve this page"
+          description: "Last updated May 1, 2026 \xB7 Improve this page"
       security:
       - BearerAuth: []
       summary: React to an announcement with an emoji.
       tags:
       - announcements
+  /api/v1/annual_reports:
+    get:
+      description: "Returns all of the current user\u2019s generated annual reports,\
+        \ if any.\n## Version history\n\n- 4.3.0 - added\n\n[Get all annual reports](https://docs.joinmastodon.org/methods/annual_reports/#index)"
+      parameters:
+      - description: required String. The year for the annual report.
+        in: path
+        name: :year
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: WrappedAnnualReports
+                properties:
+                  annual_reports:
+                    items:
+                      $ref: '#/components/schemas/AnnualReport'
+                    type: array
+                type: object
+          description: WrappedAnnualReports
+        202:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The requested annual report is currently generating.
+          description: The requested annual report is currently generating.
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The current user has no generated report for the specified
+                  year.
+          description: The current user has no generated report for the specified
+            year.
+      security:
+      - BearerAuth: []
+      summary: "Returns all of the current user\u2019s generated annual reports, if\
+        \ any."
+      tags:
+      - Annual reports
+  /api/v1/annual_reports/{:year}:
+    get:
+      description: "Returns the current user\u2019s generated annual report for the\
+        \ given year, if it exists.\n## Version history\n\n- 4.4.0 - added\n\n[Get\
+        \ a single annual report](https://docs.joinmastodon.org/methods/annual_reports/#get)"
+      parameters:
+      - description: required String. The year for the annual report.
+        in: path
+        name: :year
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: WrappedAnnualReports
+                properties:
+                  annual_reports:
+                    items:
+                      $ref: '#/components/schemas/AnnualReport'
+                    type: array
+                type: object
+          description: WrappedAnnualReports
+        202:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The requested annual report is currently generating.
+          description: The requested annual report is currently generating.
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The current user has no generated report for the specified
+                  year.
+          description: The current user has no generated report for the specified
+            year.
+      security:
+      - BearerAuth: []
+      summary: "Returns the current user\u2019s generated annual report for the given\
+        \ year, if it exists."
+      tags:
+      - Annual reports
+  /api/v1/annual_reports/{:year}/generate:
+    post:
+      description: "Generate the user\u2019s annual report for the specified year.\n\
+        \n[Generate a new annual report {generate}](https://docs.joinmastodon.org/methods/annual_reports/#generate-a-new-annual-report-generate)"
+      parameters:
+      - description: required String. The year for the annual report.
+        in: path
+        name: :year
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        202:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The requested annual report is currently generating.
+          description: The requested annual report is currently generating.
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+      security:
+      - BearerAuth: []
+      summary: "Generate the user\u2019s annual report for the specified year."
+      tags:
+      - Annual reports
+  /api/v1/annual_reports/{:year}/read:
+    post:
+      description: "Marks the user\u2019s generated annual report for the given year\
+        \ as read.\n## Version history\n\n- 4.3.0 - added\n\n[Mark an annual report\
+        \ as read](https://docs.joinmastodon.org/methods/annual_reports/#read)"
+      parameters:
+      - description: required String. The year for the annual report.
+        in: path
+        name: :year
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        202:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The requested annual report is currently generating.
+          description: The requested annual report is currently generating.
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The current user has no generated report for the specified
+                  year.
+          description: The current user has no generated report for the specified
+            year.
+      security:
+      - BearerAuth: []
+      summary: "Marks the user\u2019s generated annual report for the given year as\
+        \ read."
+      tags:
+      - Annual reports
+  /api/v1/annual_reports/{:year}/state:
+    get:
+      description: 'Returns the state of the annual report for the current user and
+        given year.
+
+
+        [Get the state of an annual report](https://docs.joinmastodon.org/methods/annual_reports/#get-state)'
+      parameters:
+      - description: required String. The year for the annual report.
+        in: path
+        name: :year
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: Hash with a single state key with a value of String (Enumerable,
+                  oneOf available, generating, eligible, or ineligible)
+                properties:
+                  state:
+                    type: string
+                type: object
+          description: Hash with a single state key with a value of String (Enumerable,
+            oneOf available, generating, eligible, or ineligible)
+        202:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The requested annual report is currently generating.
+          description: The requested annual report is currently generating.
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        404:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The current user has no generated report for the specified
+                  year.
+          description: The current user has no generated report for the specified
+            year.
+      security:
+      - BearerAuth: []
+      summary: Returns the state of the annual report for the current user and given
+        year.
+      tags:
+      - Annual reports
   /api/v1/apps:
     post:
       description: "Store the client_id and client_secret in your cache, as these\
@@ -8869,6 +9515,593 @@ paths:
       summary: Statuses the user has bookmarked.
       tags:
       - bookmarks
+  /api/v1/collections:
+    post:
+      description: 'Invalid or missing Authorization header.
+
+        HTTP status 422 is returned in case of validation errors. The response includes
+        a JSON object with a general error messages and per-attribute details.
+
+        Example:
+
+        See Register an account for a list of error codes.
+
+
+        [Create a Collection](https://docs.joinmastodon.org/methods/collections/#create)'
+      parameters:
+      - description: Integer. Maximum number of results. Defaults to 40 Collections.
+          Max 80 accounts.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Integer. Skip the first n results. Defaults to 0.
+        in: query
+        name: offset
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionWithAccounts'
+          description: CollectionWithAccounts
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: Invalid or missing Authorization header.
+      tags:
+      - collections
+  /api/v1/collections/116131056935959117:
+    delete:
+      description: 'The Collection was deleted.
+
+        Invalid or missing Authorization header.
+
+        Trying to delete a Collection owned by a different user.
+
+        Add an account to a Collection.
+
+
+        [Delete a Collection](https://docs.joinmastodon.org/methods/collections/#delete_collection)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: WrappedCollectionItem
+                properties:
+                  collection_item:
+                    $ref: '#/components/schemas/CollectionItem'
+                type: object
+          description: WrappedCollectionItem
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: The Collection was deleted.
+      tags:
+      - collections
+    patch:
+      description: 'Invalid or missing Authorization header.
+
+        Trying to update a Collection owned by a different user.
+
+        HTTP status 422 is returned in case of validation errors. The response includes
+        a JSON object with a general error messages and per-attribute details.
+
+        Example:
+
+        See Register an account for a list of error codes.
+
+        Delete a Collection.
+
+
+        [Update a Collection](https://docs.joinmastodon.org/methods/collections/#update_collection)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: Invalid or missing Authorization header.
+      tags:
+      - collections
+  /api/v1/collections/116131056935959117/items:
+    post:
+      description: 'Invalid or missing Authorization header.
+
+        Trying to add to a Collection owned by a different user.
+
+        HTTP status 422 is returned in case of validation errors, i.e. when it was
+        not possible to add the given account or the given ID was unknown. The response
+        includes a JSON object with a general error messages.
+
+        Example:
+
+        Remove an account from a Collection.
+
+
+        [Add an account to a Collection](https://docs.joinmastodon.org/methods/collections/#add_account)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: Invalid or missing Authorization header.
+      tags:
+      - collections
+  /api/v1/collections/116131056935959117/items/116151066915353115:
+    delete:
+      description: 'The account was removed.
+
+        Invalid or missing Authorization header.
+
+        Trying to remove an item from a Collection owned by a different user.
+
+        Remove the current user from a Collection created by a different user.
+
+
+        [Remove account from a Collection](https://docs.joinmastodon.org/methods/collections/#remove_account)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+      security:
+      - BearerAuth: []
+      summary: The account was removed.
+      tags:
+      - collections
+  /api/v1/collections/116131056935959117/items/116151066915353115/revoke:
+    post:
+      description: "The account was removed.\nInvalid or missing Authorization header.\n\
+        Trying to remove an item from a Collection that does not include the current\
+        \ user.\nLast updated June 11, 2026 \xB7 Improve this page\nJoin Mastodon\
+        \ \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7 Imprint\n\n[Revoke inclusion\
+        \ in a Collection](https://docs.joinmastodon.org/methods/collections/#revoke_item)"
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: The account was removed.
+          description: The account was removed.
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+      summary: The account was removed.
+      tags:
+      - collections
+  /api/v1/collections/{:collection_id}/items:
+    post:
+      description: 'Add an account to a Collection.
+
+
+        [Add an account to a Collection](https://docs.joinmastodon.org/methods/collections/#add_account)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: WrappedCollectionItem
+                properties:
+                  collection_item:
+                    $ref: '#/components/schemas/CollectionItem'
+                type: object
+          description: WrappedCollectionItem
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: Add an account to a Collection.
+      tags:
+      - collections
+  /api/v1/collections/{:collection_id}/items/{:id}:
+    delete:
+      description: 'Remove an account from a Collection.
+
+
+        [Remove account from a Collection](https://docs.joinmastodon.org/methods/collections/#remove_account)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+      security:
+      - BearerAuth: []
+      summary: Remove an account from a Collection.
+      tags:
+      - collections
+  /api/v1/collections/{:collection_id}/items/{:id}/revoke:
+    post:
+      description: 'Remove the current user from a Collection created by a different
+        user.
+
+
+        [Revoke inclusion in a Collection](https://docs.joinmastodon.org/methods/collections/#revoke_item)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+      security:
+      - BearerAuth: []
+      summary: Remove the current user from a Collection created by a different user.
+      tags:
+      - collections
+  /api/v1/collections/{:id}:
+    delete:
+      description: 'Delete a Collection.
+
+
+        [Delete a Collection](https://docs.joinmastodon.org/methods/collections/#delete_collection)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Empty'
+          description: Empty
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: Delete a Collection.
+      tags:
+      - collections
+    get:
+      description: '
+
+
+        [Get a single Collection](https://docs.joinmastodon.org/methods/collections/#get_collection)'
+      parameters:
+      - description: Integer. Maximum number of results. Defaults to 40 Collections.
+          Max 80 accounts.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Integer. Skip the first n results. Defaults to 0.
+        in: query
+        name: offset
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionWithAccounts'
+          description: CollectionWithAccounts
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      tags:
+      - collections
+    patch:
+      description: 'Update an existing Collection.
+
+
+        [Update a Collection](https://docs.joinmastodon.org/methods/collections/#update_collection)'
+      parameters: []
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: WrappedCollection
+                properties:
+                  collection:
+                    $ref: '#/components/schemas/Collection'
+                type: object
+          description: WrappedCollection
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      summary: Update an existing Collection.
+      tags:
+      - collections
   /api/v1/conversations:
     get:
       description: '
@@ -10980,9 +12213,11 @@ paths:
           content:
             application/json:
               schema:
-                description: Hash of timeline key and associated Marker
+                description: Hash of String (Enumerable, anyOf home or notifications)
+                  key and associated Marker value
                 type: object
-          description: Hash of timeline key and associated Marker
+          description: Hash of String (Enumerable, anyOf home or notifications) key
+            and associated Marker value
         401:
           content:
             application/json:
@@ -11011,8 +12246,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Marker'
-          description: Marker
+                description: Hash of String (Enumerable, anyOf home or notifications)
+                  key and associated Marker value
+                type: object
+          description: Hash of String (Enumerable, anyOf home or notifications) key
+            and associated Marker value
         401:
           content:
             application/json:
@@ -11263,11 +12501,11 @@ paths:
           content:
             application/json:
               schema:
-                description: Array of Account
+                description: Array of MutedAccount
                 items:
-                  $ref: '#/components/schemas/Account'
+                  $ref: '#/components/schemas/MutedAccount'
                 type: array
-          description: Array of Account
+          description: Array of MutedAccount
         401:
           content:
             application/json:
@@ -11308,7 +12546,8 @@ paths:
 
         - 4.1.0 - notification limit changed from 15 (max 30) to 40 (max 80)
 
-        - 4.3.0 - added include_filtered parameter
+        - 4.3.0 - added include_filtered parameter4.6.0 (mastodon API version 10)
+        - added supported_types optional parameter
 
 
         [Get all notifications](https://docs.joinmastodon.org/methods/notifications/#get)'
@@ -11357,6 +12596,16 @@ paths:
           s NotificationPolicy. Defaults to false."
         in: query
         name: include_filtered
+        schema:
+          type: string
+      - description: "Array of String. Notification types to not get fallback representation\
+          \ for even when some is available. Passing this parameter is required to\
+          \ get any notification fallback at all. When this parameter is used, and\
+          \ a notification which type is not included in supported_types has an available\
+          \ fallback representation, it will be included in the notification\u2019\
+          s fallback attribute."
+        in: query
+        name: supported_types[]
         schema:
           type: string
       - description: required String. The ID of the Notification in the database.
@@ -11589,7 +12838,7 @@ paths:
         \ single boolean attribute mergedOAuth: User token + read:notificationsVersion\
         \ history:4.3.0 - added\nA successful call returns whether the notifications\
         \ have been merged and are ready for being loaded.\nInvalid or missing Authorization\
-        \ header.\nLast updated November 21, 2025 \xB7 Improve this page\nJoin Mastodon\
+        \ header.\nLast updated June 11, 2026 \xB7 Improve this page\nJoin Mastodon\
         \ \xB7 Blog \xB7 \nView source \xB7 CC BY-SA 4.0 \xB7 Imprint\n\n[Check if\
         \ accepted notification requests have been merged](https://docs.joinmastodon.org/methods/notifications/#requests-merged)"
       parameters: []
@@ -11825,33 +13074,20 @@ paths:
         ## Version history
 
 
-        - 0.0.0 - added
+        - 0.0.0 - added4.6.0 (mastodon API version 10) - added supported_types optional
+        parameter
 
 
         [Get a single notification](https://docs.joinmastodon.org/methods/notifications/#get-one)'
       parameters:
-      - description: Integer. Maximum number of results to return. Defaults to 100
-          notifications. Max 1000 notifications.
+      - description: "Array of String. Notification types to not get fallback representation\
+          \ for even when some is available. Passing this parameter is required to\
+          \ get any notification fallback at all. When this parameter is used, and\
+          \ a notification which type is not included in supported_types has an available\
+          \ fallback representation, it will be included in the notification\u2019\
+          s fallback attribute."
         in: query
-        name: limit
-        schema:
-          type: string
-      - description: Array of String. Types of notifications that should count towards
-          unread notifications.
-        in: query
-        name: types[]
-        schema:
-          type: string
-      - description: Array of String. Types of notifications that should not count
-          towards unread notifications.
-        in: query
-        name: exclude_types[]
-        schema:
-          type: string
-      - description: String. Only count unread notifications received from the specified
-          account.
-        in: query
-        name: account_id
+        name: supported_types[]
         schema:
           type: string
       - description: required String. The ID of the Notification in the database.
@@ -12075,6 +13311,82 @@ paths:
       summary: Preferences defined by the user in their account settings.
       tags:
       - preferences
+  /api/v1/profile:
+    get:
+      description: '
+
+
+        [Get current user profile](https://docs.joinmastodon.org/methods/profile/#get-current-user-profile)'
+      parameters:
+      - description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        in: path
+        name: Authorization
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: Profile
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
+          description: Token does not have an authorized user
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
+          description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
+      tags:
+      - profile
+    patch:
+      description: "Update the current user\u2019s profile.\n\n[Update current user\
+        \ profile](https://docs.joinmastodon.org/methods/profile/#update-current-user-profile)"
+      parameters:
+      - description: required Provide this header with Bearer <user_token> to gain
+          authorized access to this API method.
+        in: path
+        name: Authorization
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: Profile
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
+          description: Token does not have an authorized user
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Token does not have an authorized user
+          description: Token does not have an authorized user
+      security:
+      - BearerAuth: []
+      summary: "Update the current user\u2019s profile."
+      tags:
+      - profile
   /api/v1/profile/avatar:
     delete:
       description: '
@@ -12314,6 +13626,8 @@ paths:
         - 4.0.0 - category is now optional if rule_ids is provided
 
         - 4.2.0 - add legal category
+
+        - 4.6.0 - add collection_ids parameter
 
 
         [File a report](https://docs.joinmastodon.org/methods/reports/#post)'
@@ -15401,6 +16715,132 @@ paths:
       summary: Tags that are being used more frequently within the past week.
       tags:
       - trends
+  /api/v1/{:account_id}/collections:
+    get:
+      description: '
+
+
+        [Get all Collections from a given account](https://docs.joinmastodon.org/methods/collections/#get_collections)'
+      parameters:
+      - description: Integer. Maximum number of results. Defaults to 40 Collections.
+          Max 80 accounts.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Integer. Skip the first n results. Defaults to 0.
+        in: query
+        name: offset
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: Collections
+                properties:
+                  collections:
+                    items:
+                      $ref: '#/components/schemas/Collection'
+                    type: array
+                type: object
+          description: Collections
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      tags:
+      - collections
+  /api/v1/{:account_id}/in_collections:
+    get:
+      description: '
+
+
+        [Get all Collections the current account is featured in](https://docs.joinmastodon.org/methods/collections/#in_collections)'
+      parameters:
+      - description: Integer. Maximum number of results. Defaults to 40 Collections.
+          Max 80 accounts.
+        in: query
+        name: limit
+        schema:
+          type: string
+      - description: Integer. Skip the first n results. Defaults to 0.
+        in: query
+        name: offset
+        schema:
+          type: string
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                description: Collections
+                properties:
+                  collections:
+                    items:
+                      $ref: '#/components/schemas/Collection'
+                    type: array
+                type: object
+          description: Collections
+        401:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Invalid or missing Authorization header.
+          description: Invalid or missing Authorization header.
+        403:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: Trying to remove an item from a Collection that does
+                  not include the current user.
+          description: Trying to remove an item from a Collection that does not include
+            the current user.
+        422:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                description: HTTP status 422 is returned in case of validation errors,
+                  i.e. when it was not possible to add the given account or the given
+                  ID was unknown. The response includes a JSON object with a general
+                  error messages.
+          description: HTTP status 422 is returned in case of validation errors, i.e.
+            when it was not possible to add the given account or the given ID was
+            unknown. The response includes a JSON object with a general error messages.
+      security:
+      - BearerAuth: []
+      tags:
+      - collections
   /api/v1_alpha/async_refreshes/{:id}:
     get:
       description: 'Sometimes an API request might not return the expected results
@@ -15456,15 +16896,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AsyncRefresh'
-          description: AsyncRefresh
+                description: Hash with a single key of async_refresh with value of
+                  AsyncRefresh
+                properties:
+                  async_refresh:
+                    $ref: '#/components/schemas/AsyncRefresh'
+                type: object
+          description: Hash with a single key of async_refresh with value of AsyncRefresh
         404:
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-                description: "Last updated November 27, 2025 \xB7 Improve this page"
-          description: "Last updated November 27, 2025 \xB7 Improve this page"
+                description: "Last updated May 1, 2026 \xB7 Improve this page"
+          description: "Last updated May 1, 2026 \xB7 Improve this page"
       summary: Sometimes an API request might not return the expected results or not
         all possible results as either a background job is already running to (re-)create
         these results or the request triggers a background job to create or fetch
@@ -16346,6 +17791,8 @@ paths:
         configuration.urls.terms_of_service, registrations.min_age, registrations.reason_required,
         configuration.limited_federation
 
+        - 4.6.0 - added thumbnail.description
+
 
         [View server information](https://docs.joinmastodon.org/methods/instance/#v2)'
       parameters:
@@ -16490,7 +17937,8 @@ paths:
         ## Version history
 
 
-        - 4.4.0 - added admin.sign_up to grouped notification types
+        - 4.4.0 - added admin.sign_up to grouped notification types4.6.0 (mastodon
+        API version 10) - added supported_types optional parameter
 
 
         [Get all grouped notifications](https://docs.joinmastodon.org/methods/grouped_notifications/#get-grouped)'
@@ -16566,6 +18014,16 @@ paths:
           s NotificationPolicy. Defaults to false."
         in: query
         name: include_filtered
+        schema:
+          type: string
+      - description: "Array of String. Notification types to not get fallback representation\
+          \ for even when some is available. Passing this parameter is required to\
+          \ get any notification fallback at all. When this parameter is used, and\
+          \ a notification which type is not included in supported_types has an available\
+          \ fallback representation, it will be included in the notification group\u2019\
+          s fallback attribute."
+        in: query
+        name: supported_types[]
         schema:
           type: string
       - description: required String. The group key of the notification group.
@@ -16799,38 +18257,14 @@ paths:
 
         [Get a single notification group](https://docs.joinmastodon.org/methods/grouped_notifications/#get-notification-group)'
       parameters:
-      - description: Integer. Maximum number of results to return. Defaults to 100
-          notifications. Max 1000 notifications.
+      - description: "Array of String. Notification types to not get fallback representation\
+          \ for even when some is available. Passing this parameter is required to\
+          \ get any notification fallback at all. When this parameter is used, and\
+          \ a notification which type is not included in supported_types has an available\
+          \ fallback representation, it will be included in the notification group\u2019\
+          s fallback attribute."
         in: query
-        name: limit
-        schema:
-          type: string
-      - description: Array of String. Types of notifications that should count towards
-          unread notifications.
-        in: query
-        name: types[]
-        schema:
-          type: string
-      - description: Array of String. Types of notifications that should not count
-          towards unread notifications.
-        in: query
-        name: exclude_types[]
-        schema:
-          type: string
-      - description: String. Only count unread notifications received from the specified
-          account.
-        in: query
-        name: account_id
-        schema:
-          type: string
-      - description: Array of String. Restrict which notification types can be grouped.
-          Use this if there are notification types for which your client does not
-          support grouping. If omitted, the server will group notifications of all
-          types it supports (currently, favourite, follow and reblog). If you do not
-          want any notification grouping, use GET /api/v1/notifications/unread_count
-          instead.
-        in: query
-        name: grouped_types[]
+        name: supported_types[]
         schema:
           type: string
       - description: required String. The group key of the notification group.
@@ -17032,15 +18466,15 @@ paths:
         name: type
         schema:
           type: string
-      - description: Boolean. Only relevant if type includes accounts or if query
-          is a HTTPS URL. In the first case, if true and (a) the search query is for
-          a remote account (e.g., someaccount@someother.server) and (b) the local
-          server does not know about the account, WebFinger is used to try and resolve
-          the account at someother.server. This provides the best recall at higher
-          latency. If false, only accounts the server knows about are returned. In
-          the second case, if true, resolving the URL and returning the matching status
-          is attempted. If false, this resolving logic is circumvented and a regular
-          search is performed instead.
+      - description: Boolean. Only relevant if type includes accounts or if q is a
+          HTTPS URL. In the first case, if true and (a) the search query is for a
+          remote account (e.g., someaccount@someother.server) and (b) the local server
+          does not know about the account, WebFinger is used to try and resolve the
+          account at someother.server. This provides the best recall at higher latency.
+          If false, only accounts the server knows about are returned. In the second
+          case, if true, resolving the URL and returning the matching status, account
+          or Collection is attempted. If false, this resolving logic is circumvented
+          and a regular search is performed instead.
         in: query
         name: resolve
         schema:
